@@ -31,9 +31,9 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  useEffect(() => {
-    fetchSubmissions();
-  }, [currentPage, searchTerm, statusFilter]);
+  // useEffect(() => {
+  //   fetchSubmissions();
+  // }, [currentPage, searchTerm, statusFilter]);
 
   const fetchDashboardData = async () => {
     try {

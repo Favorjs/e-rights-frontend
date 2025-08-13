@@ -29,11 +29,11 @@ const SearchResultsPage = () => {
         
         if (data.success) {
           setSearchResults(data.data);
-          setPagination({
-            ...pagination,
+          setPagination(prev => ({
+            ...prev,
             total: data.pagination.total,
             totalPages: data.pagination.totalPages
-          });
+          }));
         }
       } catch (error) {
         console.error('Error fetching search results:', error);
@@ -41,10 +41,10 @@ const SearchResultsPage = () => {
         setLoading(false);
       }
     };
-
+  
     fetchSearchResults();
-  }, [searchTerm, pagination.page]);
-
+  }, [searchTerm, pagination.page, pagination.limit]); // All dependencies declared
+  
   const handleSelectShareholder = (shareholder) => {
     navigate(`/shareholder/${shareholder.id}`);
   };

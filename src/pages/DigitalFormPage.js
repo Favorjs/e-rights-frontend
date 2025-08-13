@@ -13,13 +13,13 @@ const DigitalFormPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [signatureFile, setSignatureFile] = useState(null);
   const [receiptFile, setReceiptFile] = useState(null);
-  const [paymentAccountNumber, setPaymentAccountNumber] = useState('23843234090');
+  const [paymentAccountNumber] = useState('23843234090');
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+    // watch,
     setValue
   } = useForm();
 
