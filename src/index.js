@@ -33,12 +33,24 @@ root.render(
   </React.StrictMode>
 );
 
-// Add production check
+// Service Worker Registration (if available)
+const registerServiceWorker = async () => {
+  if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+    try {
+      const registration = await navigator.serviceWorker.register('/service-worker.js');
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    } catch (error) {
+      console.warn('ServiceWorker registration failed: ', error);
+      // Unregister any existing service workers
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const registration of registrations) {
+        await registration.unregister();
+      }
+    }
+  }
+};
+
+// Only register service worker if the file exists
 if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .catch(registrationError => {
-        console.log('SW registration failed: ', registrationError);
-      });
-  });
+  window.addEventListener('load', registerServiceWorker);
 }
