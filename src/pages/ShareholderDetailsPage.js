@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Edit, Download, FileText } from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft, Download} from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
-import { PDFDocument, rgb } from 'pdf-lib';
+// import { PDFDocument, rgb } from 'pdf-lib';
 const ShareholderDetailsPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [shareholder, setShareholder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,9 +34,9 @@ const ShareholderDetailsPage = () => {
     fetchShareholder();
   }, [id]);
 
-  const handleDigitalForm = () => {
-    navigate(`/digital-form/${id}`);
-  };
+  // const handleDigitalForm = () => {
+  //   navigate(`/digital-form/${id}`);
+  // };
 
   // const handleDownloadPhysicalForm = async () => {
   //   try {
