@@ -2,19 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="./public/images/favicon.png" />
+    <!-- Change favicon path to absolute from public -->
+    <link rel="icon" href="/images/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="APEL CAPITAL REGISTRARS - THE INITIATES PLC RIGHTS ISSUE"
-    />
-    <link rel="apple-touch-icon" href="./public/images/favicon.png" />
-    <!-- <link rel="manifest" href="%PUBLIC_URL%/manifest.json" /> -->
+    <meta name="description" content="APEL CAPITAL REGISTRARS - THE INITIATES PLC RIGHTS ISSUE" />
+    <!-- Changed to absolute path -->
+    <link rel="apple-touch-icon" href="/images/favicon.png" />
     <title>APEL CAPITAL REGISTRARS - Rights Issue</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <!-- Add this for production error handling -->
+    <script>window.ENV = 'production';</script>
   </body>
-</html> 
+</html>
