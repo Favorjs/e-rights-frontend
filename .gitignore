@@ -10,8 +10,8 @@ node_modules/
 .env.production.local
 
 # Build outputs
-/client/build/
-/dist/
+# /client/build/
+# /dist/
 
 # Uploads
 /uploads/
