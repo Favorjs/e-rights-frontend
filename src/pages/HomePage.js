@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 // import { Search, Download, FileText, FileSpreadsheet, FileDigit, FileText } from 'lucide-react';
 import { Search, Download, FileText, FileSpreadsheet, FileDigit} from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import { searchShareholders } from '../utils/api';
 
 const HomePage = () => {
   const [searchName, setSearchName] = useState('');
@@ -22,19 +22,19 @@ const HomePage = () => {
     setIsSearching(true);
     
     try {
-      const response = await axios.get(`/api/shareholders/search?name=${encodeURIComponent(searchName.trim())}`);
+      const response = await searchShareholders(searchName.trim());
       
-      if (response.data.success) {
-        if (response.data.data.length === 0) {
+      if (response.success) {
+        if (response.data.length === 0) {
           toast.error('No shareholders found with that name');
-        } else if (response.data.data.length === 1) {
+        } else if (response.data.length === 1) {
           // If only one result, go directly to shareholder details
-          navigate(`/shareholder/${response.data.data[0].id}`);
+          navigate(`/shareholder/${response.data[0].id}`);
         } else {
           // Multiple results, go to search results page
           navigate('/search-results', { 
             state: { 
-              searchResults: response.data.data,
+              searchResults: response.data,
               searchTerm: searchName.trim()
             }
           });
