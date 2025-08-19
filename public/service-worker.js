@@ -3,10 +3,7 @@ const CACHE_NAME = 'e-rights-app-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/static/js/main.chunk.js',
-  '/static/js/0.chunk.js',
-  '/static/js/bundle.js',
-  '/favicon.ico'
+  '/images/favicon.png'
 ];
 
 // Install event - cache the application shell
@@ -15,7 +12,9 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        return cache.addAll(urlsToCache).catch(error => {
+          console.error('Failed to cache some resources:', error);
+        });
       })
   );
 });
