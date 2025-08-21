@@ -4,7 +4,7 @@ import axios from 'axios';
 const isDevelopment = process.env.NODE_ENV === 'development';
 const baseURL = isDevelopment 
   ? '/api' // Use proxy in development
-  : 'https://your-production-api-url.com/api'; // Replace with your production API URL
+  : 'https://api.tip.apel.com.ng/api'; // Replace with your production API URL
 
 // Create an axios instance with default config
 const api = axios.create({
