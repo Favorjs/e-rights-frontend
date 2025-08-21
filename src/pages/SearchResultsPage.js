@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, User, Hash, ChevronLeft, ChevronRight } from 'lucide-react';
+import { searchShareholders } from '../utils/api';
 
 const SearchResultsPage = () => {
   const location = useLocation();
@@ -22,10 +23,12 @@ const SearchResultsPage = () => {
       
       try {
         setLoading(true);
-        const response = await fetch(
-          `/api/shareholders/search?name=${encodeURIComponent(searchTerm)}&page=${pagination.page}&limit=${pagination.limit}`
+        const response = await searchShareholders(
+          searchTerm,
+          pagination.page,
+          pagination.limit
         );
-        const data = await response.json();
+        const data = response;
         
         if (data.success) {
           setSearchResults(data.data);
