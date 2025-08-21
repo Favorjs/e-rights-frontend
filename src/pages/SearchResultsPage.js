@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, User, Hash, ChevronLeft, ChevronRight } from 'lucide-react';
-import { searchShareholders } from '../utils/api';
+import { searchShareholders } from '../services/api';
 
 const SearchResultsPage = () => {
   const location = useLocation();
