@@ -1,22 +1,18 @@
 import axios from 'axios';
+import { currentConfig } from '../config/config';
 
-// Determine the base URL based on the environment
-const isDevelopment = process.env.NODE_ENV === 'development';
 // Base URL configuration
-let baseURL;
-if (process.env.REACT_APP_API_URL) {
-  baseURL = process.env.REACT_APP_API_URL;
-} else if (isDevelopment) {
-  baseURL = 'http://localhost:5000';
-} else {
-  baseURL = 'https://api.tip.apel.com.ng';
-}
+const baseURL = currentConfig.apiUrl;
+
+console.log('API Base URL:', baseURL);
+console.log('Environment:', currentConfig.environment);
 
 // API paths are prefixed with /api
 
 // Create an axios instance with default config
 const api = axios.create({
   baseURL,
+  timeout: 30000, // 30 second timeout
   headers: {
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -32,6 +28,12 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Log requests in development
+    if (currentConfig.environment === 'development') {
+      console.log('API Request:', config.method?.toUpperCase(), config.url);
+    }
+    
     return config;
   },
   (error) => Promise.reject(error)
@@ -39,15 +41,34 @@ api.interceptors.request.use(
 
 // Response interceptor for error handling
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Log responses in development
+    if (currentConfig.environment === 'development') {
+      console.log('API Response:', response.status, response.config.url);
+    }
+    return response;
+  },
   (error) => {
+    // Enhanced error logging for production debugging
+    console.error('API Error:', {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      url: error.config?.url,
+      method: error.config?.method,
+      data: error.response?.data
+    });
+    
     // Handle common errors (e.g., 401 Unauthorized)
     if (error.response?.status === 401) {
-      // Handle unauthorized access (e.g., redirect to login)
       console.error('Unauthorized access - please log in');
-      // Optionally redirect to login page
-      // window.location.href = '/login';
     }
+    
+    // Handle CORS errors
+    if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+      console.error('Network error - check if server is running and CORS is configured correctly');
+    }
+    
     return Promise.reject(error);
   }
 );
