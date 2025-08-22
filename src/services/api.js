@@ -9,7 +9,7 @@ if (process.env.REACT_APP_API_URL) {
 } else if (isDevelopment) {
   baseURL = 'http://localhost:5000';
 } else {
-  baseURL = 'https://tip.apel.com.ng';
+  baseURL = 'https://api.tip.apel.com.ng';
 }
 
 // API paths are prefixed with /api
