@@ -5,7 +5,7 @@ const config = {
     environment: 'development'
   },
   production: {
-    apiUrl: 'https://your-railway-app-name.up.railway.app', // Replace with your actual Railway URL
+    apiUrl: 'https://api.tip.apel.com.ng', // Replace with your actual Railway URL
     environment: 'production'
   }
 };
