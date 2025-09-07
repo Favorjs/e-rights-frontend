@@ -7,6 +7,8 @@ import HomePage from './pages/HomePage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import ShareholderDetailsPage from './pages/ShareholderDetailsPage';
 import DigitalFormPage from './pages/DigitalFormPage';
+import FormSubmissionPage from './pages/FormSubmissionPage';
+import RightsSubmissionDetailsPage from './pages/RightsSubmissionDetailsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
 
@@ -21,6 +23,8 @@ function App() {
             <Route path="/search-results" element={<SearchResultsPage />} />
             <Route path="/shareholder/:id" element={<ShareholderDetailsPage />} />
             <Route path="/digital-form/:shareholderId" element={<DigitalFormPage />} />
+            <Route path="/form-submission/:id" element={<FormSubmissionPage />} />
+            <Route path="/admin/rights-submission/:id" element={<RightsSubmissionDetailsPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
         </main>

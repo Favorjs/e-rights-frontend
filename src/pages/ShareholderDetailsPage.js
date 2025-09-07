@@ -251,35 +251,43 @@ const ShareholderDetailsPage = () => {
         <div className="card">
           {/* <h2 className="text-xl font-bold text-gray-900 mb-6">Choose Your Option</h2> */}
           
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-            {/* Digital Form Option */}
-            {/* <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors">
+          {/* Mobile Layout - Submit Form Online button above Download button */}
+          <div className="lg:hidden mb-6">
+            <div className="border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors bg-green-50">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Edit className="h-8 w-8 text-green-600" />
+                <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
               </div>
               
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Fill Digital Form</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Submit Your Form Online</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Complete the acceptance/renunciation form online with file uploads
+                After downloading and filling the form, submit it online with your payment receipt
               </p>
               
-              <button
-                onClick={handleDigitalForm}
-                className="w-full btn-primary"
+              <Link
+                to={`/form-submission/${id}`}
+                className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-200"
               >
-                Continue Online
-              </button>
-            </div> */}
+                Submit Form Online
+                <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </div>
 
-            {/* Physical Form Option */}
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+          {/* Desktop Layout - Both buttons side by side */}
+          <div className="hidden lg:grid lg:grid-cols-1 gap-6">
+            {/* Download Form Section */}
+            {/* <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Download className="h-8 w-8 text-blue-600" />
               </div>
               
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Download Rights Issue Form</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Download and fill the form, then submit to our email <a href="mailto:registrars@apel.ng" className="text-blue-600 hover:underline">registrars@apel.ng</a> with payment receipt
+                Download and fill the form, then submit with payment receipt
               </p>
               
               <button
@@ -288,8 +296,36 @@ const ShareholderDetailsPage = () => {
               >
                 Download PDF
               </button>
+            </div> */}
+
+            {/* Submit Form Online Section */}
+            <div className="border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors bg-green-50">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+              
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Submit Your Form Online</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                After downloading and filling the form, submit it online with your payment receipt
+              </p>
+              
+              <Link
+                to={`/form-submission/${id}`}
+                className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-200"
+              >
+                Submit Form Online
+                <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
             </div>
           </div>
+
+          {/* Mobile Layout - Download button below Submit button */}
+      {/* a mobile layout for the download rights issue was her , but that was based on the last thought of people dowsnloading the form then submitting  commenting it out 
+      kind of made the code a bug because of the extra bracket while commenting on react js */}
         </div>
       </div>
     </div>
