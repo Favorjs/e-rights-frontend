@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Download, 
@@ -40,8 +40,7 @@ const AdminDashboard = () => {
     } else {
       fetchSubmissions();
     }
-  }, [currentPage, searchTerm, activeTab, rightsClaimingFilter]);
-
+  }, [currentPage, searchTerm, activeTab, rightsClaimingFilter, fetchRightsSubmissions, fetchSubmissions]);
   const fetchDashboardData = async () => {
     try {
       const response = await axios.get('/api/admin/dashboard');
@@ -54,7 +53,66 @@ const AdminDashboard = () => {
     }
   };
 
-  const fetchSubmissions = async () => {
+  // const fetchSubmissions = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const params = new URLSearchParams({
+  //       page: currentPage,
+  //       limit: 10
+  //     });
+
+  //     if (searchTerm) {
+  //       params.append('search', searchTerm);
+  //     }
+
+  //     const response = await axios.get(`/api/admin/submissions?${params}`);
+      
+  //     if (response.data.success) {
+  //       setSubmissions(response.data.data);
+  //       setTotalPages(response.data.pagination.totalPages);
+  //       setTotalCount(response.data.pagination.totalCount);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching submissions:', error);
+  //     toast.error('Error loading submissions');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const fetchRightsSubmissions = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const params = new URLSearchParams({
+  //       page: currentPage,
+  //       limit: 10
+  //     });
+
+  //     if (searchTerm) {
+  //       params.append('search', searchTerm);
+  //     }
+
+  //     if (rightsClaimingFilter) {
+  //       params.append('rightsClaiming', rightsClaimingFilter);
+  //     }
+
+  //     const response = await axios.get(`/api/admin/rights-submissions?${params}`);
+      
+  //     if (response.data.success) {
+  //       setRightsSubmissions(response.data.data);
+  //       setTotalPages(response.data.pagination.totalPages);
+  //       setTotalCount(response.data.pagination.totalCount);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching rights submissions:', error);
+  //     toast.error('Error loading rights submissions');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
+  
+  const fetchSubmissions = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -79,9 +137,9 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchTerm]); // Add dependencies here
 
-  const fetchRightsSubmissions = async () => {
+  const fetchRightsSubmissions = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -110,7 +168,20 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, rightsClaimingFilter]); // Add dependencies here
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'rights') {
+      fetchRightsSubmissions();
+    } else {
+      fetchSubmissions();
+    }
+  }, [currentPage, searchTerm, activeTab, rightsClaimingFilter, fetchRightsSubmissions, fetchSubmissions]); // Add the functions to dependencies
+
 
   const handleSearch = (e) => {
     e.preventDefault();
