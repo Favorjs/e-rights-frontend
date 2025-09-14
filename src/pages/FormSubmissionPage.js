@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Upload, Receipt, CheckCircle, Eye, Download, FileText, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Receipt, CheckCircle, Eye, Download, FileText, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
@@ -549,50 +549,43 @@ const FormSubmissionPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Progress Steps */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-gray-900">Rights Issue Form Submission</h1>
-            <button
-              onClick={() => navigate('/')}
-              className="flex items-center text-gray-600 hover:text-gray-800"
-            >
-              <ArrowLeft className="h-4 w-4 mr-1" />
-              Back to Portal
-            </button>
+       
+<div className="overflow-x-auto pb-2">
+  <div className="flex items-center" style={{ minWidth: `${steps.length * 120}px` }}>
+    {steps.map((step, index) => (
+      <React.Fragment key={step.id}>
+        <div className="flex flex-col items-center flex-shrink-0" style={{ width: '100px' }}>
+          <div 
+            className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+              currentStep > step.id 
+                ? 'bg-green-500 text-white' 
+                : currentStep === step.id
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-500'
+            }`}
+          >
+            {currentStep > step.id ? (
+              <CheckCircle className="h-5 w-5" />
+            ) : (
+              <span className="text-sm">{step.id}</span>
+            )}
           </div>
-          
-          <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">{steps[currentStep - 1].title}</h2>
-              <span className="text-sm font-medium text-blue-600">Step {currentStep} of {steps.length}</span>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              {steps.map((step, index) => (
-                <div key={step.id} className="flex items-center">
-                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                    currentStep > step.id 
-                      ? 'bg-green-500 text-white' 
-                      : currentStep === step.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-500'
-                  }`}>
-                    {currentStep > step.id ? (
-                      <CheckCircle className="h-5 w-5" />
-                    ) : (
-                      <span>{step.id}</span>
-                    )}
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div className={`w-16 h-1 mx-2 ${
-                      currentStep > step.id ? 'bg-green-500' : 'bg-gray-200'
-                    }`}></div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+          <span className="text-xs mt-1 text-center text-gray-600 whitespace-nowrap overflow-ellipsis overflow-hidden max-w-full px-1">
+            {step.title}
+          </span>
         </div>
+        {index < steps.length - 1 && (
+          <div 
+            className={`h-1 mx-2 ${
+              currentStep > step.id ? 'bg-green-500' : 'bg-gray-200'
+            }`} 
+            style={{ width: '40px' }}
+          ></div>
+        )}
+      </React.Fragment>
+    ))}
+  </div>
+</div>
 
         {/* Shareholder Summary */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-8 shadow-sm">

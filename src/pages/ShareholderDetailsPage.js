@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Download} from 'lucide-react';
+import { ArrowLeft} from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 // import { PDFDocument, rgb } from 'pdf-lib';
@@ -120,47 +120,47 @@ const ShareholderDetailsPage = () => {
   //   }
   // };
 
-  const handleDownloadPhysicalForm = async () => {
-    try {
-      toast.loading('Generating your form...');
+  // const handleDownloadPhysicalForm = async () => {
+  //   try {
+  //     toast.loading('Generating your form...');
       
-      const response = await axios.post(
-        '/api/forms/generate-rights-form',
-        {
-          shareholderName: shareholder.name,
-          holdings: shareholder.holdings,
-          rightsIssue: shareholder.rights_issue,
-          amountDue: shareholder.amount_due
-        },
-        { 
-          responseType: 'blob',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+  //     const response = await axios.post(
+  //       '/api/forms/generate-rights-form',
+  //       {
+  //         shareholderName: shareholder.name,
+  //         holdings: shareholder.holdings,
+  //         rightsIssue: shareholder.rights_issue,
+  //         amountDue: shareholder.amount_due
+  //       },
+  //       { 
+  //         responseType: 'blob',
+  //         headers: {
+  //           'Content-Type': 'application/json'
+  //         }
+  //       }
+  //     );
       
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `TIP_RIGHTS_${shareholder.name.replace(/\s+/g, '_')}.pdf`;
-      document.body.appendChild(link);
-      link.click();
+  //     const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.download = `TIP_RIGHTS_${shareholder.name.replace(/\s+/g, '_')}.pdf`;
+  //     document.body.appendChild(link);
+  //     link.click();
       
-      // Cleanup
-      setTimeout(() => {
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(link);
-      }, 100);
+  //     // Cleanup
+  //     setTimeout(() => {
+  //       window.URL.revokeObjectURL(url);
+  //       document.body.removeChild(link);
+  //     }, 100);
       
-      toast.dismiss();
-      toast.success('Form downloaded with your details!');
-    } catch (error) {
-      console.error('Download error:', error);
-      toast.dismiss();
-      toast.error(error.response?.data?.message || 'Failed to generate form');
-    }
-  };
+  //     toast.dismiss();
+  //     toast.success('Form downloaded with your details!');
+  //   } catch (error) {
+  //     console.error('Download error:', error);
+  //     toast.dismiss();
+  //     toast.error(error.response?.data?.message || 'Failed to generate form');
+  //   }
+  // };
 
 
   if (loading) {
