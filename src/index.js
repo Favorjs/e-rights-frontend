@@ -33,21 +33,21 @@ root.render(
   </React.StrictMode>
 );
 
-// Clean up any existing service workers
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    for (const registration of registrations) {
-      registration.unregister();
-      console.log('ServiceWorker unregistered');
-    }
-  });
-  
-  // Clear service worker cache
-  caches.keys().then(cacheNames => {
-    return Promise.all(
-      cacheNames.map(cacheName => {
-        return caches.delete(cacheName);
-      })
-    );
-  });
-}
+// Service Worker Registration (if available)
+// Service Worker Registration - Simplified
+// if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+//   window.addEventListener('load', () => {
+//     navigator.serviceWorker.register('/service-worker.js')
+//       .then((registration) => {
+//         console.log('SW registered for scope:', registration.scope);
+//       })
+//       .catch((error) => {
+//         console.log('SW registration failed:', error);
+//       });
+//   });
+// }
+
+// // Only register service worker if the file exists
+// if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+//   window.addEventListener('load', registerServiceWorker);
+// }
