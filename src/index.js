@@ -33,54 +33,24 @@ root.render(
   </React.StrictMode>
 );
 
-// Improved Service Worker Registration
+// Service Worker Registration (if available)
 const registerServiceWorker = async () => {
-  // Only register in production and if service workers are supported
   if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
     try {
-      // Check if we're in a supported environment
-      if (!window.isSecureContext) {
-        console.warn('Service workers require HTTPS');
-        return;
-      }
-
-      const registration = await navigator.serviceWorker.register('/service-worker.js', {
-        scope: '/',
-        updateViaCache: 'none' // Important for updates
-      });
-      
+      const registration = await navigator.serviceWorker.register('/service-worker.js');
       console.log('ServiceWorker registration successful with scope: ', registration.scope);
-
-      // Handle updates
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        console.log('New service worker found:', newWorker);
-        
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed') {
-            console.log('New service worker installed');
-          }
-        });
-      });
-
     } catch (error) {
       console.warn('ServiceWorker registration failed: ', error);
-      
-      // Clean up any existing problematic service workers
-      try {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (const registration of registrations) {
-          await registration.unregister();
-          console.log('Unregistered existing service worker');
-        }
-      } catch (unregisterError) {
-        console.error('Failed to unregister service workers:', unregisterError);
+      // Unregister any existing service workers
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const registration of registrations) {
+        await registration.unregister();
       }
     }
   }
 };
 
-// Register service worker after page load
-if (process.env.NODE_ENV === 'production') {
+// Only register service worker if the file exists
+if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
   window.addEventListener('load', registerServiceWorker);
 }

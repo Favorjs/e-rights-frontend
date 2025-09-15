@@ -1,10 +1,9 @@
-// service-worker.js - Fixed version
+// This is a basic service worker that caches static assets
 const CACHE_NAME = 'e-rights-app-cache-v1';
 const urlsToCache = [
   '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
-  '/manifest.json'
+  '/index.html',
+  '/images/favicon.png'
 ];
 
 // Install event - cache the application shell
@@ -22,11 +21,6 @@ self.addEventListener('install', event => {
 
 // Fetch event - serve from cache, falling back to network
 self.addEventListener('fetch', event => {
-  // Skip unsupported URL schemes (chrome-extension:, etc.)
-  if (!event.request.url.startsWith('http')) {
-    return;
-  }
-
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -35,7 +29,10 @@ self.addEventListener('fetch', event => {
           return response;
         }
         
-        return fetch(event.request).then(
+        // Clone the request
+        const fetchRequest = event.request.clone();
+
+        return fetch(fetchRequest).then(
           response => {
             // Check if we received a valid response
             if(!response || response.status !== 200 || response.type !== 'basic') {
@@ -48,19 +45,13 @@ self.addEventListener('fetch', event => {
             caches.open(CACHE_NAME)
               .then(cache => {
                 cache.put(event.request, responseToCache);
-              }).catch(error => {
-                console.error('Failed to cache response:', error);
               });
 
             return response;
           }
-        ).catch(error => {
-          console.error('Fetch failed:', error);
-          // You could return a custom offline page here
-          throw error;
-        });
+        );
       })
-  );
+    );
 });
 
 // Activate event - clean up old caches
