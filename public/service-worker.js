@@ -1,9 +1,12 @@
 // This is a basic service worker that caches static assets
-const CACHE_NAME = 'e-rights-app-cache-v1';
+const CACHE_NAME = 'e-rights-app-cache-v2';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/images/favicon.png'
+  './',
+  './index.html',
+  './images/favicon.png',
+  './static/js/bundle.js',
+  './static/css/main.*.css',
+  './manifest.json'
 ];
 
 // Install event - cache the application shell
@@ -21,6 +24,16 @@ self.addEventListener('install', event => {
 
 // Fetch event - serve from cache, falling back to network
 self.addEventListener('fetch', event => {
+  // Skip cross-origin requests
+  if (!event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
