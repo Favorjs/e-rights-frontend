@@ -30,9 +30,9 @@ const AdminDashboard = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [activeTab, setActiveTab] = useState('rights'); // 'rights' or 'forms'
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  // useEffect(() => {
+  //   fetchDashboardData();
+  // }, []);
 
   useEffect(() => {
     if (activeTab === 'rights') {
