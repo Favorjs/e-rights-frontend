@@ -34,13 +34,8 @@ const AdminDashboard = () => {
   //   fetchDashboardData();
   // }, []);
 
-  useEffect(() => {
-    if (activeTab === 'rights') {
-      fetchRightsSubmissions();
-    } else {
-      fetchSubmissions();
-    }
-  }, [currentPage, searchTerm, activeTab, rightsClaimingFilter, fetchRightsSubmissions, fetchSubmissions]);
+
+
   const fetchDashboardData = async () => {
     try {
       const response = await axios.get('/api/admin/dashboard');
