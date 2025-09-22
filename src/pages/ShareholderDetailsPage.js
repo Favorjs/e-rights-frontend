@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft} from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import { getShareholderById } from '../services/api';
 // import { PDFDocument, rgb } from 'pdf-lib';
 const ShareholderDetailsPage = () => {
   const { id } = useParams();
@@ -12,24 +12,29 @@ const ShareholderDetailsPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchShareholder = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`/api/shareholders/${id}`);
-        
-        if (response.data.success) {
-          setShareholder(response.data.data);
-        } else {
-          setError('Failed to load shareholder details');
-        }
-      } catch (error) {
-        console.error('Error fetching shareholder:', error);
-        setError('Error loading shareholder details');
-        toast.error('Error loading shareholder details');
-      } finally {
-        setLoading(false);
-      }
-    };
+// Update the fetchShareholder function to log request details
+const fetchShareholder = async () => {
+  try {
+    setLoading(true);
+    console.log('Fetching shareholder with ID:', id);
+    
+    const response = await getShareholderById(id);
+    
+    console.log('Response:', response);
+    
+    if (response.success) {
+      setShareholder(response.data);
+    } else {
+      setError('Failed to load shareholder details');
+    }
+  } catch (error) {
+    console.error('Error details:', error);
+    setError('Error loading shareholder details');
+    toast.error('Error loading shareholder details');
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchShareholder();
   }, [id]);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Download, Eye, FileText, Receipt, CheckCircle, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import { getRightsSubmissionById, downloadFile } from '../services/api';
 
 const RightsSubmissionDetailsPage = () => {
   const { id } = useParams();
@@ -16,10 +16,10 @@ const RightsSubmissionDetailsPage = () => {
     const fetchSubmission = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/admin/rights-submissions/${id}`);
+        const response = await getRightsSubmissionById(id);
         
-        if (response.data.success) {
-          setSubmission(response.data.data);
+        if (response.success) {
+          setSubmission(response.data);
         } else {
           toast.error('Failed to load submission details');
           navigate('/admin');
@@ -38,11 +38,9 @@ const RightsSubmissionDetailsPage = () => {
 
   const handleDownload = async (filePath, fileName) => {
     try {
-      const response = await axios.get(`/uploads/${filePath}`, {
-        responseType: 'blob'
-      });
+      const response = await downloadFile(filePath);
       
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([response]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', fileName);
@@ -63,11 +61,9 @@ const RightsSubmissionDetailsPage = () => {
 
   const handleViewFile = async (filePath, fileName) => {
     try {
-      const response = await axios.get(`/uploads/${filePath}`, {
-        responseType: 'blob'
-      });
+      const response = await downloadFile(filePath);
       
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([response]));
       setSelectedFile({ url, name: fileName, type: fileName.toLowerCase().includes('.pdf') ? 'pdf' : 'image' });
       setShowFileViewer(true);
     } catch (error) {
@@ -161,13 +157,9 @@ const RightsSubmissionDetailsPage = () => {
                   <span className="text-blue-700 font-medium">Rights Issue:</span>
                   <p className="font-semibold">{submission.rights_issue}</p>
                 </div>
-                {/* <div>
-                  <span className="text-blue-700 font-medium">Rights Claiming:</span>
-                  <p className="font-semibold">{submission.rights_claiming}</p>
-                </div> */}
                 <div>
                   <span className="text-blue-700 font-medium">Acceptance Type:</span>
-                  <p className="font-semibold capitalize">{submission.acceptance_type}</p>
+                  <p className="font-semibold capitalize">{submission.action_type}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Amount Payable:</span>
@@ -188,7 +180,7 @@ const RightsSubmissionDetailsPage = () => {
                       submission.status === 'rejected' ? 'bg-red-100 text-red-800' :
                       'bg-yellow-100 text-yellow-800'
                     }`}>
-                      {submission.status.charAt(0).toUpperCase() + submission.status.slice(1)}
+                      {submission.status?.charAt(0).toUpperCase() + submission.status?.slice(1) || 'Pending'}
                     </span>
                   </div>
                 </div>

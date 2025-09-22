@@ -1,18 +1,16 @@
 import axios from 'axios';
 
 // Determine the base URL based on the environment
-const isDevelopment = process.env.NODE_ENV === 'development';
-// Base URL configuration
 let baseURL;
+
 if (process.env.REACT_APP_API_URL) {
   baseURL = process.env.REACT_APP_API_URL;
-} else if (isDevelopment) {
+} else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
   baseURL = 'http://localhost:5000';
 } else {
-  baseURL = 'https://api.tip.apel.com.ng';
+  // Use the current domain but replace the subdomain if needed
+  baseURL = window.location.origin.replace('//vote.', '//api.');
 }
-
-// API paths are prefixed with /api
 
 // Create an axios instance with default config
 const api = axios.create({
@@ -22,43 +20,105 @@ const api = axios.create({
     'Cache-Control': 'no-cache, no-store, must-revalidate',
     'Pragma': 'no-cache',
     'Expires': '0'
-  }
+  },
+  withCredentials: false // Explicitly set to false
 });
 
-// Add a request interceptor to include auth token if available
+// Remove or modify the request interceptor to avoid adding large headers
 api.interceptors.request.use(
   (config) => {
+    // Only add token if it exists and is reasonably small
     const token = localStorage.getItem('token');
-    if (token) {
+    if (token && token.length < 1000) { // Basic size check
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Remove any potentially large headers
+    delete config.headers['Cookie'];
+    delete config.headers['cookie'];
+    
     return config;
   },
   (error) => Promise.reject(error)
-);
-
-// Response interceptor for error handling
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Handle common errors (e.g., 401 Unauthorized)
-    if (error.response?.status === 401) {
-      // Handle unauthorized access (e.g., redirect to login)
-      console.error('Unauthorized access - please log in');
-      // Optionally redirect to login page
-      // window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
 );
 
 // API methods
 export const searchShareholders = async (name, page = 1, limit = 10) => {
   const timestamp = new Date().getTime();
   const response = await api.get(
-    `/api/shareholders/search?name=${encodeURIComponent(name)}&page=${page}&limit=${limit}&_t=${timestamp}`
+    `/api/shareholders/search?name=${name}&page=${page}&limit=${limit}&_t=${timestamp}`
   );
   return response.data;
 };
 
+
+export const getShareholderById = async (id) => {
+  const response = await api.get(`/api/shareholders/${id}`);
+  return response.data;
+};
+
+export const getStockbrokers = async () => {
+  const response = await api.get('/api/forms/stockbrokers');
+  return response.data;
+};
+
+export const submitRightsForm = async (formData) => {
+  const response = await api.post('/api/forms/submit-rights', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+  return response.data;
+};
+
+export const previewRightsForm = async (formData) => {
+  const response = await api.post('/api/forms/preview-rights', formData, {
+    responseType: 'blob'
+  });
+  return response.data;
+};
+
+// Admin API methods
+export const getDashboardStats = async () => {
+  const response = await api.get('/api/admin/dashboard');
+  return response.data;
+};
+
+export const getSubmissions = async (params = {}) => {
+  const response = await api.get('/api/admin/submissions', { params });
+  return response.data;
+};
+
+export const getRightsSubmissions = async (params = {}) => {
+  const response = await api.get('/api/admin/rights-submissions', { params });
+  return response.data;
+};
+
+export const getRightsSubmissionById = async (id) => {
+  const response = await api.get(`/api/admin/rights-submissions/${id}`);
+  return response.data;
+};
+
+export const exportSubmissions = async (params = {}) => {
+  const response = await api.get('/api/admin/export', { 
+    params,
+    responseType: 'blob'
+  });
+  return response.data;
+};
+
+export const exportRightsSubmissions = async (params = {}) => {
+  const response = await api.get('/api/admin/export-rights', { 
+    params,
+    responseType: 'blob'
+  });
+  return response.data;
+};
+
+export const downloadFile = async (filePath) => {
+  const response = await api.get(`/uploads/${filePath}`, {
+    responseType: 'blob'
+  });
+  return response.data;
+};
 export default api;

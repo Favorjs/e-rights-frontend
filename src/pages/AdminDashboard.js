@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Download, 
@@ -14,7 +14,13 @@ import {
   Filter
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import { 
+  getDashboardStats, 
+  getSubmissions, 
+  getRightsSubmissions, 
+  exportSubmissions, 
+  exportRightsSubmissions 
+} from '../services/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -28,19 +34,13 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [activeTab, setActiveTab] = useState('rights'); // 'rights' or 'forms'
-
-  // useEffect(() => {
-  //   fetchDashboardData();
-  // }, []);
-
-
+  const [activeTab, setActiveTab] = useState('rights');
 
   const fetchDashboardData = async () => {
     try {
-      const response = await axios.get('/api/admin/dashboard');
-      if (response.data.success) {
-        setStats(response.data.data);
+      const response = await getDashboardStats();
+      if (response.success) {
+        setStats(response.data);
       }
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
@@ -48,83 +48,24 @@ const AdminDashboard = () => {
     }
   };
 
-  // const fetchSubmissions = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const params = new URLSearchParams({
-  //       page: currentPage,
-  //       limit: 10
-  //     });
-
-  //     if (searchTerm) {
-  //       params.append('search', searchTerm);
-  //     }
-
-  //     const response = await axios.get(`/api/admin/submissions?${params}`);
-      
-  //     if (response.data.success) {
-  //       setSubmissions(response.data.data);
-  //       setTotalPages(response.data.pagination.totalPages);
-  //       setTotalCount(response.data.pagination.totalCount);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching submissions:', error);
-  //     toast.error('Error loading submissions');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const fetchRightsSubmissions = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const params = new URLSearchParams({
-  //       page: currentPage,
-  //       limit: 10
-  //     });
-
-  //     if (searchTerm) {
-  //       params.append('search', searchTerm);
-  //     }
-
-  //     if (rightsClaimingFilter) {
-  //       params.append('rightsClaiming', rightsClaimingFilter);
-  //     }
-
-  //     const response = await axios.get(`/api/admin/rights-submissions?${params}`);
-      
-  //     if (response.data.success) {
-  //       setRightsSubmissions(response.data.data);
-  //       setTotalPages(response.data.pagination.totalPages);
-  //       setTotalCount(response.data.pagination.totalCount);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching rights submissions:', error);
-  //     toast.error('Error loading rights submissions');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  
-  
   const fetchSubmissions = useCallback(async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams({
+      const params = {
         page: currentPage,
         limit: 10
-      });
+      };
 
       if (searchTerm) {
-        params.append('search', searchTerm);
+        params.search = searchTerm;
       }
 
-      const response = await axios.get(`/api/admin/submissions?${params}`);
+      const response = await getSubmissions(params);
       
-      if (response.data.success) {
-        setSubmissions(response.data.data);
-        setTotalPages(response.data.pagination.totalPages);
-        setTotalCount(response.data.pagination.totalCount);
+      if (response.success) {
+        setSubmissions(response.data);
+        setTotalPages(response.pagination.totalPages);
+        setTotalCount(response.pagination.totalCount);
       }
     } catch (error) {
       console.error('Error fetching submissions:', error);
@@ -132,30 +73,30 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchTerm]); // Add dependencies here
+  }, [currentPage, searchTerm]);
 
   const fetchRightsSubmissions = useCallback(async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams({
+      const params = {
         page: currentPage,
         limit: 10
-      });
+      };
 
       if (searchTerm) {
-        params.append('search', searchTerm);
+        params.search = searchTerm;
       }
 
       if (rightsClaimingFilter) {
-        params.append('rightsClaiming', rightsClaimingFilter);
+        params.rightsClaiming = rightsClaimingFilter;
       }
 
-      const response = await axios.get(`/api/admin/rights-submissions?${params}`);
+      const response = await getRightsSubmissions(params);
       
-      if (response.data.success) {
-        setRightsSubmissions(response.data.data);
-        setTotalPages(response.data.pagination.totalPages);
-        setTotalCount(response.data.pagination.totalCount);
+      if (response.success) {
+        setRightsSubmissions(response.data);
+        setTotalPages(response.pagination.totalPages);
+        setTotalCount(response.pagination.totalCount);
       }
     } catch (error) {
       console.error('Error fetching rights submissions:', error);
@@ -163,7 +104,7 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchTerm, rightsClaimingFilter]); // Add dependencies here
+  }, [currentPage, searchTerm, rightsClaimingFilter]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -175,26 +116,18 @@ const AdminDashboard = () => {
     } else {
       fetchSubmissions();
     }
-  }, [currentPage, searchTerm, activeTab, rightsClaimingFilter, fetchRightsSubmissions, fetchSubmissions]); // Add the functions to dependencies
-
+  }, [currentPage, searchTerm, activeTab, rightsClaimingFilter, fetchRightsSubmissions, fetchSubmissions]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     setCurrentPage(1);
-    if (activeTab === 'rights') {
-      fetchRightsSubmissions();
-    } else {
-      fetchSubmissions();
-    }
   };
 
   const handleExport = async () => {
     try {
-      const response = await axios.get('/api/admin/export?format=csv', {
-        responseType: 'blob'
-      });
+      const response = await exportSubmissions({ format: 'csv' });
       
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([response]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'submissions.csv');
@@ -211,19 +144,17 @@ const AdminDashboard = () => {
 
   const handleExportRights = async () => {
     try {
-      const params = new URLSearchParams({
+      const params = {
         format: 'csv'
-      });
+      };
 
       if (rightsClaimingFilter) {
-        params.append('rightsClaiming', rightsClaimingFilter);
+        params.rightsClaiming = rightsClaimingFilter;
       }
 
-      const response = await axios.get(`/api/admin/export-rights?${params}`, {
-        responseType: 'blob'
-      });
+      const response = await exportRightsSubmissions(params);
       
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([response]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'rights_submissions.csv');
@@ -434,7 +365,6 @@ const AdminDashboard = () => {
                       <th>FILLED FORM</th>
                       <th>RECEIPT</th>
                       <th>ACTIONS</th>
-                      
                     </>
                   ) : (
                     <>
@@ -474,7 +404,6 @@ const AdminDashboard = () => {
                           <td className="table-cell">{submission.name}</td>
                           <td className="table-cell">{submission.holdings.toLocaleString()}</td>
                           <td className="table-cell">{submission.rights_issue}</td>
-                          {/* <td className="table-cell">{submission.amount_due || '-'}</td> */}
                           <td className="table-cell">{submission.holdings_after.toLocaleString()}</td>
                           <td className="table-cell">{submission.action_type}</td>
                           <td className="table-cell">₦{submission.amount_due.toLocaleString()}</td>

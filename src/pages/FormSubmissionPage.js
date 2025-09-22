@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Receipt, CheckCircle, Eye, Download, FileText, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm } from '../services/api'; // Import API functions
+
 
 const SearchableSelect = ({ 
   options, 
@@ -191,10 +192,12 @@ const FormSubmissionPage = () => {
     const fetchShareholder = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/shareholders/${id}`);
         
-        if (response.data.success) {
-          const shareholderData = response.data.data;
+        // Use the API service function instead of direct axios call
+        const response = await getShareholderById(id);
+        
+        if (response.success) {
+          const shareholderData = response.data;
           setShareholder(shareholderData);
           
           // Pre-fill form with shareholder data
@@ -206,7 +209,7 @@ const FormSubmissionPage = () => {
             rights_issue: shareholderData.rights_issue,
             holdings_after: shareholderData.holdings_after,
             amount_due: shareholderData.amount_due,
-            contact_name: shareholderData.name, // Pre-fill contact name
+            contact_name: shareholderData.name,
           }));
         } else {
           toast.error('Failed to load shareholder details');
@@ -220,15 +223,17 @@ const FormSubmissionPage = () => {
         setLoading(false);
       }
     };
-
     const fetchStockbrokers = async () => {
       try {
-        const response = await axios.get('/api/forms/stockbrokers');
-        if (response.data.success) {
-          setStockbrokers(response.data.data);
+        // Use the API service function instead of direct axios call
+        const response = await getStockbrokers();
+        if (response.success) {
+          setStockbrokers(response.data);
         }
       } catch (error) {
         console.error('Error fetching stockbrokers:', error);
+        // Set empty array as fallback
+        setStockbrokers([]);
       }
     };
 
@@ -381,18 +386,15 @@ const FormSubmissionPage = () => {
         }
       });
 
-      const response = await axios.post('/api/forms/submit-rights', submitData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      // Use the API service function instead of direct axios call
+      const response = await submitRightsForm(submitData);
 
-      if (response.data.success) {
-        setSubmittedForm(response.data.data);
+      if (response.success) {
+        setSubmittedForm(response.data);
         setShowFinalPreview(true);
         toast.success('Form submitted successfully!');
       } else {
-        toast.error(response.data.message || 'Failed to submit form');
+        toast.error(response.message || 'Failed to submit form');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -404,14 +406,13 @@ const FormSubmissionPage = () => {
 
   const generatePreviewUrl = async () => {
     try {
-      const response = await axios.post('/api/forms/preview-rights', {
+      // Use the API service function instead of direct axios call
+      const response = await previewRightsForm({
         ...formData,
         shareholder_id: id
-      }, {
-        responseType: 'blob'
       });
       
-      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const blob = new Blob([response], { type: 'application/pdf' });
       return URL.createObjectURL(blob);
     } catch (error) {
       console.error('Error generating preview:', error);
