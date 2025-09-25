@@ -115,10 +115,28 @@ export const exportRightsSubmissions = async (params = {}) => {
   return response.data;
 };
 
-export const downloadFile = async (filePath) => {
-  const response = await api.get(`/uploads/${filePath}`, {
+// export const downloadFile = async (filePath) => {
+//   const response = await api.get(`/uploads/${filePath}`, {
+//     responseType: 'blob'
+//   });
+//   return response.data;
+// };
+
+// Add to api.js
+export const downloadFileFromCloudinary = async (publicId, filename = null) => {
+  const params = filename ? `?filename=${encodeURIComponent(filename)}` : '';
+  const response = await api.get(`/api/forms/download-file/${publicId}${params}`, {
     responseType: 'blob'
   });
   return response.data;
 };
+
+export const streamFileFromCloudinary = async (publicId, filename = null) => {
+  const params = filename ? `?filename=${encodeURIComponent(filename)}` : '';
+  const response = await api.get(`/api/forms/stream-file/${publicId}${params}`, {
+    responseType: 'blob'
+  });
+  return response.data;
+};
+
 export default api;

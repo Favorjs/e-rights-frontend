@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Download, Eye, FileText, Receipt, CheckCircle, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { getRightsSubmissionById, downloadFile } from '../services/api';
+import { 
+  getRightsSubmissionById,
+  downloadFileFromCloudinary,
+  streamFileFromCloudinary
+} from '../services/api';
 
 const RightsSubmissionDetailsPage = () => {
   const { id } = useParams();
@@ -36,43 +40,80 @@ const RightsSubmissionDetailsPage = () => {
     fetchSubmission();
   }, [id, navigate]);
 
-  const handleDownload = async (filePath, fileName) => {
+  // Generate Cloudinary view URL (for preview)
+  const getCloudinaryViewUrl = (publicId) => {
+    if (!publicId) return null;
+    const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
+    return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+  };
+
+  // Generate Cloudinary download URL
+  const getCloudinaryDownloadUrl = (publicId, fileName = 'download') => {
+    if (!publicId) return null;
+    
+    const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
+    
+    // Remove file extension from filename for fl_attachment
+    const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
+    
+    // Clean filename for URL safety
+    const cleanFileName = fileNameWithoutExtension
+      .replace(/[^a-zA-Z0-9.-]/g, '_')
+      .toLowerCase();
+    
+    // Use the exact format that works for both images and PDFs
+    return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
+  };
+
+  const handleDownload = async (publicId, fileName) => {
     try {
-      const response = await downloadFile(filePath);
+      if (!publicId) {
+        toast.error('File not available for download');
+        return;
+      }
+  
+      // Use the API endpoint for downloading files
+      const response = await downloadFileFromCloudinary(publicId, fileName);
       
+      // Create a blob URL for the file
       const url = window.URL.createObjectURL(new Blob([response]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', fileName);
+      link.setAttribute('download', fileName || 'download.pdf');
       document.body.appendChild(link);
       link.click();
       link.remove();
       
-      toast.success('File downloaded successfully');
+      // Revoke the blob URL to free up memory
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('Download started successfully');
     } catch (error) {
       console.error('Error downloading file:', error);
-      if (error.response?.status === 404) {
-        toast.error('File not found. It may have been deleted or not uploaded properly.');
-      } else {
-        toast.error('Error downloading file');
-      }
+      toast.error('Error downloading file');
     }
   };
-
-  const handleViewFile = async (filePath, fileName) => {
+  
+  const handleViewFile = async (publicId, fileName) => {
     try {
-      const response = await downloadFile(filePath);
+      if (!publicId) {
+        toast.error('File not available for viewing');
+        return;
+      }
+  
+      // Use the API endpoint for streaming files
+      const response = await streamFileFromCloudinary(publicId, fileName);
+      const fileUrl = URL.createObjectURL(response);
       
-      const url = window.URL.createObjectURL(new Blob([response]));
-      setSelectedFile({ url, name: fileName, type: fileName.toLowerCase().includes('.pdf') ? 'pdf' : 'image' });
+      setSelectedFile({ 
+        url: fileUrl, 
+        name: fileName, 
+        publicId: publicId
+      });
       setShowFileViewer(true);
     } catch (error) {
       console.error('Error loading file:', error);
-      if (error.response?.status === 404) {
-        toast.error('File not found. It may have been deleted or not uploaded properly.');
-      } else {
-        toast.error('Error loading file');
-      }
+      toast.error('Error loading file');
     }
   };
 
@@ -81,11 +122,46 @@ const RightsSubmissionDetailsPage = () => {
     setSelectedFile(null);
   };
 
+  // Helper function to get appropriate file names
+  const getFileName = (fileType, submission) => {
+    const baseName = `rights-submission-${submission?.reg_account_number || submission?.id || 'unknown'}`;
+    const timestamp = new Date().toISOString().split('T')[0];
+    
+    switch (fileType) {
+      case 'filled_form':
+        return `${baseName}-filled-form-${timestamp}.pdf`;
+      case 'receipt':
+        return `${baseName}-receipt-${timestamp}.jpg`;
+      case 'signature':
+        return `${baseName}-signature-${timestamp}.png`;
+      default:
+        return `${baseName}-document-${timestamp}.pdf`;
+    }
+  };
+
+  // Debug: Log the submission data to see what's in filled_form_path
+  useEffect(() => {
+    if (submission) {
+      console.log('Submission data:', submission);
+      console.log('Filled form path:', submission.filled_form_path);
+      console.log('Receipt path:', submission.receipt_path);
+      console.log('Signature paths:', submission.signature_paths);
+      
+      // Test the URLs
+      if (submission.filled_form_path) {
+        const viewUrl = getCloudinaryViewUrl(submission.filled_form_path);
+        const downloadUrl = getCloudinaryDownloadUrl(submission.filled_form_path, 'test.pdf');
+        console.log('Filled form view URL:', viewUrl);
+        console.log('Filled form download URL:', downloadUrl);
+      }
+    }
+  }, [submission]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="spinner mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading submission details...</p>
         </div>
       </div>
@@ -117,18 +193,13 @@ const RightsSubmissionDetailsPage = () => {
             <ArrowLeft className="h-4 w-4 mr-1" />
             Back to Admin Dashboard
           </Link>
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <span className="text-green-600">Admin Dashboard</span>
-            <span>/</span>
-            <span>Rights Submission Details</span>
-          </div>
         </div>
 
         {/* Submission Details */}
         <div className="card">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Rights Submission Details</h1>
-            <p className="text-gray-600 mt-2">View and manage submission information</p>
+            <p className="text-gray-600 mt-2">Submission ID: {submission.id}</p>
           </div>
 
           {/* Submission Information */}
@@ -139,38 +210,31 @@ const RightsSubmissionDetailsPage = () => {
               <div className="space-y-3">
                 <div>
                   <span className="text-blue-700 font-medium">CHN:</span>
-                  <p className="font-semibold">{submission.chn}</p>
+                  <p className="font-semibold">{submission.chn || 'N/A'}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Reg Account Number:</span>
-                  <p className="font-semibold">{submission.reg_account_number}</p>
+                  <p className="font-semibold">{submission.reg_account_number || 'N/A'}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Name:</span>
-                  <p className="font-semibold">{submission.name}</p>
+                  <p className="font-semibold">{submission.name || 'N/A'}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Holdings:</span>
-                  <p className="font-semibold">{submission.holdings.toLocaleString()}</p>
+                  <p className="font-semibold">{submission.holdings?.toLocaleString() || '0'}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Rights Issue:</span>
-                  <p className="font-semibold">{submission.rights_issue}</p>
+                  <p className="font-semibold">{submission.rights_issue?.toLocaleString() || '0'}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Acceptance Type:</span>
-                  <p className="font-semibold capitalize">{submission.action_type}</p>
+                  <p className="font-semibold capitalize">{(submission.action_type || '').replace('_', ' ')}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Amount Payable:</span>
-                  <p className="font-semibold">
-                    ₦{submission.amount_payable ? 
-                      new Intl.NumberFormat('en-NG', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                      }).format(parseFloat(submission.amount_payable)) : 
-                      '0.00'}
-                  </p>
+                  <p className="font-semibold">₦{submission.amount_payable ? parseFloat(submission.amount_payable).toLocaleString('en-NG', {minimumFractionDigits: 2}) : '0.00'}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Status:</span>
@@ -180,7 +244,7 @@ const RightsSubmissionDetailsPage = () => {
                       submission.status === 'rejected' ? 'bg-red-100 text-red-800' :
                       'bg-yellow-100 text-yellow-800'
                     }`}>
-                      {submission.status?.charAt(0).toUpperCase() + submission.status?.slice(1) || 'Pending'}
+                      {(submission.status || 'pending').charAt(0).toUpperCase() + (submission.status || 'pending').slice(1)}
                     </span>
                   </div>
                 </div>
@@ -195,36 +259,38 @@ const RightsSubmissionDetailsPage = () => {
             <div className="bg-green-50 border border-green-200 rounded-lg p-6">
               <h3 className="font-semibold text-green-900 mb-4">Uploaded Files</h3>
               <div className="space-y-4">
-                {/* Filled Form */}
+                {/* Filled Form - PDF */}
                 <div className="border border-green-200 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
                       <FileText className="h-5 w-5 text-green-600 mr-2" />
-                      <span className="font-medium text-green-900">Filled Form</span>
+                      <span className="font-medium text-green-900">Filled Form (PDF)</span>
                     </div>
-                    {submission.filled_form_path && (
+                    {submission.filled_form_path ? (
                       <CheckCircle className="h-5 w-5 text-green-600" />
+                    ) : (
+                      <span className="text-red-500 text-sm">Missing</span>
                     )}
                   </div>
                   {submission.filled_form_path ? (
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => handleViewFile(submission.filled_form_path, 'filled-form.pdf')}
+                        onClick={() => handleViewFile(submission.filled_form_path, getFileName('filled_form', submission))}
                         className="flex items-center text-blue-600 hover:text-blue-800 text-sm"
                       >
                         <Eye className="h-4 w-4 mr-1" />
-                        View
+                        View PDF
                       </button>
                       <button
-                        onClick={() => handleDownload(submission.filled_form_path, 'filled-form.pdf')}
+                        onClick={() => handleDownload(submission.filled_form_path, getFileName('filled_form', submission))}
                         className="flex items-center text-green-600 hover:text-green-800 text-sm"
                       >
                         <Download className="h-4 w-4 mr-1" />
-                        Download
+                        Download PDF
                       </button>
                     </div>
                   ) : (
-                    <p className="text-gray-500 text-sm">No file uploaded</p>
+                    <p className="text-gray-500 text-sm">No PDF uploaded</p>
                   )}
                 </div>
 
@@ -235,21 +301,23 @@ const RightsSubmissionDetailsPage = () => {
                       <Receipt className="h-5 w-5 text-green-600 mr-2" />
                       <span className="font-medium text-green-900">Payment Receipt</span>
                     </div>
-                    {submission.receipt_path && (
+                    {submission.receipt_path ? (
                       <CheckCircle className="h-5 w-5 text-green-600" />
+                    ) : (
+                      <span className="text-red-500 text-sm">Missing</span>
                     )}
                   </div>
                   {submission.receipt_path ? (
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => handleViewFile(submission.receipt_path, 'receipt.pdf')}
+                        onClick={() => handleViewFile(submission.receipt_path, getFileName('receipt', submission))}
                         className="flex items-center text-blue-600 hover:text-blue-800 text-sm"
                       >
                         <Eye className="h-4 w-4 mr-1" />
                         View
                       </button>
                       <button
-                        onClick={() => handleDownload(submission.receipt_path, 'receipt.pdf')}
+                        onClick={() => handleDownload(submission.receipt_path, getFileName('receipt', submission))}
                         className="flex items-center text-green-600 hover:text-green-800 text-sm"
                       >
                         <Download className="h-4 w-4 mr-1" />
@@ -257,70 +325,119 @@ const RightsSubmissionDetailsPage = () => {
                       </button>
                     </div>
                   ) : (
-                    <p className="text-gray-500 text-sm">No file uploaded</p>
+                    <p className="text-gray-500 text-sm">No receipt uploaded</p>
                   )}
                 </div>
+
+                {/* Signatures */}
+                {submission.signature_paths && submission.signature_paths.length > 0 ? (
+                  <div className="border border-green-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        <FileText className="h-5 w-5 text-green-600 mr-2" />
+                        <span className="font-medium text-green-900">Signatures ({submission.signature_paths.length})</span>
+                      </div>
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div className="space-y-2">
+                      {submission.signature_paths.map((signaturePath, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Signature {index + 1}</span>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleViewFile(signaturePath, getFileName('signature', submission))}
+                              className="flex items-center text-blue-600 hover:text-blue-800 text-xs"
+                            >
+                              <Eye className="h-3 w-3 mr-1" />
+                              View
+                            </button>
+                            <button
+                              onClick={() => handleDownload(signaturePath, getFileName('signature', submission))}
+                              className="flex items-center text-green-600 hover:text-green-800 text-xs"
+                            >
+                              <Download className="h-3 w-3 mr-1" />
+                              Download
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="border border-green-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        <FileText className="h-5 w-5 text-green-600 mr-2" />
+                        <span className="font-medium text-green-900">Signatures</span>
+                      </div>
+                      <span className="text-red-500 text-sm">Missing</span>
+                    </div>
+                    <p className="text-gray-500 text-sm">No signatures uploaded</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex justify-center space-x-4">
-            <Link
-              to="/admin"
-              className="btn-secondary"
-            >
+            <Link to="/admin" className="btn-secondary">
               Back to Dashboard
             </Link>
           </div>
         </div>
       </div>
 
-      {/* File Viewer Modal */}
       {showFileViewer && selectedFile && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-lg font-semibold">{selectedFile.name}</h3>
-              <button
-                onClick={closeFileViewer}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="p-4 overflow-auto max-h-[calc(90vh-80px)]">
-              {selectedFile.type === 'pdf' ? (
-                <iframe
-                  src={selectedFile.url}
-                  className="w-full h-[70vh] border-0"
-                  title={selectedFile.name}
-                />
-              ) : (
-                <img
-                  src={selectedFile.url}
-                  alt={selectedFile.name}
-                  className="w-full h-auto max-h-[70vh] object-contain"
-                />
-              )}
-            </div>
-            <div className="p-4 border-t flex justify-end">
-              <button
-                onClick={() => {
-                  const link = document.createElement('a');
-                  link.href = selectedFile.url;
-                  link.download = selectedFile.name;
-                  link.click();
-                }}
-                className="btn-primary"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+    <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col">
+      <div className="flex justify-between items-center p-4 border-b">
+        <h3 className="text-lg font-medium">{selectedFile.name || 'Document'}</h3>
+        <button
+          onClick={closeFileViewer}
+          className="text-gray-500 hover:text-gray-700"
+        >
+          <X className="h-6 w-6" />
+        </button>
+      </div>
+      <div className="flex-1 overflow-auto p-4">
+        {selectedFile.url.endsWith('.pdf') ? (
+          <iframe
+            src={selectedFile.url}
+            className="w-full h-full min-h-[70vh]"
+            title={selectedFile.name || 'Document'}
+          />
+        ) : (
+          <img
+            src={selectedFile.url}
+            alt={selectedFile.name || 'Document'}
+            className="max-w-full max-h-[70vh] mx-auto"
+            onError={(e) => {
+              console.error('Error loading image:', e);
+              toast.error('Error loading file. The file format may not be supported.');
+            }}
+          />
+        )}
+      </div>
+      <div className="p-4 border-t flex justify-end space-x-2">
+        <a
+          href={selectedFile.url}
+          download={selectedFile.name || 'download'}
+          className="btn-secondary"
+        >
+          <Download className="h-4 w-4 mr-2" />
+          Download
+        </a>
+        <button
+          onClick={closeFileViewer}
+          className="btn-primary"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
