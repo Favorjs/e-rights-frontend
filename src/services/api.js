@@ -8,9 +8,27 @@ if (process.env.REACT_API_URL) {
 } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
   baseURL = 'http://localhost:2500';
 } else {
-  // Use the current domain but replace the subdomain if needed
-  baseURL = window.location.origin.replace('//vote.', '//api.');
+  // For production - use API subdomain
+  const currentHost = window.location.hostname;
+  
+  // If current host is tip.apel.com.ng, change to api.tip.apel.com.ng
+  if (currentHost === 'tip.apel.com.ng') {
+    baseURL = 'https://api.tip.apel.com.ng';
+  } else {
+    // Fallback - try to replace subdomain with 'api'
+    const domainParts = currentHost.split('.');
+    if (domainParts.length > 2) {
+      // Replace the first subdomain with 'api'
+      domainParts[0] = 'api';
+      baseURL = `https://${domainParts.join('.')}`;
+    } else {
+      // Add 'api' as subdomain
+      baseURL = `https://api.${currentHost}`;
+    }
+  }
 }
+
+console.log('API Base URL:', baseURL); // Debug log
 
 // Create an axios instance with default config
 const api = axios.create({
@@ -21,7 +39,7 @@ const api = axios.create({
     'Pragma': 'no-cache',
     'Expires': '0'
   },
-  withCredentials: false // Explicitly set to false
+  withCredentials: false
 });
 
 // Remove or modify the request interceptor to avoid adding large headers
@@ -29,7 +47,7 @@ api.interceptors.request.use(
   (config) => {
     // Only add token if it exists and is reasonably small
     const token = localStorage.getItem('token');
-    if (token && token.length < 1000) { // Basic size check
+    if (token && token.length < 1000) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     
@@ -46,12 +64,12 @@ api.interceptors.request.use(
 export const searchShareholders = async (name, page = 1, limit = 10) => {
   const timestamp = new Date().getTime();
   const response = await api.get(
-    `/api/shareholders/search?name=${name}&page=${page}&limit=${limit}&_t=${timestamp}`
+    `/api/shareholders/search?name=${encodeURIComponent(name)}&page=${page}&limit=${limit}&_t=${timestamp}`
   );
   return response.data;
 };
 
-
+// ... rest of your API methods remain the same
 export const getShareholderById = async (id) => {
   const response = await api.get(`/api/shareholders/${id}`);
   return response.data;
@@ -115,14 +133,6 @@ export const exportRightsSubmissions = async (params = {}) => {
   return response.data;
 };
 
-// export const downloadFile = async (filePath) => {
-//   const response = await api.get(`/uploads/${filePath}`, {
-//     responseType: 'blob'
-//   });
-//   return response.data;
-// };
-
-// Add to api.js
 export const downloadFileFromCloudinary = async (publicId, filename = null) => {
   const params = filename ? `?filename=${encodeURIComponent(filename)}` : '';
   const response = await api.get(`/api/forms/download-file/${publicId}${params}`, {
@@ -138,7 +148,5 @@ export const streamFileFromCloudinary = async (publicId, filename = null) => {
   });
   return response.data;
 };
-
-
 
 export default api;
