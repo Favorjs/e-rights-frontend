@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Download, Eye, FileText, Receipt, CheckCircle, X } from 'lucide-react';
+import { ArrowLeft, Download, Eye, FileText, Receipt, CheckCircle, X, ZoomIn, ZoomOut} from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { 
-  getRightsSubmissionById,
-  downloadFileFromCloudinary,
-  streamFileFromCloudinary
-} from '../services/api';
+import { getRightsSubmissionById } from '../services/api';
 
 const RightsSubmissionDetailsPage = () => {
   const { id } = useParams();
@@ -15,13 +11,18 @@ const RightsSubmissionDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [showFileViewer, setShowFileViewer] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
 
   useEffect(() => {
     const fetchSubmission = async () => {
       try {
         setLoading(true);
         const response = await getRightsSubmissionById(id);
-        
+
         if (response.success) {
           setSubmission(response.data);
         } else {
@@ -50,64 +51,62 @@ const RightsSubmissionDetailsPage = () => {
   // Generate Cloudinary download URL
   const getCloudinaryDownloadUrl = (publicId, fileName = 'download') => {
     if (!publicId) return null;
-    
+
     const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
-    
+
     // Remove file extension from filename for fl_attachment
     const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
-    
+
     // Clean filename for URL safety
     const cleanFileName = fileNameWithoutExtension
       .replace(/[^a-zA-Z0-9.-]/g, '_')
       .toLowerCase();
-    
+
     // Use the exact format that works for both images and PDFs
     return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
   };
 
-  const handleDownload = async (publicId, fileName) => {
+  const handleDownload = (publicId, fileName) => {
     try {
       if (!publicId) {
         toast.error('File not available for download');
         return;
       }
-  
-      // Use the API endpoint for downloading files
-      const response = await downloadFileFromCloudinary(publicId, fileName);
-      
-      // Create a blob URL for the file
-      const url = window.URL.createObjectURL(new Blob([response]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName || 'download.pdf');
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      
-      // Revoke the blob URL to free up memory
-      window.URL.revokeObjectURL(url);
-      
+
+      const downloadUrl = getCloudinaryDownloadUrl(publicId, fileName);
+
+      if (!downloadUrl) {
+        toast.error('Could not generate download URL');
+        return;
+      }
+
+      // Open download URL in new tab
+      window.open(downloadUrl, '_blank');
+
       toast.success('Download started successfully');
     } catch (error) {
       console.error('Error downloading file:', error);
       toast.error('Error downloading file');
     }
   };
-  
-  const handleViewFile = async (publicId, fileName) => {
+
+  const handleViewFile = (publicId, fileName) => {
     try {
       if (!publicId) {
         toast.error('File not available for viewing');
         return;
       }
-  
-      // Use the API endpoint for streaming files
-      const response = await streamFileFromCloudinary(publicId, fileName);
-      const fileUrl = URL.createObjectURL(response);
-      
-      setSelectedFile({ 
-        url: fileUrl, 
-        name: fileName, 
+
+      const viewUrl = getCloudinaryViewUrl(publicId);
+
+      if (!viewUrl) {
+        toast.error('Could not generate view URL');
+        return;
+      }
+
+      setSelectedFile({
+        url: viewUrl,
+        name: fileName,
         publicId: publicId
       });
       setShowFileViewer(true);
@@ -126,7 +125,7 @@ const RightsSubmissionDetailsPage = () => {
   const getFileName = (fileType, submission) => {
     const baseName = `rights-submission-${submission?.reg_account_number || submission?.id || 'unknown'}`;
     const timestamp = new Date().toISOString().split('T')[0];
-    
+
     switch (fileType) {
       case 'filled_form':
         return `${baseName}-filled-form-${timestamp}.pdf`;
@@ -138,7 +137,43 @@ const RightsSubmissionDetailsPage = () => {
         return `${baseName}-document-${timestamp}.pdf`;
     }
   };
+// Add these helper functions
+const handleZoomIn = () => {
+  setZoomLevel(prev => Math.min(prev + 0.2, 3));
+};
 
+const handleZoomOut = () => {
+  setZoomLevel(prev => Math.max(prev - 0.2, 0.5));
+};
+
+const handleResetZoom = () => {
+  setZoomLevel(1);
+  setPosition({ x: 0, y: 0 });
+};
+
+const handleMouseDown = (e) => {
+  if (e.button !== 0) return; // Only left mouse button
+  setIsDragging(true);
+  setDragStart({
+    x: e.clientX - position.x,
+    y: e.clientY - position.y
+  });
+  document.body.style.cursor = 'grabbing';
+};
+
+const handleMouseMove = (e) => {
+  if (!isDragging) return;
+  
+  const x = e.clientX - dragStart.x;
+  const y = e.clientY - dragStart.y;
+  
+  setPosition({ x, y });
+};
+
+const handleMouseUp = () => {
+  setIsDragging(false);
+  document.body.style.cursor = 'default';
+}; 
   // Debug: Log the submission data to see what's in filled_form_path
   useEffect(() => {
     if (submission) {
@@ -146,7 +181,7 @@ const RightsSubmissionDetailsPage = () => {
       console.log('Filled form path:', submission.filled_form_path);
       console.log('Receipt path:', submission.receipt_path);
       console.log('Signature paths:', submission.signature_paths);
-      
+
       // Test the URLs
       if (submission.filled_form_path) {
         const viewUrl = getCloudinaryViewUrl(submission.filled_form_path);
@@ -186,7 +221,7 @@ const RightsSubmissionDetailsPage = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <div className="mb-6">
-          <Link 
+          <Link
             to="/admin"
             className="inline-flex items-center text-green-600 hover:text-green-700 mb-2"
           >
@@ -234,16 +269,15 @@ const RightsSubmissionDetailsPage = () => {
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Amount Payable:</span>
-                  <p className="font-semibold">₦{submission.amount_payable ? parseFloat(submission.amount_payable).toLocaleString('en-NG', {minimumFractionDigits: 2}) : '0.00'}</p>
+                  <p className="font-semibold">₦{submission.amount_payable ? parseFloat(submission.amount_payable).toLocaleString('en-NG', { minimumFractionDigits: 2 }) : '0.00'}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Status:</span>
                   <div className="inline-block">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      submission.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      submission.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${submission.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        submission.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
+                      }`}>
                       {(submission.status || 'pending').charAt(0).toUpperCase() + (submission.status || 'pending').slice(1)}
                     </span>
                   </div>
@@ -388,52 +422,118 @@ const RightsSubmissionDetailsPage = () => {
         </div>
       </div>
 
+      {/* File Viewer Modal */}
       {showFileViewer && selectedFile && (
-  <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col">
+  <div 
+    className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+    onMouseUp={handleMouseUp}
+    onMouseLeave={handleMouseUp}
+  >
+    <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] flex flex-col">
       <div className="flex justify-between items-center p-4 border-b">
         <h3 className="text-lg font-medium">{selectedFile.name || 'Document'}</h3>
-        <button
-          onClick={closeFileViewer}
-          className="text-gray-500 hover:text-gray-700"
-        >
-          <X className="h-6 w-6" />
-        </button>
+        <div className="flex items-center space-x-2">
+          {!selectedFile.name?.toLowerCase().endsWith('.pdf') && (
+            <>
+              <button
+                onClick={handleZoomOut}
+                className="p-1 hover:bg-gray-100 rounded"
+                disabled={zoomLevel <= 0.5}
+              >
+                <ZoomOut className="h-5 w-5" />
+              </button>
+              <span className="text-sm">{Math.round(zoomLevel * 100)}%</span>
+              <button
+                onClick={handleZoomIn}
+                className="p-1 hover:bg-gray-100 rounded"
+                disabled={zoomLevel >= 3}
+              >
+                <ZoomIn className="h-5 w-5" />
+              </button>
+              <button
+                onClick={handleResetZoom}
+                className="text-xs text-blue-600 hover:underline ml-2"
+              >
+                Reset
+              </button>
+            </>
+          )}
+          <button
+            onClick={closeFileViewer}
+            className="text-gray-500 hover:text-gray-700 ml-4"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
       </div>
-      <div className="flex-1 overflow-auto p-4">
-        {selectedFile.url.endsWith('.pdf') ? (
-          <iframe
-            src={selectedFile.url}
-            className="w-full h-full min-h-[70vh]"
-            title={selectedFile.name || 'Document'}
-          />
+      <div 
+        className="flex-1 overflow-auto p-4 relative"
+        onMouseMove={handleMouseMove}
+      >
+        {selectedFile.name?.toLowerCase().endsWith('.pdf') ? (
+          <div className="w-full h-full">
+            <iframe
+              src={`${selectedFile.url}#toolbar=1&navpanes=1&view=FitH`}
+              className="w-full h-[70vh] border-0"
+              title={selectedFile.name || 'PDF Document'}
+            />
+          </div>
         ) : (
-          <img
-            src={selectedFile.url}
-            alt={selectedFile.name || 'Document'}
-            className="max-w-full max-h-[70vh] mx-auto"
-            onError={(e) => {
-              console.error('Error loading image:', e);
-              toast.error('Error loading file. The file format may not be supported.');
-            }}
-          />
+          <div 
+            className="w-full h-full overflow-auto"
+            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            onMouseDown={handleMouseDown}
+          >
+            <div
+              style={{
+                transform: `scale(${zoomLevel}) translate(${position.x}px, ${position.y}px)`,
+                transformOrigin: 'center',
+                transition: isDragging ? 'none' : 'transform 0.2s ease',
+                width: 'fit-content',
+                height: 'fit-content',
+                maxWidth: '100%',
+                maxHeight: '100%'
+              }}
+            >
+              <img
+                src={selectedFile.url}
+                alt={selectedFile.name || 'Document'}
+                className="max-w-none"
+                style={{
+                  maxWidth: 'none',
+                  pointerEvents: 'none' // Prevents image drag
+                }}
+              />
+            </div>
+          </div>
         )}
       </div>
-      <div className="p-4 border-t flex justify-end space-x-2">
-        <a
-          href={selectedFile.url}
-          download={selectedFile.name || 'download'}
-          className="btn-secondary"
-        >
-          <Download className="h-4 w-4 mr-2" />
-          Download
-        </a>
-        <button
-          onClick={closeFileViewer}
-          className="btn-primary"
-        >
-          Close
-        </button>
+      <div className="p-4 border-t flex justify-between items-center">
+        <div className="text-sm text-gray-500">
+          {!selectedFile.name?.toLowerCase().endsWith('.pdf') && (
+            <span>Drag to pan | Scroll to zoom</span>
+          )}
+        </div>
+        <div className="flex space-x-2">
+          <a
+            href={getCloudinaryDownloadUrl(selectedFile.publicId, selectedFile.name)}
+            download
+            className="btn-secondary"
+            onClick={(e) => {
+              e.stopPropagation();
+              toast.success('Download started');
+            }}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Download
+          </a>
+          <button
+            onClick={closeFileViewer}
+            className="btn-primary"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   </div>

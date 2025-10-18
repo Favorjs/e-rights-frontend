@@ -3,10 +3,10 @@ import axios from 'axios';
 // Determine the base URL based on the environment
 let baseURL;
 
-if (process.env.REACT_APP_API_URL) {
-  baseURL = process.env.REACT_APP_API_URL;
+if (process.env.REACT_API_URL) {
+  baseURL = process.env.REACT_API_URL;
 } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-  baseURL = 'http://localhost:5000';
+  baseURL = 'http://localhost:2500';
 } else {
   // Use the current domain but replace the subdomain if needed
   baseURL = window.location.origin.replace('//vote.', '//api.');
@@ -138,5 +138,7 @@ export const streamFileFromCloudinary = async (publicId, filename = null) => {
   });
   return response.data;
 };
+
+
 
 export default api;
