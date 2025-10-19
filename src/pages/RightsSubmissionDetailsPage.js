@@ -42,29 +42,71 @@ const RightsSubmissionDetailsPage = () => {
   }, [id, navigate]);
 
   // Generate Cloudinary view URL (for preview)
-  const getCloudinaryViewUrl = (publicId) => {
-    if (!publicId) return null;
-    const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
-    return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
-  };
+ // Update the Cloudinary URL generation functions
+const getCloudinaryViewUrl = (publicId, fileType = 'auto') => {
+  if (!publicId) return null;
+  const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
+  
+  // For PDF files, use raw upload delivery
+  if (publicId.toLowerCase().endsWith('.pdf') || fileType === 'pdf') {
+    return `https://res.cloudinary.com/${cloudName}/raw/upload/${publicId}`;
+  }
+  
+  // For images, use image upload
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+};
 
+// Generate Cloudinary download URL
+const getCloudinaryDownloadUrl = (publicId, fileName = 'download') => {
+  if (!publicId) return null;
+
+  const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
+
+  const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
+  const cleanFileName = fileNameWithoutExtension
+    .replace(/[^a-zA-Z0-9.-]/g, '_')
+    .toLowerCase();
+
+  // For PDF files, use raw upload with attachment
+  if (publicId.toLowerCase().endsWith('.pdf') || fileName.toLowerCase().endsWith('.pdf')) {
+    return `https://res.cloudinary.com/${cloudName}/raw/upload/fl_attachment:${cleanFileName}/${publicId}`;
+  }
+  
+  // For images, use image upload with attachment
+  return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
+};
+
+// Update the handleViewFile function to handle PDFs properly
+const handleViewFile = (publicId, fileName) => {
+  try {
+    if (!publicId) {
+      toast.error('File not available for viewing');
+      return;
+    }
+
+    // Determine file type
+    const isPDF = publicId.toLowerCase().endsWith('.pdf') || fileName.toLowerCase().endsWith('.pdf');
+    const viewUrl = getCloudinaryViewUrl(publicId, isPDF ? 'pdf' : 'image');
+
+    if (!viewUrl) {
+      toast.error('Could not generate view URL');
+      return;
+    }
+
+    setSelectedFile({
+      url: viewUrl,
+      name: fileName,
+      publicId: publicId,
+      type: isPDF ? 'pdf' : 'image'
+    });
+    setShowFileViewer(true);
+  } catch (error) {
+    console.error('Error loading file:', error);
+    toast.error('Error loading file');
+  }
+};
   // Generate Cloudinary download URL
-  const getCloudinaryDownloadUrl = (publicId, fileName = 'download') => {
-    if (!publicId) return null;
 
-    const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
-
-    // Remove file extension from filename for fl_attachment
-    const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
-
-    // Clean filename for URL safety
-    const cleanFileName = fileNameWithoutExtension
-      .replace(/[^a-zA-Z0-9.-]/g, '_')
-      .toLowerCase();
-
-    // Use the exact format that works for both images and PDFs
-    return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
-  };
 
   const handleDownload = (publicId, fileName) => {
     try {
@@ -90,31 +132,6 @@ const RightsSubmissionDetailsPage = () => {
     }
   };
 
-  const handleViewFile = (publicId, fileName) => {
-    try {
-      if (!publicId) {
-        toast.error('File not available for viewing');
-        return;
-      }
-
-      const viewUrl = getCloudinaryViewUrl(publicId);
-
-      if (!viewUrl) {
-        toast.error('Could not generate view URL');
-        return;
-      }
-
-      setSelectedFile({
-        url: viewUrl,
-        name: fileName,
-        publicId: publicId
-      });
-      setShowFileViewer(true);
-    } catch (error) {
-      console.error('Error loading file:', error);
-      toast.error('Error loading file');
-    }
-  };
 
   const closeFileViewer = () => {
     setShowFileViewer(false);
@@ -423,7 +440,7 @@ const handleMouseUp = () => {
       </div>
 
       {/* File Viewer Modal */}
-      {showFileViewer && selectedFile && (
+{showFileViewer && selectedFile && (
   <div 
     className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
     onMouseUp={handleMouseUp}
@@ -433,7 +450,7 @@ const handleMouseUp = () => {
       <div className="flex justify-between items-center p-4 border-b">
         <h3 className="text-lg font-medium">{selectedFile.name || 'Document'}</h3>
         <div className="flex items-center space-x-2">
-          {!selectedFile.name?.toLowerCase().endsWith('.pdf') && (
+          {selectedFile.type === 'image' && (
             <>
               <button
                 onClick={handleZoomOut}
@@ -468,9 +485,9 @@ const handleMouseUp = () => {
       </div>
       <div 
         className="flex-1 overflow-auto p-4 relative"
-        onMouseMove={handleMouseMove}
+        onMouseMove={selectedFile.type === 'image' ? handleMouseMove : undefined}
       >
-        {selectedFile.name?.toLowerCase().endsWith('.pdf') ? (
+        {selectedFile.type === 'pdf' ? (
           <div className="w-full h-full">
             <iframe
               src={`${selectedFile.url}#toolbar=1&navpanes=1&view=FitH`}
@@ -501,7 +518,7 @@ const handleMouseUp = () => {
                 className="max-w-none"
                 style={{
                   maxWidth: 'none',
-                  pointerEvents: 'none' // Prevents image drag
+                  pointerEvents: 'none'
                 }}
               />
             </div>
@@ -510,7 +527,7 @@ const handleMouseUp = () => {
       </div>
       <div className="p-4 border-t flex justify-between items-center">
         <div className="text-sm text-gray-500">
-          {!selectedFile.name?.toLowerCase().endsWith('.pdf') && (
+          {selectedFile.type === 'image' && (
             <span>Drag to pan | Scroll to zoom</span>
           )}
         </div>
