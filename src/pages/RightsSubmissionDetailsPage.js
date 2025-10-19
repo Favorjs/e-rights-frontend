@@ -43,38 +43,45 @@ const RightsSubmissionDetailsPage = () => {
 
   // Generate Cloudinary view URL (for preview)
  // Update the Cloudinary URL generation functions
-const getCloudinaryViewUrl = (publicId, fileType = 'auto') => {
+// Generate Cloudinary view URL
+const getCloudinaryViewUrl = (publicId) => {
   if (!publicId) return null;
+  
+  // For viewing, use the direct delivery URL
   const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
   
-  // For PDF files, use raw upload delivery
-  if (publicId.toLowerCase().endsWith('.pdf') || fileType === 'pdf') {
-    return `https://res.cloudinary.com/${cloudName}/raw/upload/${publicId}`;
+  // Check if it's likely a PDF based on public_id or use direct URL
+  if (publicId.includes('.pdf') || publicId.toLowerCase().endsWith('pdf')) {
+    return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
   }
   
-  // For images, use image upload
   return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
 };
 
-// Generate Cloudinary download URL
+// Generate Cloudinary download URL using the API format
 const getCloudinaryDownloadUrl = (publicId, fileName = 'download') => {
   if (!publicId) return null;
 
   const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
-
-  const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
-  const cleanFileName = fileNameWithoutExtension
-    .replace(/[^a-zA-Z0-9.-]/g, '_')
-    .toLowerCase();
-
-  // For PDF files, use raw upload with attachment
-  if (publicId.toLowerCase().endsWith('.pdf') || fileName.toLowerCase().endsWith('.pdf')) {
-    return `https://res.cloudinary.com/${cloudName}/raw/upload/fl_attachment:${cleanFileName}/${publicId}`;
-  }
   
-  // For images, use image upload with attachment
+  // Extract just the public_id without folder path if needed
+  const cleanPublicId = publicId.replace(/^rights-submissions\/[^/]+\//, '');
+  
+  // Use the API download endpoint format you found in console
+  return `https://api.cloudinary.com/v1_1/${cloudName}/image/download?public_id=${encodeURIComponent(publicId)}&attachment=true&target_filename=${encodeURIComponent(fileName)}`;
+};
+
+// Alternative direct download URL (simpler approach)
+const getDirectDownloadUrl = (publicId, fileName = 'download') => {
+  if (!publicId) return null;
+  
+  const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
+  const cleanFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
+  
   return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
 };
+
+
 
 // Update the handleViewFile function to handle PDFs properly
 const handleViewFile = (publicId, fileName) => {
