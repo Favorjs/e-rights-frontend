@@ -149,4 +149,14 @@ export const streamFileFromCloudinary = async (publicId, filename = null) => {
   return response.data;
 };
 
+
+// Replace the existing adminLogin function with this:
+export const adminLogin = async (credentials) => {
+  try {
+    const response = await api.post('/api/admin/admin-login', credentials);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 export default api;

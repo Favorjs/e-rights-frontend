@@ -53,7 +53,7 @@ const getCloudinaryViewUrl = (publicId, fileType = 'auto') => {
     return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
   }
   
-  // For images, use image upload
+  // For images, use `image upload
   return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
 };
 

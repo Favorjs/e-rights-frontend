@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Download, 
-  ArrowLeft, 
   Search, 
   Eye, 
   Users,
@@ -11,7 +10,8 @@ import {
   Percent,
   ChevronLeft,
   ChevronRight,
-  Filter
+  Filter,
+  LogOut // Added LogOut icon
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { 
@@ -34,7 +34,15 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [activeTab, setActiveTab] = useState('rights');
+  const [activeTab] = useState('rights');
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuth');
+    localStorage.removeItem('adminEmail');
+    toast.success('Logged out successfully');
+    navigate('/admin/login');
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -203,11 +211,11 @@ const AdminDashboard = () => {
           
           <div className="flex space-x-4">
             <button
-              onClick={() => navigate('/')}
-              className="btn-outline flex items-center space-x-2"
+              onClick={handleLogout}
+              className="btn-outline flex items-center space-x-2 text-red-600 border-red-600 hover:bg-red-50"
             >
-              <ArrowLeft className="h-4 w-4" />
-              <span>Back to Portal</span>
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
             </button>
           </div>
         </div>
@@ -300,37 +308,6 @@ const AdminDashboard = () => {
               <span>Search</span>
             </button>
           </form>
-        </div>
-
-        {/* Tabs */}
-        <div className="card mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => {
-                  setActiveTab('rights');
-                  setRightsClaimingFilter('');
-                }}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'rights'
-                    ? 'border-green-500 text-green-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Rights Issue Submissions
-              </button>
-              <button
-                onClick={() => setActiveTab('forms')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'forms'
-                    ? 'border-green-500 text-green-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Regular Forms
-              </button>
-            </nav>
-          </div>
         </div>
 
         {/* Submissions Table */}

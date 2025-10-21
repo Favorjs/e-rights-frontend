@@ -11,6 +11,8 @@ import FormSubmissionPage from './pages/FormSubmissionPage';
 import RightsSubmissionDetailsPage from './pages/RightsSubmissionDetailsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
+import AdminLogin from './pages/AdminLogin';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -25,7 +27,18 @@ function App() {
             <Route path="/digital-form/:shareholderId" element={<DigitalFormPage />} />
             <Route path="/form-submission/:id" element={<FormSubmissionPage />} />
             <Route path="/admin/rights-submission/:id" element={<RightsSubmissionDetailsPage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+
+            {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
+            {/* <Route path="/admin" element={<AdminDashboard />} /> */}
+             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </main>
         <Footer />
