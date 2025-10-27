@@ -611,7 +611,61 @@ const FormSubmissionPage = () => {
               <span className="text-blue-700 font-medium">RIGHTS ISSUE:</span>
               <p className="font-semibold text-gray-900 mt-1">{shareholder.rights_issue}</p>
             </div>
-          </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg shadow-xs overflow-hidden mt-3 p-3">
+              {/* Desktop Table */}
+              <div className="hidden md:block">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">BANK</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ACCOUNT NAME</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ACCOUNT NO</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {[
+                      { bank: 'Wema Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' },
+                      { bank: 'Providus Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' },
+                      { bank: 'Taj Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' }
+                    ].map((item, index) => (
+                      <tr key={index}>
+                        <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-700">{item.bank}</td>
+                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-700">{item.account}</td>
+                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-700">{item.number}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden space-y-3">
+                {[
+                  { bank: 'Wema Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' },
+                  { bank: 'Providus Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' },
+                  { bank: 'Taj Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' }
+                ].map((item, index) => (
+                  <div key={index} className="bg-white p-3 rounded-lg shadow-xs">
+                    <div className="mb-2">
+                      <div className="text-xs font-medium text-gray-500">BANK</div>
+                      <div className="text-sm font-medium text-gray-700">{item.bank}</div>
+                    </div>
+                    <div className="mb-2">
+                      <div className="text-xs font-medium text-gray-500">ACCOUNT NAME</div>
+                      <div className="text-sm text-gray-700">{item.account}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs font-medium text-gray-500">ACCOUNT NO</div>
+                      <div className="text-sm text-gray-700">{item.number}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+        
+          
         </div>
 
         {/* Form Content */}
