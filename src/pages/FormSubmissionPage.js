@@ -618,31 +618,137 @@ const FormSubmissionPage = () => {
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
           {/* Step Content */}
           <div className="space-y-6">
-            {currentStep === 1 && (
-              <div className="space-y-4">
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <div className="flex">
-                    <Info className="h-5 w-5 text-green-400 mt-0.5 mr-3 flex-shrink-0" />
-                    <p className="text-green-800">
-                      Please review your shareholder information above. Click Next to proceed with the form submission.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
+           
+{currentStep === 1 && (
+  <div className="space-y-6">
+    {/* Existing notice */}
+    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+      <div className="flex">
+        <Info className="h-5 w-5 text-green-400 mt-0.5 mr-3 flex-shrink-0" />
+        <p className="text-green-800">
+          Please review your shareholder information above. Click Next to proceed with the form submission.
+        </p>
+      </div>
+    </div>
+
+    {/* Rights Issue Presentation */}
+    <div className="text-center space-y-6">
+      {/* Top Section: Application Dates */}
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+        <div className="border border-gray-300 rounded-md px-4 py-3 bg-white shadow-sm w-48">
+          <h4 className="text-[11px] font-semibold text-gray-700 tracking-wide mb-0.5">APPLICATION LIST</h4>
+          <p className="text-blue-700 font-semibold text-xs underline">OPENS:</p>
+          <p className="text-gray-800 text-sm">[.] 2025</p>
+        </div>
+        <div className="border border-gray-300 rounded-md px-4 py-3 bg-white shadow-sm w-48">
+          <h4 className="text-[11px] font-semibold text-gray-700 tracking-wide mb-0.5">APPLICATION LIST</h4>
+          <p className="text-blue-700 font-semibold text-xs underline">CLOSES:</p>
+          <p className="text-gray-800 text-sm">[.] 2025</p>
+        </div>
+      </div>
+
+      {/* Lead Issuing House */}
+      <div>
+        <h3 className="font-semibold text-gray-900 text-sm uppercase">Lead Issuing House</h3>
+        <img
+          src="https://res.cloudinary.com/apelng/image/upload/v1761578597/anchoria_hnhsy5.png"
+          alt="Anchoria Advisory Services"
+          className="mx-auto h-10 object-contain mt-1"
+        />
+        <p className="text-xs text-gray-600 mt-1">RC: 1517636</p>
+      </div>
+
+      {/* Joint Issuing House */}
+      <div>
+        <h3 className="font-semibold text-gray-900 text-sm uppercase">Joint Issuing House</h3>
+        <img
+          src="https://res.cloudinary.com/apelng/image/upload/v1761578597/fundvine_nvexlt.png"
+          alt="Fundvine Capital & Securities Ltd"
+          className="mx-auto h-10 object-contain mt-1"
+        />
+        <p className="text-xs text-gray-600 mt-1">RC: 1282258</p>
+      </div>
+
+      {/* On Behalf Of */}
+      <div>
+        <h3 className="font-semibold text-gray-900 text-sm uppercase">On Behalf Of</h3>
+        <img
+          src="https://res.cloudinary.com/apelng/image/upload/v1761578596/tip_wjcxdt.png"
+          alt="The Initiates Plc"
+          className="mx-auto h-10 object-contain mt-1"
+        />
+        <p className="text-xs text-gray-600 mt-1">RC: 266755</p>
+      </div>
+
+      {/* Rights Issue Text */}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg max-w-xl mx-auto px-4 py-4 shadow-sm">
+        <h4 className="font-semibold text-gray-900 text-base">The Initiates Plc</h4>
+        <p className="text-xs text-gray-700 leading-relaxed mt-2">
+          Rights Issue of <strong>177,996,310 Ordinary Shares</strong> of 50 Kobo Each at 
+          <strong> ₦7.00 Per Share</strong> on the basis of 
+          <strong> 1 new ordinary share</strong> for every 
+          <strong> 5 existing ordinary shares</strong> held as at the close of business on 
+          <strong> August 1st, 2025</strong>.
+        </p>
+      </div>
+    </div>
+  </div>
+)}
 
             {currentStep === 2 && (
               <div className="space-y-4">
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">INSTRUCTIONS FOR COMPLETING THE ACCEPTANCE/RENUNCIATION FORM</h3>
-                  <div className="text-sm text-gray-700 space-y-4 max-h-96 overflow-y-auto">
-                    <p>Acceptance and/or renunciation must be made on this Acceptance/Renunciation Form. Photocopies or scanned copies of the Form will be rejected.</p>
-                    <p>Allottees should complete only ONE of the boxes marked A and B on the reverse of this form. Shareholders accepting the provisional allotment in full should complete box A and submit their Acceptance/Renunciation Forms to any of the Receiving Agents listed on Page 41 of the Rights Circular together with a cheque or bank draft made payable to the Receiving Agent for the full amount payable on acceptance. The cheque or draft must be crossed 'INTERNATIONAL BREWERIES PLC 2024 RIGHTS', with the shareholder's name, address, and mobile number written on the back. Evidence of such transfer must be submitted to the Receiving Agents. If payment is not received by June 10, 2024, the provisional allotment will be deemed to have been declined and cancelled.</p>
-                    <p>Shareholders accepting partially should complete box B and submit their Acceptance/Renunciation Forms with proof of payment for partial acceptance in line with (2) above.</p>
-                    <p>Shareholders wishing to trade their rights partially or fully should complete item (iii) of box B, obtain a Transfer Form from their stockbroker, complete it, and return it with the Acceptance/Renunciation Form and payment evidence.</p>
-                    <p>Shareholders wishing to apply for additional shares beyond their allotment may purchase traded rights through a stockbroker and/or apply for extra shares by completing items (ii) and (iii) of box A.</p>
-                    <p>Cheques/drafts below ₦10 million will be processed immediately, while unpaid cheques will be rejected. Payments above ₦10 million must be remitted via SWIFT/NEFT to the Receiving Bank Account.</p>
-                    <p>Joint allottees must sign separately. Corporate allottees must include incorporation numbers, corporate seals, and signatures of authorised officials with designations.</p>
+                  <h3 className="font-semibold text-gray-900 mb-4">INSTRUCTIONS FOR COMPLETING THE PARTICIPATION FORM</h3>
+                  <div className="text-sm text-gray-700 space-y-4 max-h-96 overflow-y-auto text-justify px-4 sm:px-6">
+                    <p> <strong>1.</strong> Acceptance and/or renunciation must be made on this Participation Form.</p>
+
+              <p> <strong>a.</strong> Any payment value exceeding &#8358;10 million should be made via SWIFT, RTGS or NEFT into the designated Issue Proceeds Account stated below:</p>
+              <div className="overflow-x-auto my-4">
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Account Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Bank Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Account Number</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">The Initiates Plc Rights Proceeds Account</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Wema Bank Limited</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">[.]</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">The Initiates Plc Rights Proceeds Account</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Providus Bank Limited</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">[.]</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">The Initiates Plc Rights Proceeds Account</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">TAJ Bank Limited</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">[.]</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p><strong>b.</strong> Evidence of all electronic transfers must be submitted to the Receiving Agents and the Issuing House. If payment is not received by Monday, November 24, 2025, the provisional allotment will be deemed to have been declined and will be cancelled.</p>
+
+              <p><strong>4.</strong> Shareholders accepting their provisional allotment partially should complete box B and submit their Participation Forms to any of the Receiving Agents listed on pages 40 – 41 of the Rights Circular together with the evidence of payment transfer for the partial acceptance in accordance with 2 above.</p>
+
+              <p><strong>5.</strong> Shareholders renouncing the provisional allotment partially or in full, who also wish to trade their rights on the floor of NGX should complete item (iii) of box B. They should obtain a Transfer Form from their stockbroker, complete it in accordance with these instructions, and return it to the stockbroker together with the completed Participation Form and the amount payable/evidence of transfer for any partial acceptance in accordance with 2 above.</p>
+<p><strong>5.</strong> Shareholders renouncing the provisional allotment partially or in full, who also wish to trade their rights on the floor of NGX should complete item (iii) of box B. They should obtain a Transfer Form from their stockbroker, complete it in accordance with these instructions, and return it to the stockbroker together with the completed Participation Form and the amount payable/evidence of transfer for any partial acceptance in accordance with 2 above.</p>
+
+<p><strong>6.</strong> Shareholders who wish to acquire additional shares over and above their provisional allotment should apply for additional shares by completing item (ii) and (iii) of box A.</p>
+
+<p><strong>7.</strong> All cheques or bank drafts for amounts belo &#8358;10million will be presented for payment on receipt and all acceptances/applications in respect of which cheques are returned unpaid for any reason will be rejected and cancelled. Shareholders are advised to obtain an acknowledgement of the amount paid from the Receiving Agent through which this Participation Form is lodged.</p>
+
+<p><strong>8.</strong> Joint allottees must sign on separate lines in the appropriate section of the Participation Form.</p>
+
+<p><strong>9.</strong> Participation Forms of corporate allottees must bear their incorporation numbers and corporate seals and must be completed under the hands of duly authorised officials who should also state their designations.</p>
+
+
+                 
                   </div>
                 </div>
 
@@ -657,7 +763,7 @@ const FormSubmissionPage = () => {
                     required
                   />
                   <label htmlFor="instructions_read" className="text-sm text-gray-700">
-                    I have read the INSTRUCTIONS FOR COMPLETING THE ACCEPTANCE/RENUNCIATION FORM.
+                    I have read the INSTRUCTIONS FOR COMPLETING THE PARTICIPATION FORM.
                   </label>
                 </div>
               </div>
@@ -676,7 +782,7 @@ const FormSubmissionPage = () => {
                       onChange={handleInputChange}
                       name="stockbroker"
                       placeholder="Select Stockbroker"
-                      className="w-full"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     />
                   </div>
 
@@ -703,7 +809,7 @@ const FormSubmissionPage = () => {
                 <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Action Type <span className="text-red-500">*</span>
+                      Select Either Full Acceptance/Additional Ordinary Share Request, Renunciation or Partial Acceptance<span className="text-red-500">*</span>
                     </label>
                     <select
                       name="action_type"
@@ -712,7 +818,7 @@ const FormSubmissionPage = () => {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                       required
                     >
-                      <option value="">Select Action Type</option>
+                      <option value="">Select Action</option>
                       <option value="full_acceptance">FULL ACCEPTANCE / REQUEST FOR ADDITIONAL ORDINARY SHARES</option>
                       <option value="renunciation_partial">RENUNCIATION OR PARTIAL ACCEPTANCE</option>
                     </select>
@@ -771,7 +877,7 @@ const FormSubmissionPage = () => {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Additional amount payable
+                            Additional amount payable at &#8358;7.00 per Share
                           </label>
                           <input
                             type="number"
@@ -795,7 +901,7 @@ const FormSubmissionPage = () => {
                           className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
                         <label htmlFor="accept_smaller_allotment" className="text-sm text-gray-700">
-                          I/We agree to accept the same or a smaller number of additional shares as may be allotted in accordance with the Provisional Allotment Letter.
+                        I / We agree to accept the same or smaller number of additional shares in respect of which allotment may be made to me/us, in accordance with the Provisional Allotment Letter contained in the Rights Circular.
                         </label>
                       </div>
                     </>
@@ -819,6 +925,7 @@ const FormSubmissionPage = () => {
                         placeholder="Amount"
                       />
                     </div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">being the sum of the amount payable as shown on the front of this form, and the additional amount payable as shown in item (ii) above.</label>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -885,7 +992,7 @@ const FormSubmissionPage = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Amount payable <span className="text-red-500">*</span>
+                      Amount payable at &#8358;7.00 per share<span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -924,7 +1031,7 @@ const FormSubmissionPage = () => {
                     className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="accept_partial" className="text-sm text-gray-700">
-                    I/We accept only the number of Ordinary Shares shown in column (1) and enclose cheque/bank draft for the value shown in column (2).
+                    I/We accept only the number of Ordinary Shares shown in column (1) and enclose cheque/bank draft for the value shown in column (2) above details.
                   </label>
                 </div>
 
@@ -977,7 +1084,7 @@ const FormSubmissionPage = () => {
                     className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="renounce_rights" className="text-sm text-gray-700">
-                    I/We hereby renounce my/our rights to the Ordinary Shares in column (3).
+                    I/We hereby renounce my/our rights to the Ordinary Shares in column (3), being the balance of the ordinary shares allocated to me / us.
                   </label>
                 </div>
 
@@ -991,7 +1098,7 @@ const FormSubmissionPage = () => {
                     className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="trade_rights" className="text-sm text-gray-700">
-                    I/We confirm that I/We wish to trade my/our renounced rights on the floor of The Exchange and will obtain a Transfer Form from my/our stockbroker, complete it, and return it with this form.
+                    I/We confirm that I/We wish to trade my/our renounced rights on the floor of The Exchange and will obtain a Transfer Form from my/our stockbroker, complete it in accordance with his instructions and return it to the stockbroker with the form.
                   </label>
                 </div>
               </div>
@@ -1143,12 +1250,12 @@ const FormSubmissionPage = () => {
 
                 <div className="border-t pt-6 mt-6">
                   <h3 className="font-medium text-gray-900 mb-4 text-lg">Corporate Details (If Applicable)</h3>
-                  <p className="text-sm text-gray-600 mb-4">Skip this section if not corporate.</p>
+                  <p className="text-sm text-red-600 font-medium mb-4">Skip this section if not corporate.</p>
                   
                   <div className="grid grid-cols-1 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Authorised Signatory Names
+                      Name of Authorised Signatory 
                       </label>
                       <input
                         type="text"
@@ -1162,7 +1269,7 @@ const FormSubmissionPage = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Designations
+                        Designation
                       </label>
                       <input
                         type="text"
@@ -1182,8 +1289,8 @@ const FormSubmissionPage = () => {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Signature Type <span className="text-red-500">*</span>
+                    <label className="block text-sm font-medium text-red-600 mb-2">
+                      Signature( Select Single or Joint Account) <span className="text-red-500">*</span>
                     </label>
                     <select
                       name="signature_type"
@@ -1554,7 +1661,23 @@ const FormSubmissionPage = () => {
                     </div>
                   </div>
                 </div>
-            
+
+                {/* TRADING IN RIGHTS Section */}
+                <div className="bg-white border border-gray-200 rounded-xl p-6 mt-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">C. TRADING IN RIGHTS</h4>
+                  <div className="text-sm text-gray-700 space-y-4">
+                    <p>
+                      <strong>i)</strong> Shareholders who wish to trade in their rights partially or in full may trade such rights on the floor of NGX. The rights will be traded actively on the floor of NGX.
+                    </p>
+                    <p>
+                      <strong>ii)</strong> Shareholders who wish to acquire additional shares over and above their provisional allotment should apply for additional shares by completing items (ii) and (iii) of box A above.
+                    </p>
+                    <p>
+                      <strong>iii)</strong> Shareholders who purchase rights on the floor of NGX are guaranteed the number of shares purchased: they will not be subject to the allotment process with respect to shares so purchased. Those that apply for additional shares by completing item (ii) of box A will be subject to the allotment process i.e., they may be allotted a smaller number of additional shares than what they applied for.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
                   <div className="flex">
                     <div className="flex-shrink-0">

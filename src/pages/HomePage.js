@@ -49,32 +49,25 @@ const HomePage = () => {
   };
 
   const downloadForm = (formType) => {
-    // Map form types to their corresponding file names
+    // Map form types to their corresponding Cloudinary URLs
     const formFiles = {
-      'Stock Broker Form': 'TIP RIGHTS ISSUE SAMPLE.pdf',
-      'Dematerialization Form': 'TIP RIGHTS ISSUE SAMPLE.pdf',
-      'Rights Circular': 'TIP RIGHTS ISSUE SAMPLE.pdf',
-      'Public Offer': 'TIP RIGHTS ISSUE SAMPLE.pdf'
+      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/image/upload/v1761579323/TIP_RIGHTS_ISSUE_bzolop.pdf',
+      'Dematerialization Form': 'https://res.cloudinary.com/apelng/image/upload/v1761579323/TIP_DEMATERIALIZATION_FORM.pdf',
+      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1761579323/TIP_RIGHTS_ISSUE_bzolop.pdf',
+      'Public Offer': 'https://res.cloudinary.com/apelng/image/upload/v1761580077/PUBLIC_OFFER_ooduqc.pdf'
     };
 
-    const fileName = formFiles[formType];
+    const fileUrl = formFiles[formType];
     
-    if (!fileName) {
+    if (!fileUrl) {
       toast.error('Form not available');
       return;
     }
 
-    // Create a temporary anchor tag to trigger download
-    const link = document.createElement('a');
-    link.href = `/forms/${fileName}`;
-    link.download = fileName;
+    // Open the PDF in a new tab
+    window.open(fileUrl, '_blank');
     
-    // Append to body, trigger click, then remove
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    toast.success(`${formType} download started`);
+    toast.success(`Opening ${formType} in a new tab`);
   };
 
   return (
@@ -159,10 +152,10 @@ const HomePage = () => {
                 
                 <div className="space-y-3">
                   <button
-                    onClick={() => downloadForm('Stock Broker Form')}
+                    onClick={() => downloadForm('Stock Broker Docket')}
                     className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <span className="text-sm font-medium">Stock Broker Form</span>
+                    <span className="text-sm font-medium">Stock Broker Docket</span>
                     <FileDigit className="h-4 w-4 text-red-500" />
                   </button>
                   
@@ -218,9 +211,11 @@ const HomePage = () => {
                       <h4 className="font-semibold text-green-800 mb-2">SELLER/EXISTING SHAREHOLDER:</h4>
                       <ol className="list-decimal list-inside space-y-1 ml-2">
                         <li>You can Download the Rights Circular on our website using this link <a href="https://tip.apel.com.ng" className="text-green-600 hover:underline" target="_blank" rel="noopener noreferrer">https://tip.apel.com.ng</a></li>
-                        <li>Endorse the Rights Circular stating the units accepted and the units renounced.</li>
-                        <li>Download the Branded IB Plc Rights Demat/Migration from our website</li>
-                        <li>Endorse the Dematerialization/Migration form</li>
+                       <li>Endorse the Rights Circular stating the units accepted and the units renounced.</li>
+  <li>Download the Branded IB Plc Rights Demat/Migration form from our website.</li>
+  <li>Endorse the Dematerialization/Migration form stating units to be migrated/traded.</li>
+  <li>The shareholder issues a cover letter authorizing the stockbroker to submit the executed forms and stating the units renounced/to be traded on the floor.</li>
+  <li>Stockbroker submits the two forms to the Registrars with the cover letter for Migration to C.S.C.S.</li>
                       </ol>
                     </div>
                     
@@ -228,7 +223,7 @@ const HomePage = () => {
                       <h4 className="font-semibold text-green-800 mb-2">BUYER/NEW SHAREHOLDER:</h4>
                       <ol className="list-decimal list-inside space-y-1 ml-2">
                         <li>Ensure K.Y.C information is updated with your stockbroker</li>
-                        <li>Ensure your stockbroker submits an executed transfer form to C.S.C.S for onward transfer</li>
+                        <li>Ensure the Stockbroker submits an executed transfer form to C.S.C.S for onward transfer to the Registrars.</li>
                       </ol>
                     </div>
                   </div>
