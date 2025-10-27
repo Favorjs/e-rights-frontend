@@ -95,7 +95,7 @@ const fetchShareholder = async () => {
   //         color: rgb(0, 0, 0),
   //       });
         
-  //       firstPage.drawText(`Amount Due: ${shareholder.amount_due}`, {
+  //       firstPage.drawText(`AMOUNT PAYABLE: ${shareholder.amount_due}`, {
   //         x: 50,
   //         y: height - 210,
   //         size: 12,
@@ -245,7 +245,7 @@ const fetchShareholder = async () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-500">AMOUNT DUE</label>
+                <label className="text-sm font-medium text-gray-500">AMOUNT PAYABLE</label>
                 <p className="text-lg font-semibold text-green-600">{shareholder.amount_due.toLocaleString()}</p>
               </div>
             </div>
