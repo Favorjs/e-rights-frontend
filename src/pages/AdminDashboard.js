@@ -338,7 +338,7 @@ const AdminDashboard = () => {
                       <th>RIGHTS ISSUE</th>
                       <th>HOLDINGS AFTER</th>
                       <th>ACCEPTANCE TYPE</th>
-                      <th>AMOUNT DUE</th>
+                      <th>AMOUNT PAYABLE</th>
                       <th>FILLED FORM</th>
                       <th>RECEIPT</th>
                       <th>ACTIONS</th>
