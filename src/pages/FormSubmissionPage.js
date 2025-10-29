@@ -626,9 +626,8 @@ const FormSubmissionPage = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {[
-                      { bank: 'Wema Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' },
-                      { bank: 'Providus Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' },
-                      { bank: 'Taj Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' }
+                                          { bank: 'Providus Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '1308407124' },
+                      { bank: 'Taj Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0013161672' }
                     ].map((item, index) => (
                       <tr key={index}>
                         <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-700">{item.bank}</td>
@@ -692,12 +691,12 @@ const FormSubmissionPage = () => {
         <div className="border border-gray-300 rounded-md px-4 py-3 bg-white shadow-sm w-48">
           <h4 className="text-[11px] font-semibold text-gray-700 tracking-wide mb-0.5">APPLICATION LIST</h4>
           <p className="text-blue-700 font-semibold text-xs underline">OPENS:</p>
-          <p className="text-gray-800 text-sm">[.] 2025</p>
+          <p className="text-gray-800 text-sm">5TH NOVEMBER 2025</p>
         </div>
         <div className="border border-gray-300 rounded-md px-4 py-3 bg-white shadow-sm w-48">
           <h4 className="text-[11px] font-semibold text-gray-700 tracking-wide mb-0.5">APPLICATION LIST</h4>
           <p className="text-blue-700 font-semibold text-xs underline">CLOSES:</p>
-          <p className="text-gray-800 text-sm">[.] 2025</p>
+          <p className="text-gray-800 text-sm">12TH DECEMBER 2025</p>
         </div>
       </div>
 
@@ -767,20 +766,16 @@ const FormSubmissionPage = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">The Initiates Plc Rights Proceeds Account</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Wema Bank Limited</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">[.]</td>
-                    </tr>
+                   
                     <tr className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">The Initiates Plc Rights Proceeds Account</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Providus Bank Limited</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">[.]</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">1308407124</td>
                     </tr>
                     <tr className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">The Initiates Plc Rights Proceeds Account</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">TAJ Bank Limited</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">[.]</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">0013161672</td>
                     </tr>
                   </tbody>
                 </table>

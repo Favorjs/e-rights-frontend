@@ -53,8 +53,8 @@ const HomePage = () => {
     const formFiles = {
       'Stock Broker Docket': 'https://res.cloudinary.com/apelng/image/upload/v1761579323/TIP_RIGHTS_ISSUE_bzolop.pdf',
       'Dematerialization Form': 'https://res.cloudinary.com/apelng/image/upload/v1761579323/TIP_DEMATERIALIZATION_FORM.pdf',
-      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1761579323/TIP_RIGHTS_ISSUE_bzolop.pdf',
-      'Public Offer': 'https://res.cloudinary.com/apelng/image/upload/v1761580077/PUBLIC_OFFER_ooduqc.pdf'
+      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1761666590/TIP_Rights_Circular_ledega.pdf',
+      'Public Offer': 'https://res.cloudinary.com/apelng/image/upload/v1761666679/TIP_Public_Offer_bvnzju.pdf'
     };
 
     const fileUrl = formFiles[formType];
@@ -80,7 +80,7 @@ const HomePage = () => {
               {/* Title Section */}
               <div className="text-center mb-8">
                 <h2 className="text-sm text-gray-600 mb-2">APEL CAPITAL REGISTRARS</h2>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">THE INITIATES PLC RIGHTS ISSUE</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">THE INITIATES PLC HYBRID OFFER</h1>
                 <div className="w-24 h-1 bg-green-600 mx-auto"></div>
               </div>
 
