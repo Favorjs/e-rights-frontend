@@ -159,4 +159,14 @@ export const adminLogin = async (credentials) => {
     throw error;
   }
 };
+
+
+
+export const downloadFile = async (publicId, filename = null) => {
+  const params = filename ? `?filename=${encodeURIComponent(filename)}` : '';
+  const response = await api.get(`/api/forms/download-file/${publicId}${params}`, {
+    responseType: 'blob'
+  });
+  return response.data;
+};
 export default api;

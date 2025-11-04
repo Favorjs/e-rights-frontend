@@ -19,11 +19,17 @@ const DigitalFormPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-    // watch,
+    watch,
     setValue
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      acceptance_type: 'full',
+      apply_additional: false
+    }
+  });
 
-  // const acceptanceType = watch('acceptance_type', 'full');
+  const acceptanceType = watch('acceptance_type', 'full');
+  const applyAdditional = watch('apply_additional', false);
 
   useEffect(() => {
     const fetchShareholder = async () => {
@@ -240,28 +246,228 @@ const DigitalFormPage = () => {
             <h2 className="text-xl font-bold text-gray-900 mb-4">Acceptance Options</h2>
             
             <div className="space-y-4">
-              <label className="flex items-center space-x-3">
+              <label className="flex items-start space-x-3">
                 <input
                   type="radio"
                   value="full"
                   {...register('acceptance_type', { required: 'Please select an acceptance type' })}
-                  className="text-green-600 focus:ring-green-500"
+                  className="mt-1 text-green-600 focus:ring-green-500"
                 />
-                <span className="text-gray-900">
-                  We accept in full, the provisional allotment shown on the front of this form.
-                </span>
+                <div className="space-y-2">
+                  <span className="text-gray-900 block">
+                    We accept in full, the provisional allotment shown on the front of this form.
+                  </span>
+                  {acceptanceType === 'full' && (
+                    <div className="ml-6 space-y-2">
+                      <label className="flex items-center space-x-2 text-sm text-gray-700">
+                        <input
+                          type="checkbox"
+                          {...register('apply_additional')}
+                          className="text-green-600 focus:ring-green-500"
+                        />
+                        <span>Apply for additional shares</span>
+                      </label>
+                      
+                      {applyAdditional && (
+                        <div className="ml-6 space-y-3 p-3 bg-gray-50 rounded-md">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Number of Additional Shares
+                            </label>
+                            <input
+                              type="number"
+                              {...register('additional_shares', {
+                                min: { value: 1, message: 'Must be at least 1 share' },
+                                valueAsNumber: true
+                              })}
+                              className="form-input w-full"
+                            />
+                            {errors.additional_shares && (
+                              <p className="text-red-600 text-xs mt-1">{errors.additional_shares.message}</p>
+                            )}
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Additional Amount Payable
+                            </label>
+                            <div className="relative">
+                              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span className="text-gray-500 sm:text-sm">₦</span>
+                              </div>
+                              <input
+                                type="number"
+                                {...register('additional_amount', {
+                                  required: 'Additional amount is required',
+                                  min: { value: 0.01, message: 'Amount must be greater than 0' },
+                                  valueAsNumber: true
+                                })}
+                                className="form-input pl-7 w-full"
+                              />
+                            </div>
+                            {errors.additional_amount && (
+                              <p className="text-red-600 text-xs mt-1">{errors.additional_amount.message}</p>
+                            )}
+                          </div>
+                          
+                          <div className="mt-4">
+                            <h4 className="text-sm font-medium text-gray-700 mb-2">Additional Payment Details</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-sm text-gray-700 mb-1">Bank Name</label>
+                                <input
+                                  type="text"
+                                  {...register('additional_payment_bank_name', {
+                                    required: 'Bank name is required for additional payment'
+                                  })}
+                                  className="form-input w-full"
+                                />
+                                {errors.additional_payment_bank_name && (
+                                  <p className="text-red-600 text-xs mt-1">{errors.additional_payment_bank_name.message}</p>
+                                )}
+                              </div>
+                              
+                              <div>
+                                <label className="block text-sm text-gray-700 mb-1">Cheque Number</label>
+                                <input
+                                  type="text"
+                                  {...register('additional_payment_cheque_number', {
+                                    required: 'Cheque number is required for additional payment'
+                                  })}
+                                  className="form-input w-full"
+                                />
+                                {errors.additional_payment_cheque_number && (
+                                  <p className="text-red-600 text-xs mt-1">{errors.additional_payment_cheque_number.message}</p>
+                                )}
+                              </div>
+                              
+                              <div className="md:col-span-2">
+                                <label className="block text-sm text-gray-700 mb-1">Branch</label>
+                                <input
+                                  type="text"
+                                  {...register('additional_payment_branch', {
+                                    required: 'Branch is required for additional payment'
+                                  })}
+                                  className="form-input w-full"
+                                />
+                                {errors.additional_payment_branch && (
+                                  <p className="text-red-600 text-xs mt-1">{errors.additional_payment_branch.message}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </label>
               
-              <label className="flex items-center space-x-3">
+              <label className="flex items-start space-x-3">
                 <input
                   type="radio"
                   value="partial"
                   {...register('acceptance_type')}
-                  className="text-green-600 focus:ring-green-500"
+                  className="mt-1 text-green-600 focus:ring-green-500"
                 />
-                <span className="text-gray-900">
-                  We accept only partial shares and enclose payment accordingly.
-                </span>
+                <div className="space-y-2">
+                  <span className="text-gray-900">
+                    We accept only partial shares and enclose payment accordingly.
+                  </span>
+                  {acceptanceType === 'partial' && (
+                    <div className="ml-6 space-y-3 p-3 bg-gray-50 rounded-md">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Number of Shares Accepted
+                          </label>
+                          <input
+                            type="number"
+                            {...register('shares_accepted', {
+                              required: 'Number of shares is required',
+                              min: { value: 1, message: 'Must be at least 1 share' },
+                              valueAsNumber: true
+                            })}
+                            className="form-input w-full"
+                          />
+                          {errors.shares_accepted && (
+                            <p className="text-red-600 text-xs mt-1">{errors.shares_accepted.message}</p>
+                          )}
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Amount Payable
+                          </label>
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <span className="text-gray-500 sm:text-sm">₦</span>
+                            </div>
+                            <input
+                              type="number"
+                              {...register('amount_payable', {
+                                required: 'Amount payable is required',
+                                min: { value: 0.01, message: 'Amount must be greater than 0' },
+                                valueAsNumber: true
+                              })}
+                              className="form-input pl-7 w-full"
+                            />
+                          </div>
+                          {errors.amount_payable && (
+                            <p className="text-red-600 text-xs mt-1">{errors.amount_payable.message}</p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4">
+                        <h4 className="text-sm font-medium text-gray-700 mb-2">Payment Details</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm text-gray-700 mb-1">Bank Name</label>
+                            <input
+                              type="text"
+                              {...register('partial_payment_bank_name', {
+                                required: 'Bank name is required for payment'
+                              })}
+                              className="form-input w-full"
+                            />
+                            {errors.partial_payment_bank_name && (
+                              <p className="text-red-600 text-xs mt-1">{errors.partial_payment_bank_name.message}</p>
+                            )}
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm text-gray-700 mb-1">Cheque Number</label>
+                            <input
+                              type="text"
+                              {...register('partial_payment_cheque_number', {
+                                required: 'Cheque number is required for payment'
+                              })}
+                              className="form-input w-full"
+                            />
+                            {errors.partial_payment_cheque_number && (
+                              <p className="text-red-600 text-xs mt-1">{errors.partial_payment_cheque_number.message}</p>
+                            )}
+                          </div>
+                          
+                          <div className="md:col-span-2">
+                            <label className="block text-sm text-gray-700 mb-1">Branch</label>
+                            <input
+                              type="text"
+                              {...register('partial_payment_branch', {
+                                required: 'Branch is required for payment'
+                              })}
+                              className="form-input w-full"
+                            />
+                            {errors.partial_payment_branch && (
+                              <p className="text-red-600 text-xs mt-1">{errors.partial_payment_branch.message}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </label>
             </div>
             

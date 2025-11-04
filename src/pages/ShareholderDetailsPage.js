@@ -1,172 +1,94 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Download, Upload } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById } from '../services/api';
-// import { PDFDocument, rgb } from 'pdf-lib';
+import axios from 'axios';
+
 const ShareholderDetailsPage = () => {
   const { id } = useParams();
-  // const navigate = useNavigate();
   const [shareholder, setShareholder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
-// Update the fetchShareholder function to log request details
-const fetchShareholder = async () => {
-  try {
-    setLoading(true);
-    console.log('Fetching shareholder with ID:', id);
-    
-    const response = await getShareholderById(id);
-    
-    console.log('Response:', response);
-    
-    if (response.success) {
-      setShareholder(response.data);
-    } else {
-      setError('Failed to load shareholder details');
-    }
-  } catch (error) {
-    console.error('Error details:', error);
-    setError('Error loading shareholder details');
-    toast.error('Error loading shareholder details');
-  } finally {
-    setLoading(false);
-  }
-};
+    const fetchShareholder = async () => {
+      try {
+        setLoading(true);
+        console.log('Fetching shareholder with ID:', id);
+        
+        const response = await getShareholderById(id);
+        
+        console.log('Response:', response);
+        
+        if (response.success) {
+          setShareholder(response.data);
+        } else {
+          setError('Failed to load shareholder details');
+        }
+      } catch (error) {
+        console.error('Error details:', error);
+        setError('Error loading shareholder details');
+        toast.error('Error loading shareholder details');
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchShareholder();
   }, [id]);
 
-  // const handleDigitalForm = () => {
-  //   navigate(`/digital-form/${id}`);
-  // };
+const handleDownloadPrefilledForm = async () => {
+  if (!shareholder) return;
+  
+  try {
+    setDownloading(true);
+    toast.loading('Generating your pre-filled form...');
 
-  // const handleDownloadPhysicalForm = async () => {
-  //   try {
-  //     toast.loading('Preparing your form...');
-      
-  //     // Fetch the PDF template
-  //     const pdfUrl = '/forms/TIP RIGHTS ISSUE SAMPLE.pdf';
-  //     const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
-      
-  //     // Load the PDF document
-  //     const pdfDoc = await PDFDocument.load(existingPdfBytes);
-  //     const pages = pdfDoc.getPages();
-  //     const firstPage = pages[0];
-      
-  //     // Get the form fields
-  //     const form = pdfDoc.getForm();
-      
-  //     // Fill in the form fields with shareholder data
-  //     try {
-  //       // These field names need to match exactly what's in your PDF
-  //       form.getTextField('shareholderName').setText(shareholder.name);
-  //   form.getTextField('holdingsCount').setText(shareholder.holdings.toLocaleString());
-  //   form.getTextField('rightsIssue').setText(shareholder.rights_issue.toLocaleString());
-  //   form.getTextField('amountDue').setText(`₦${shareholder.amount_due.toLocaleString()}`);
+    const response = await axios.post(
+      '/api/forms/generate-basic-pdf',
+      {
+        // Only basic shareholder info
+        reg_account_number: shareholder.reg_account_number,
+        name: shareholder.name,
+        holdings: shareholder.holdings,
+        rights_issue: shareholder.rights_issue,
+        amount_due: shareholder.amount_due
+      },
+      { 
+        responseType: 'blob',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
     
-  //       // Flatten the form to make the fields read-only
-  //       form.flatten();
-  //     } catch (error) {
-  //       console.warn('Could not fill PDF form fields:', error);
-  //       // Fallback: Draw text directly on the page if form fields aren't found
-  //       const { width, height } = firstPage.getSize();
-        
-  //       firstPage.drawText(`Name: ${shareholder.name}`, {
-  //         x: 50,
-  //         y: height - 150,
-  //         size: 12,
-  //         color: rgb(0, 0, 0),
-  //       });
-        
-  //       firstPage.drawText(`Holdings: ${shareholder.holdings}`, {
-  //         x: 50,
-  //         y: height - 170,
-  //         size: 12,
-  //         color: rgb(0, 0, 0),
-  //       });
-        
-  //       firstPage.drawText(`Rights Issue: ${shareholder.rights_issue}`, {
-  //         x: 50,
-  //         y: height - 190,
-  //         size: 12,
-  //         color: rgb(0, 0, 0),
-  //       });
-        
-  //       firstPage.drawText(`AMOUNT PAYABLE: ${shareholder.amount_due}`, {
-  //         x: 50,
-  //         y: height - 210,
-  //         size: 12,
-  //         color: rgb(0, 0, 0),
-  //       });
-  //     }
-      
-  //     // Save the modified PDF
-  //     const pdfBytes = await pdfDoc.save();
-      
-  //     // Create download link
-  //     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-  //     const link = document.createElement('a');
-  //     link.href = URL.createObjectURL(blob);
-  //     link.download = `TIP_RIGHTS_ISSUE_${shareholder.name.replace(/\s+/g, '_')}.pdf`;
-      
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link);
-      
-  //     toast.dismiss();
-  //     toast.success('Form downloaded with your details!');
-  //   } catch (error) {
-  //     console.error('Error generating PDF:', error);
-  //     toast.dismiss();
-  //     toast.error('Failed to generate form');
-  //   }
-  // };
-
-  // const handleDownloadPhysicalForm = async () => {
-  //   try {
-  //     toast.loading('Generating your form...');
-      
-  //     const response = await axios.post(
-  //       '/api/forms/generate-rights-form',
-  //       {
-  //         shareholderName: shareholder.name,
-  //         holdings: shareholder.holdings,
-  //         rightsIssue: shareholder.rights_issue,
-  //         amountDue: shareholder.amount_due
-  //       },
-  //       { 
-  //         responseType: 'blob',
-  //         headers: {
-  //           'Content-Type': 'application/json'
-  //         }
-  //       }
-  //     );
-      
-  //     const url = window.URL.createObjectURL(new Blob([response.data]));
-  //     const link = document.createElement('a');
-  //     link.href = url;
-  //     link.download = `TIP_RIGHTS_${shareholder.name.replace(/\s+/g, '_')}.pdf`;
-  //     document.body.appendChild(link);
-  //     link.click();
-      
-  //     // Cleanup
-  //     setTimeout(() => {
-  //       window.URL.revokeObjectURL(url);
-  //       document.body.removeChild(link);
-  //     }, 100);
-      
-  //     toast.dismiss();
-  //     toast.success('Form downloaded with your details!');
-  //   } catch (error) {
-  //     console.error('Download error:', error);
-  //     toast.dismiss();
-  //     toast.error(error.response?.data?.message || 'Failed to generate form');
-  //   }
-  // };
-
+    // Create blob and download
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `TIP_RIGHTS_${shareholder.reg_account_number}_${shareholder.name.replace(/\s+/g, '_')}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    
+    // Cleanup
+    setTimeout(() => {
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    }, 100);
+    
+    toast.dismiss();
+    toast.success('Pre-filled form downloaded successfully!');
+  } catch (error) {
+    console.error('Download error:', error);
+    toast.dismiss();
+    toast.error('Failed to download form. Please try again.');
+  } finally {
+    setDownloading(false);
+  }
+};
 
   if (loading) {
     return (
@@ -252,89 +174,145 @@ const fetchShareholder = async () => {
           </div>
         </div>
 
-        {/* Choose Your Option */}
+        {/* Choose Your Option - Side by Side */}
         <div className="card">
-          {/* <h2 className="text-xl font-bold text-gray-900 mb-6">Choose Your Option</h2> */}
+          <h2 className="text-xl font-bold text-gray-900 mb-8 text-center">Choose Your Option</h2>
           
-          {/* Mobile Layout - Submit Form Online button above Download button */}
-          <div className="lg:hidden mb-6">
-            <div className="border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors bg-green-50">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </div>
-              
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Submit Your Form Online</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                After downloading and filling the form, submit it online with your payment receipt
-              </p>
-              
-              <Link
-                to={`/form-submission/${id}`}
-                className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-200"
-              >
-                Submit Form Online
-                <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-
-          {/* Desktop Layout - Both buttons side by side */}
-          <div className="hidden lg:grid lg:grid-cols-1 gap-6">
-            {/* Download Form Section */}
-            {/* <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+          <div className="flex flex-col lg:flex-row items-stretch gap-8">
+            {/* Download Prefilled PDF Form */}
+            <div className="flex-1 border-2 border-dashed border-blue-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors bg-blue-50">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Download className="h-8 w-8 text-blue-600" />
               </div>
               
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Download Rights Issue Form</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Download Pre-filled Form</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Download and fill the form, then submit with payment receipt
+                Download a PDF form with your details pre-filled. Print, sign, and submit with payment receipt.
               </p>
               
-              <button
-                onClick={handleDownloadPhysicalForm}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
-              >
-                Download PDF
-              </button>
-            </div> */}
-
-            {/* Submit Form Online Section */}
-            <div className="border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors bg-green-50">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
+              <div className="space-y-2 mb-6 text-left">
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Your details automatically filled</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Print, fill form and sign manually</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Submit with payment receipt to <span className="font-semibold"><a href="mailto:registrars@apel.ng">registrars@apel.ng</a></span></span>
+                </div>
               </div>
               
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Submit Your Form Online</h3>
+              <button
+                onClick={handleDownloadPrefilledForm}
+                disabled={downloading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              >
+                {downloading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="spinner-small mr-2"></div>
+                    Generating PDF...
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download PDF Form
+                  </div>
+                )}
+              </button>
+            </div>
+
+            {/* Vertical OR Divider - Only show on large screens */}
+            <div className="hidden lg:flex flex-col items-center justify-center">
+              <div className="h-0.5 w-12 bg-gray-300"></div>
+              <div className="px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-500 my-2">OR</div>
+              <div className="h-0.5 w-12 bg-gray-300"></div>
+            </div>
+
+            {/* Horizontal OR Divider - Only show on mobile */}
+            <div className="lg:hidden flex items-center justify-center my-2">
+              <div className="w-full flex items-center">
+                <div className="flex-1 h-0.5 bg-gray-300"></div>
+                <span className="px-3 text-sm font-medium text-gray-500">OR</span>
+                <div className="flex-1 h-0.5 bg-gray-300"></div>
+              </div>
+            </div>
+
+            {/* Submit Form Online */}
+            <div className="flex-1 border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors bg-green-50">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Upload className="h-8 w-8 text-green-600" />
+              </div>
+              
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Submit Form Online</h3>
               <p className="text-sm text-gray-600 mb-4">
-                After downloading and filling the form, submit it online with your payment receipt
+                Fill out the digital form online and submit electronically with your payment receipt.
               </p>
+              
+              <div className="space-y-2 mb-6 text-left">
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  <span>Fill form digitally</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  <span>Upload digital signature</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  <span>Upload payment receipt <br></br>and submit online</span>
+                </div>
+              </div>
               
               <Link
                 to={`/form-submission/${id}`}
-                className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-200"
+                className="inline-flex items-center justify-center w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-md transition-colors duration-200 text-sm"
               >
-                Submit Form Online
-                <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+                <Upload className="h-4 w-4 mr-2" />
+                Submit Online
               </Link>
             </div>
           </div>
 
-          {/* Mobile Layout - Download button below Submit button */}
-      {/* a mobile layout for the download rights issue was her , but that was based on the last thought of people dowsnloading the form then submitting  commenting it out 
-      kind of made the code a bug because of the extra bracket while commenting on react js */}
+          {/* Additional Information */}
+          <div className="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+               <p className="text-sm text-yellow-700">
+  <strong>Important:</strong> For the download option, please email your completed form and payment receipt to{' '}
+  <span className="font-semibold"><a href="mailto:registrars@apel.ng">registrars@apel.ng</a></span>. <br></br>For online submission, your form will be automatically submitted to us without needing to print out you will also get a copy of your form through the portal ansd sent to your email.
+</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Add spinner styles */}
+      <style jsx>{`
+        .spinner-small {
+          border: 2px solid #f3f3f3;
+          border-top: 2px solid #3498db;
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+          animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };
 
-export default ShareholderDetailsPage; 
+export default ShareholderDetailsPage;

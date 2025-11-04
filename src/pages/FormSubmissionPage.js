@@ -296,39 +296,52 @@ const FormSubmissionPage = () => {
     }));
   };
 
-  const validateStep = (step) => {
-    switch (step) {
-      case 1:
-        return true; // Always valid as it's just displaying info
-      case 2:
-        return formData.instructions_read;
-      case 3:
-        return formData.stockbroker && formData.chn;
-      case 4:
-        return formData.action_type;
-      case 5:
-        if (formData.action_type === 'full_acceptance') {
-          return formData.accept_full && formData.payment_amount && formData.bank_name && formData.cheque_number && formData.branch;
-        } else {
-          return formData.shares_accepted && formData.amount_payable && formData.shares_renounced && 
-                 (formData.accept_partial || formData.renounce_rights);
+const validateStep = (step) => {
+  switch (step) {
+    case 1:
+      return true;
+    case 2:
+      return formData.instructions_read;
+    case 3:
+      return formData.stockbroker && formData.chn;
+    case 4:
+      return formData.action_type;
+    case 5:
+      if (formData.action_type === 'full_acceptance') {
+        // Only require accept_full to be checked
+        if (!formData.accept_full) return false;
+        
+        // If applying for additional shares, validate those fields too
+        if (formData.apply_additional) {
+          return formData.additional_shares && 
+                 formData.additional_amount && 
+                 formData.payment_amount && 
+                 formData.bank_name && 
+                 formData.branch;
         }
-      case 6:
-        return formData.contact_name && formData.next_of_kin && 
-               formData.daytime_phone && formData.mobile_phone && formData.email &&
-               formData.bank_name_edividend && formData.bank_branch_edividend && 
-               formData.account_number && formData.bvn;
-      case 7:
-        if (formData.signature_type === 'single') {
-          return formData.receipt && formData.signatures.length > 0;
-        } else {
-          return formData.receipt && formData.signatures.length > 1 && 
-                 !formData.signatures.includes(null);
-        }
-      default:
+        
+        // If only accepting full allotment (no additional shares), no further validation needed
         return true;
-    }
-  };
+      } else {
+        return formData.shares_accepted && formData.amount_payable && formData.shares_renounced && 
+               (formData.accept_partial || formData.renounce_rights);
+      }
+    case 6:
+      return formData.contact_name && formData.next_of_kin && 
+             formData.daytime_phone && formData.mobile_phone && formData.email &&
+             formData.bank_name_edividend && 
+             formData.account_number && formData.bvn;
+    case 7:
+      if (formData.signature_type === 'single') {
+        return formData.receipt && formData.signatures.length > 0;
+      } else {
+        return formData.receipt && formData.signatures.length > 1 && 
+               !formData.signatures.includes(null);
+      }
+    default:
+      return true;
+  }
+};
 
   const handleNext = () => {
     if (validateStep(currentStep)) {
@@ -345,6 +358,9 @@ const FormSubmissionPage = () => {
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
+      
+      // Show loading state
+      const loadingToast = toast.loading('Generating rights form and submitting...');
       
       // Clean numeric fields
       const numericFields = [
@@ -379,15 +395,24 @@ const FormSubmissionPage = () => {
         submitData.append('receipt', cleanedFormData.receipt);
       }
       
-      // Add signatures
-      (cleanedFormData.signatures || []).forEach((signature, index) => {
-        if (signature) {
-          submitData.append(`signature_${index}`, signature);
-        }
-      });
+      // Handle signatures based on signature type
+      if (formData.signature_type === 'single' && formData.signatures[0]) {
+        // For single signature, only upload the first signature
+        submitData.append('signature_0', formData.signatures[0]);
+      } else if (formData.signature_type === 'joint') {
+        // For joint signatures, upload all provided signatures
+        (formData.signatures || []).forEach((signature, index) => {
+          if (signature) {
+            submitData.append(`signature_${index}`, signature);
+          }
+        });
+      }
 
       // Use the API service function instead of direct axios call
       const response = await submitRightsForm(submitData);
+
+      // Dismiss loading toast
+      toast.dismiss(loadingToast);
 
       if (response.success) {
         setSubmittedForm(response.data);
@@ -876,151 +901,179 @@ const FormSubmissionPage = () => {
               </div>
             )}
 
-            {currentStep === 5 && formData.action_type === 'full_acceptance' && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="flex items-start bg-blue-50 p-4 rounded-lg">
-                    <input
-                      type="checkbox"
-                      id="accept_full"
-                      name="accept_full"
-                      checked={formData.accept_full}
-                      onChange={handleInputChange}
-                      className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      required
-                    />
-                    <label htmlFor="accept_full" className="text-sm text-gray-700">
-                      I/We accept in full, the provisional allotment shown on the front of this form.
-                    </label>
-                  </div>
+     {currentStep === 5 && formData.action_type === 'full_acceptance' && (
+  <div className="space-y-6">
+    <div className="grid grid-cols-1 gap-4">
+      <div className="flex items-start bg-blue-50 p-4 rounded-lg">
+        <input
+          type="checkbox"
+          id="accept_full"
+          name="accept_full"
+          checked={formData.accept_full}
+          onChange={handleInputChange}
+          className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          required
+        />
+        <label htmlFor="accept_full" className="text-sm text-gray-700">
+          I/We accept in full, the provisional allotment shown on the front of this form.
+        </label>
+      </div>
 
-                  <div className="flex items-start bg-blue-50 p-4 rounded-lg">
-                    <input
-                      type="checkbox"
-                      id="apply_additional"
-                      name="apply_additional"
-                      checked={formData.apply_additional}
-                      onChange={handleInputChange}
-                      className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
-                    <label htmlFor="apply_additional" className="text-sm text-gray-700">
-                      I/We also apply for additional Ordinary Shares.
-                    </label>
-                  </div>
+      <div className="flex items-start bg-blue-50 p-4 rounded-lg">
+        <input
+          type="checkbox"
+          id="apply_additional"
+          name="apply_additional"
+          checked={formData.apply_additional}
+          onChange={handleInputChange}
+          className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        />
+        <label htmlFor="apply_additional" className="text-sm text-gray-700">
+          I/We also apply for additional Ordinary Shares.
+        </label>
+      </div>
 
-                  {formData.apply_additional && (
-                    <>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Number of Additional Ordinary Shares applied for
-                          </label>
-                          <input
-                            type="number"
-                            name="additional_shares"
-                            value={formData.additional_shares}
-                            onChange={handleInputChange}
-                            min="0"
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Additional amount payable at &#8358;7.00 per Share
-                          </label>
-                          <input
-                            type="number"
-                            name="additional_amount"
-                            value={formData.additional_amount}
-                            onChange={handleInputChange}
-                            min="0"
-                            step="0.01"
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                          />
-                        </div>
-                      </div>
+      {/* Additional Shares Section - Only show if apply_additional is checked */}
+      {formData.apply_additional && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Number of Additional Ordinary Shares applied for
+              </label>
+              <input
+                type="number"
+                name="additional_shares"
+                value={formData.additional_shares}
+                onChange={handleInputChange}
+                min="0"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Additional amount payable at ₦7.00 per Share
+              </label>
+              <input
+                type="number"
+                name="additional_amount"
+                value={formData.additional_amount}
+                onChange={handleInputChange}
+                min="0"
+                step="0.01"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+          </div>
 
-                      <div className="flex items-start bg-blue-50 p-4 rounded-lg">
-                        <input
-                          type="checkbox"
-                          id="accept_smaller_allotment"
-                          name="accept_smaller_allotment"
-                          checked={formData.accept_smaller_allotment}
-                          onChange={handleInputChange}
-                          className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <label htmlFor="accept_smaller_allotment" className="text-sm text-gray-700">
-                        I / We agree to accept the same or smaller number of additional shares in respect of which allotment may be made to me/us, in accordance with the Provisional Allotment Letter contained in the Rights Circular.
-                        </label>
-                      </div>
-                    </>
-                  )}
+          <div className="flex items-start bg-blue-50 p-4 rounded-lg">
+            <input
+              type="checkbox"
+              id="accept_smaller_allotment"
+              name="accept_smaller_allotment"
+              checked={formData.accept_smaller_allotment}
+              onChange={handleInputChange}
+              className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="accept_smaller_allotment" className="text-sm text-gray-700">
+              I / We agree to accept the same or smaller number of additional shares in respect of which allotment may be made to me/us, in accordance with the Provisional Allotment Letter contained in the Rights Circular.
+            </label>
+          </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      I/We enclose my/our cheque/bank draft/evidence of transfer for <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex items-center">
-                      <span className="mr-3 bg-gray-100 px-4 py-3 rounded-l-lg border border-r-0 border-gray-300">₦</span>
-                      <input
-                        type="number"
-                        name="payment_amount"
-                        value={formData.payment_amount}
-                        onChange={handleInputChange}
-                        min="0"
-                        step="0.01"
-                        className="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                        required
-                        placeholder="Amount"
-                      />
-                    </div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">being the sum of the amount payable as shown on the front of this form, and the additional amount payable as shown in item (ii) above.</label>
-                  </div>
+          {/* Payment Section for Additional Shares */}
+          <div className="border-t pt-6 mt-6">
+            <h4 className="font-medium text-gray-900 mb-4 text-lg">Payment Details for Additional Shares</h4>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                I/We enclose my/our cheque/bank draft/evidence of transfer for <span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center">
+                <span className="mr-3 bg-gray-100 px-4 py-3 rounded-l-lg border border-r-0 border-gray-300">₦</span>
+                <input
+                  type="number"
+                  name="payment_amount"
+                  value={formData.payment_amount}
+                  onChange={handleInputChange}
+                  min="0"
+                  step="0.01"
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  required
+                  placeholder="Amount"
+                />
+              </div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 mt-2">
+                being the sum of the amount payable as shown on the front of this form, and the additional amount payable as shown in item (ii) above.
+              </label>
+            </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Bank name <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="bank_name"
-                        value={formData.bank_name}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Cheque number <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="cheque_number"
-                        value={formData.cheque_number}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Branch <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="branch"
-                        value={formData.branch}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                        required
-                      />
-                    </div>
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Bank name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="bank_name"
+                  value={formData.bank_name}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Cheque number
+                </label>
+                <input
+                  type="text"
+                  name="cheque_number"
+                  value={formData.cheque_number}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                />
+                <p className="text-xs text-red-500 mt-1">
+                  Provide cheque number only if payment was made by cheque
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Branch <span className="text-red-500"></span>
+                </label>
+                <input
+                  type="text"
+                  name="branch"
+                  value={formData.branch}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                
+                />
+
+                 <p className="text-xs text-red-500 mt-1">
+                  Provide branch name only if payment was made by cheque
+                </p>
+              </div>
+            </div>
+
+            {/* Disclaimer Box */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+              <div className="flex">
+                <Info className="h-5 w-5 text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
+                <div>
+                  <p className="text-blue-800 text-sm font-medium mb-1">Payment Information</p>
+                  <p className="text-blue-700 text-sm">
+                    Cheque number should only be provided if payment was made by cheque. 
+                    For electronic transfers (SWIFT, RTGS, NEFT), leave this field blank.
+                  </p>
                 </div>
               </div>
-            )}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
 
             {currentStep === 5 && formData.action_type === 'renunciation_partial' && (
               <div className="space-y-6">
@@ -1108,6 +1161,10 @@ const FormSubmissionPage = () => {
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     />
+
+                     <p className="text-xs text-red-500 mt-1">
+                  Provide cheque number only if payment was made by cheque
+                </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1120,6 +1177,10 @@ const FormSubmissionPage = () => {
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     />
+
+                       <p className="text-xs text-red-500 mt-1">
+                  Provide branch name only if payment was made by cheque
+                </p>
                   </div>
                 </div>
 
@@ -1252,7 +1313,7 @@ const FormSubmissionPage = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Branch <span className="text-red-500">*</span>
+                        Branch <span className="text-red-500"></span>
                       </label>
                       <input
                         type="text"
@@ -1261,8 +1322,11 @@ const FormSubmissionPage = () => {
                         onChange={handleInputChange}
                         placeholder="Enter branch name"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                        required
+                      
                       />
+                       <p className="text-xs text-red-500 mt-1">
+                  Provide branch name only if payment was made by cheque
+                </p>
                     </div>
 
                     <div>
