@@ -4,7 +4,7 @@ import { ArrowLeft, Download, Upload } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById } from '../services/api';
 import axios from 'axios';
-
+import { downloadFile } from '../services/api';
 const ShareholderDetailsPage = () => {
   const { id } = useParams();
   const [shareholder, setShareholder] = useState(null);
@@ -46,8 +46,8 @@ const handleDownloadPrefilledForm = async () => {
     setDownloading(true);
     toast.loading('Generating your pre-filled form...');
 
-    const response = await axios.post(
-      '/api/forms/generate-basic-pdf',
+    const response = await downloadFile(
+      
       {
         // Only basic shareholder info
         reg_account_number: shareholder.reg_account_number,
