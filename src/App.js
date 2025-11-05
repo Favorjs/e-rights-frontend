@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Header from './components/Header';
 import Footer from './components/Footer';
-// import HomePage from './pages/HomePage';
+import HomePage from './pages/HomePage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import ShareholderDetailsPage from './pages/ShareholderDetailsPage';
 import DigitalFormPage from './pages/DigitalFormPage';
@@ -13,7 +13,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
 import AdminLogin from './pages/AdminLogin';
 import ProtectedRoute from './components/ProtectedRoute';
-import ComingSoon from './pages/ComingSoon';
+// import ComingSoon from './pages/ComingSoon';
 
 function App() {
   return (
@@ -22,8 +22,8 @@ function App() {
         <Header />
         <main className="flex-1">
           <Routes>
-            {/* <Route path="/" element={<HomePage />} /> */}
-            <Route path="/" element={<ComingSoon />} />
+            <Route path="/" element={<HomePage />} />
+            {/* <Route path="/" element={<ComingSoon />} /> */}
             <Route path="/search-results" element={<SearchResultsPage />} />
             <Route path="/shareholder/:id" element={<ShareholderDetailsPage />} />
             <Route path="/digital-form/:shareholderId" element={<DigitalFormPage />} />
