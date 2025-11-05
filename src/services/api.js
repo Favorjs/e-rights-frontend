@@ -169,4 +169,17 @@ export const downloadFile = async (publicId, filename = null) => {
   });
   return response.data;
 };
+
+
+
+export const downloadBasicPdf = async (formData) => {
+  const response = await api.post('/api/forms/generate-basic-pdf', formData, {
+    responseType: 'blob',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  return response.data;
+};
+
 export default api;

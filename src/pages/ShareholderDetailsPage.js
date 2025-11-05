@@ -3,8 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Download, Upload } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById } from '../services/api';
-import axios from 'axios';
-import { downloadFile } from '../services/api';
+//  import axios from 'axios';
+ import { downloadBasicPdf } from '../services/api';
+// import { downloadFile } from '../services/api';
 const ShareholderDetailsPage = () => {
   const { id } = useParams();
   const [shareholder, setShareholder] = useState(null);
@@ -46,50 +47,45 @@ const handleDownloadPrefilledForm = async () => {
     setDownloading(true);
     toast.loading('Generating your pre-filled form...');
 
-    const response = await downloadFile(
-      
-      {
-        // Only basic shareholder info
-        reg_account_number: shareholder.reg_account_number,
-        name: shareholder.name,
-        holdings: shareholder.holdings,
-        rights_issue: shareholder.rights_issue,
-        amount_due: shareholder.amount_due
-      },
-      { 
-        responseType: 'blob',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const formData = {
+      reg_account_number: shareholder.reg_account_number,
+      name: shareholder.name,
+      holdings: shareholder.holdings,
+      rights_issue: shareholder.rights_issue,
+      amount_due: shareholder.amount_due
+    };
+
+    // Get the PDF blob from the API
+    const pdfBlob = await downloadBasicPdf(formData);
     
-    // Create blob and download
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
+    // Create a blob URL for the PDF
+    const url = window.URL.createObjectURL(new Blob([pdfBlob], { type: 'application/pdf' }));
+    
+    // Create a temporary link element
     const link = document.createElement('a');
     link.href = url;
-    link.download = `TIP_RIGHTS_${shareholder.reg_account_number}_${shareholder.name.replace(/\s+/g, '_')}.pdf`;
+    link.setAttribute('download', `TIP_RIGHTS_${shareholder.reg_account_number}_${shareholder.name.replace(/\s+/g, '_')}.pdf`);
     document.body.appendChild(link);
+    
+    // Trigger the download
     link.click();
     
     // Cleanup
     setTimeout(() => {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(link);
+      toast.dismiss();
+      toast.success('Pre-filled form downloaded successfully!');
     }, 100);
-    
-    toast.dismiss();
-    toast.success('Pre-filled form downloaded successfully!');
+
   } catch (error) {
     console.error('Download error:', error);
     toast.dismiss();
-    toast.error('Failed to download form. Please try again.');
+    toast.error(error.response?.data?.message || 'Failed to download form. Please try again.');
   } finally {
     setDownloading(false);
   }
 };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
