@@ -51,8 +51,8 @@ const HomePage = () => {
   const downloadForm = (formType) => {
     // Map form types to their corresponding Cloudinary URLs
     const formFiles = {
-      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/image/upload/v1761579323/TIP_RIGHTS_ISSUE_bzolop.pdf',
-      'Dematerialization Form': 'https://res.cloudinary.com/apelng/image/upload/v1761579323/TIP_DEMATERIALIZATION_FORM.pdf',
+      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1762418330/THE_INITIATES_PLC_2025_Right_Brokers_Docket_xwv82r.xls',
+      'Dematerialization Form': 'https://res.cloudinary.com/apelng/image/upload/v1762418562/FULL-DEMATERIAL-MIGRATION-FORM-1_1_mmibqe.pdf',
       'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1761666590/TIP_Rights_Circular_ledega.pdf',
       'Public Offer': 'https://res.cloudinary.com/apelng/image/upload/v1761666679/TIP_Public_Offer_bvnzju.pdf'
     };
