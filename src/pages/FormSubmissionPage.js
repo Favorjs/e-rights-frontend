@@ -667,9 +667,8 @@ const validateStep = (step) => {
               {/* Mobile View */}
               <div className="md:hidden space-y-3">
                 {[
-                  { bank: 'Wema Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' },
-                  { bank: 'Providus Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' },
-                  { bank: 'Taj Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0123456789' }
+                { bank: 'Providus Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '1308407124' },
+                      { bank: 'Taj Bank', account: 'The Initiates Plc Rights Proceeds Account', number: '0013161672' }
                 ].map((item, index) => (
                   <div key={index} className="bg-white p-3 rounded-lg shadow-xs">
                     <div className="mb-2">
