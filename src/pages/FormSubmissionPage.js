@@ -316,8 +316,8 @@ const validateStep = (step) => {
           return formData.additional_shares && 
                  formData.additional_amount && 
                  formData.payment_amount && 
-                 formData.bank_name && 
-                 formData.branch;
+                 formData.bank_name 
+           
         }
         
         // If only accepting full allotment (no additional shares), no further validation needed

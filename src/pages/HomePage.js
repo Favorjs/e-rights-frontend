@@ -212,7 +212,7 @@ const HomePage = () => {
                       <ol className="list-decimal list-inside space-y-1 ml-2">
                         <li>You can Download the Rights Circular on our website using this link <a href="https://tip.apel.com.ng" className="text-green-600 hover:underline" target="_blank" rel="noopener noreferrer">https://tip.apel.com.ng</a></li>
                        <li>Endorse the Rights Circular stating the units accepted and the units renounced.</li>
-  <li>Download the Branded IB Plc Rights Demat/Migration form from our website.</li>
+  <li>Download the Branded The Initiates PLC Rights Demat/Migration form from our website.</li>
   <li>Endorse the Dematerialization/Migration form stating units to be migrated/traded.</li>
   <li>The shareholder issues a cover letter authorizing the stockbroker to submit the executed forms and stating the units renounced/to be traded on the floor.</li>
   <li>Stockbroker submits the two forms to the Registrars with the cover letter for Migration to C.S.C.S.</li>
