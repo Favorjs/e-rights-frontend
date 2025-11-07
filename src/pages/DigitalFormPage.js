@@ -15,6 +15,8 @@ const DigitalFormPage = () => {
   const [receiptFile, setReceiptFile] = useState(null);
   const [paymentAccountNumber] = useState('23843234090');
 
+
+
   const {
     register,
     handleSubmit,
@@ -54,6 +56,10 @@ const DigitalFormPage = () => {
 
     fetchShareholder();
   }, [shareholderId, setValue]);
+
+
+
+
 
   const handleSignatureUpload = (event) => {
     const file = event.target.files[0];

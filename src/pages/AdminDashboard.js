@@ -332,17 +332,19 @@ const AdminDashboard = () => {
                   {activeTab === 'rights' ? (
                     <>
                       <th>CHN</th>
-                      <th>REG ACCOUNT</th>
-                      <th>NAME</th>
-                      <th>HOLDINGS</th>
-                      <th>RIGHTS ISSUE</th>
-                      <th>HOLDINGS AFTER</th>
-                      <th>ACCEPTANCE TYPE</th>
-                      <th>AMOUNT PAYABLE</th>
-                      <th>FILLED FORM</th>
-                      <th>RECEIPT</th>
-                      <th>ACTIONS</th>
-                    </>
+    <th>REG ACCOUNT</th>
+    <th>NAME</th>
+    <th>HOLDINGS</th>
+    <th>RIGHTS ISSUE</th>
+    <th>HOLDINGS AFTER</th>
+    <th>ACCEPTANCE TYPE</th>
+    <th>AMOUNT PAYABLE</th>
+    <th>ADDITIONAL SHARES</th>
+    <th>RENOUNCED SHARES</th>
+    <th>FILLED FORM</th>
+    <th>RECEIPT</th>
+    <th>ACTIONS</th>
+  </>
                   ) : (
                     <>
                       <th>REG ACCOUNT</th>
@@ -375,42 +377,74 @@ const AdminDashboard = () => {
                   (activeTab === 'rights' ? rightsSubmissions : submissions).map((submission) => (
                     <tr key={submission.id} className="table-row">
                       {activeTab === 'rights' ? (
-                        <>
-                          <td className="table-cell font-medium">{submission.chn}</td>
-                          <td className="table-cell font-medium">{submission.reg_account_number}</td>
-                          <td className="table-cell">{submission.name}</td>
-                          <td className="table-cell">{submission.holdings.toLocaleString()}</td>
-                          <td className="table-cell">{submission.rights_issue}</td>
-                          <td className="table-cell">{submission.holdings_after.toLocaleString()}</td>
-                          <td className="table-cell">{submission.action_type}</td>
-                          <td className="table-cell">₦{submission.amount_due.toLocaleString()}</td>
-                          
-                          <td className="table-cell">
-                            {submission.filled_form_path ? (
-                              <CheckCircle className="h-5 w-5 text-green-600" />
-                            ) : (
-                              <span className="text-gray-400">-</span>
-                            )}
-                          </td>
-                          <td className="table-cell">
-                            {submission.receipt_path ? (
-                              <CheckCircle className="h-5 w-5 text-green-600" />
-                            ) : (
-                              <span className="text-gray-400">-</span>
-                            )}
-                          </td>
-                          <td className="table-cell">
-                            <div className="flex space-x-2">
-                              <button
-                                onClick={() => navigate(`/admin/rights-submission/${submission.id}`)}
-                                className="text-blue-600 hover:text-blue-800"
-                                title="View Details"
-                              >
-                                <Eye className="h-4 w-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </>
+                     <>
+        <td className="table-cell font-medium">{submission.chn}</td>
+        <td className="table-cell font-medium">{submission.reg_account_number}</td>
+        <td className="table-cell">{submission.name}</td>
+        <td className="table-cell">{submission.holdings.toLocaleString()}</td>
+        <td className="table-cell">{submission.rights_issue}</td>
+        <td className="table-cell">{submission.holdings_after.toLocaleString()}</td>
+        <td className="table-cell">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+            submission.action_type === 'full_acceptance' 
+              ? 'bg-green-100 text-green-800' 
+              : 'bg-yellow-100 text-yellow-800'
+          }`}>
+            {submission.action_type === 'full_acceptance' ? 'Full Acceptance' : 'Renunciation/Partial'}
+          </span>
+        </td>
+        <td className="table-cell">₦{submission.amount_payable?.toLocaleString() || '0'}</td>
+        
+        {/* Additional Shares Column */}
+        <td className="table-cell">
+          {submission.apply_additional ? (
+            <span className="flex items-center text-green-600">
+              <CheckCircle className="h-4 w-4 mr-1" />
+              Yes ({submission.additional_shares?.toLocaleString() || '0'} shares)
+            </span>
+          ) : (
+            <span className="text-gray-400">No</span>
+          )}
+        </td>
+        
+        {/* Renounced Shares Column */}
+        <td className="table-cell">
+          {submission.shares_renounced && submission.shares_renounced > 0 ? (
+            <span className="flex items-center text-red-600">
+              <span className="mr-1">📤</span>
+              {submission.shares_renounced.toLocaleString()} shares
+            </span>
+          ) : (
+            <span className="text-gray-400">None</span>
+          )}
+        </td>
+        
+        <td className="table-cell">
+          {submission.filled_form_path ? (
+            <CheckCircle className="h-5 w-5 text-green-600" />
+          ) : (
+            <span className="text-gray-400">-</span>
+          )}
+        </td>
+        <td className="table-cell">
+          {submission.receipt_path ? (
+            <CheckCircle className="h-5 w-5 text-green-600" />
+          ) : (
+            <span className="text-gray-400">-</span>
+          )}
+        </td>
+        <td className="table-cell">
+          <div className="flex space-x-2">
+            <button
+              onClick={() => navigate(`/admin/rights-submission/${submission.id}`)}
+              className="text-blue-600 hover:text-blue-800"
+              title="View Details"
+            >
+              <Eye className="h-4 w-4" />
+            </button>
+          </div>
+        </td>
+      </>
                       ) : (
                         <>
                           <td className="table-cell font-medium">

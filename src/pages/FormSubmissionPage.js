@@ -111,6 +111,9 @@ const FormSubmissionPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [stockbrokers, setStockbrokers] = useState([]);
+  const [calculatedAmount, setCalculatedAmount] = useState(0);
+
+
   const [formData, setFormData] = useState({
     // Basic info (prefilled)
     reg_account_number: '',
@@ -119,6 +122,7 @@ const FormSubmissionPage = () => {
     rights_issue: '',
     holdings_after: '',
     amount_due: '',
+
     
     // Instructions
     instructions_read: false,
@@ -187,6 +191,47 @@ const FormSubmissionPage = () => {
     { id: 7, title: 'Signature & Receipt', description: 'Upload documents' },
     { id: 8, title: 'Summary & Submit', description: 'Review and final submission' }
   ];
+
+
+  // Add this useEffect to handle total payment calculation
+useEffect(() => {
+  // Calculate additional amount when additional shares change
+  if (formData.apply_additional && formData.additional_shares) {
+    const shares = parseFloat(formData.additional_shares) || 0;
+    const additionalAmount = (shares * 7).toFixed(2);
+    setCalculatedAmount(parseFloat(additionalAmount));
+    
+    // Update the form data
+    setFormData(prev => ({
+      ...prev,
+      additional_amount: additionalAmount
+    }));
+  } else {
+    setCalculatedAmount(0);
+    setFormData(prev => ({
+      ...prev,
+      additional_amount: ''
+    }));
+  }
+}, [formData.additional_shares, formData.apply_additional]);
+
+// Add this function to calculate total payment
+const calculateTotalPayment = () => {
+  const amountDue = parseFloat(formData.amount_due) || 0;
+  const additionalAmount = parseFloat(formData.additional_amount) || 0;
+  return (amountDue + additionalAmount).toFixed(2);
+};
+
+// Add this function to handle manual payment amount changes
+// const handlePaymentAmountChange = (e) => {
+//   const value = e.target.value;
+//   setFormData(prev => ({
+//     ...prev,
+//     payment_amount: value
+//   }));
+// };
+
+
 
   useEffect(() => {
     const fetchShareholder = async () => {
@@ -314,8 +359,7 @@ const validateStep = (step) => {
         // If applying for additional shares, validate those fields too
         if (formData.apply_additional) {
           return formData.additional_shares && 
-                 formData.additional_amount && 
-                 formData.payment_amount && 
+                
                  formData.bank_name 
            
         }
@@ -520,18 +564,18 @@ const validateStep = (step) => {
               </div>
               <div>
                 <span className="text-gray-600">Total Amount Payable:</span>
-                <p className="font-medium">₦{parseFloat(submittedForm.amount_payable).toLocaleString()}</p>
+                <p className="font-medium">₦{parseFloat(calculateTotalPayment(submittedForm)).toLocaleString()}</p>
               </div>
               <div>
                 <span className="text-gray-600">Submission Date:</span>
                 <p className="font-medium">{new Date(submittedForm.created_at).toLocaleDateString()}</p>
               </div>
-              <div>
+              {/* <div>
                 <span className="text-gray-600">Status:</span>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                   {submittedForm.status}
                 </span>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -900,7 +944,7 @@ const validateStep = (step) => {
               </div>
             )}
 
-     {currentStep === 5 && formData.action_type === 'full_acceptance' && (
+{currentStep === 5 && formData.action_type === 'full_acceptance' && (
   <div className="space-y-6">
     <div className="grid grid-cols-1 gap-4">
       <div className="flex items-start bg-blue-50 p-4 rounded-lg">
@@ -932,7 +976,7 @@ const validateStep = (step) => {
         </label>
       </div>
 
-      {/* Additional Shares Section - Only show if apply_additional is checked */}
+      {/* Additional Shares Section */}
       {formData.apply_additional && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
@@ -954,13 +998,11 @@ const validateStep = (step) => {
                 Additional amount payable at ₦7.00 per Share
               </label>
               <input
-                type="number"
+                type="text"
                 name="additional_amount"
-                value={formData.additional_amount}
-                onChange={handleInputChange}
-                min="0"
-                step="0.01"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                value={`₦${calculatedAmount.toLocaleString()}`}
+                readOnly
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50"
               />
             </div>
           </div>
@@ -978,98 +1020,96 @@ const validateStep = (step) => {
               I / We agree to accept the same or smaller number of additional shares in respect of which allotment may be made to me/us, in accordance with the Provisional Allotment Letter contained in the Rights Circular.
             </label>
           </div>
+        </>
+      )}
 
-          {/* Payment Section for Additional Shares */}
-          <div className="border-t pt-6 mt-6">
-            <h4 className="font-medium text-gray-900 mb-4 text-lg">Payment Details for Additional Shares</h4>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                I/We enclose my/our cheque/bank draft/evidence of transfer for <span className="text-red-500">*</span>
-              </label>
-              <div className="flex items-center">
-                <span className="mr-3 bg-gray-100 px-4 py-3 rounded-l-lg border border-r-0 border-gray-300">₦</span>
-                <input
-                  type="number"
-                  name="payment_amount"
-                  value={formData.payment_amount}
-                  onChange={handleInputChange}
-                  min="0"
-                  step="0.01"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  required
-                  placeholder="Amount"
-                />
-              </div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 mt-2">
-                being the sum of the amount payable as shown on the front of this form, and the additional amount payable as shown in item (ii) above.
-              </label>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+      {/* Payment Details Section */}
+      <div className="border-t pt-6 mt-6">
+        <h4 className="font-medium text-gray-900 mb-4 text-lg">Payment Details</h4>
+        
+        <div className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Bank name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="bank_name"
-                  value={formData.bank_name}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  required
-                />
+                <span className="text-blue-700 font-medium">Amount Due (Rights Issue):</span>
+                <p className="font-bold text-blue-900 mt-1">₦{(parseFloat(formData.amount_due) || 0).toLocaleString()}</p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cheque number
-                </label>
-                <input
-                  type="text"
-                  name="cheque_number"
-                  value={formData.cheque_number}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                />
-                <p className="text-xs text-red-500 mt-1">
-                  Provide cheque number only if payment was made by cheque
-                </p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Branch <span className="text-red-500"></span>
-                </label>
-                <input
-                  type="text"
-                  name="branch"
-                  value={formData.branch}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                
-                />
-
-                 <p className="text-xs text-red-500 mt-1">
-                  Provide branch name only if payment was made by cheque
-                </p>
-              </div>
-            </div>
-
-            {/* Disclaimer Box */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-              <div className="flex">
-                <Info className="h-5 w-5 text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
+              {formData.apply_additional && formData.additional_amount && (
                 <div>
-                  <p className="text-blue-800 text-sm font-medium mb-1">Payment Information</p>
-                  <p className="text-blue-700 text-sm">
-                    Cheque number should only be provided if payment was made by cheque. 
-                    For electronic transfers (SWIFT, RTGS, NEFT), leave this field blank.
-                  </p>
+                  <span className="text-blue-700 font-medium">Additional Amount:</span>
+                  <p className="font-bold text-blue-900 mt-1">₦{(parseFloat(formData.additional_amount) || 0).toLocaleString()}</p>
                 </div>
+              )}
+              <div className="md:col-span-2 border-t pt-3">
+                <span className="text-blue-700 font-medium text-lg">Total Payment Amount:</span>
+                <p className="font-bold text-blue-900 text-xl mt-1">₦{calculateTotalPayment().toLocaleString()}</p>
               </div>
             </div>
           </div>
-        </>
-      )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              I/We enclose my/our cheque/bank draft/evidence of transfer for <span className="text-red-500">*</span>
+            </label>
+            <div className="flex items-center max-w-md">
+              <span className="mr-3 bg-gray-100 px-4 py-3 rounded-l-lg border border-r-0 border-gray-300 font-medium">₦</span>
+              <input
+                type="text"
+                name="payment_amount"
+                value={`${calculateTotalPayment().toLocaleString()}`}
+                readOnly
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors font-bold text-gray-900 bg-gray-50"
+              />
+            </div>
+          </div>
+
+          {/* Payment Form Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Bank name {formData.apply_additional && formData.additional_shares > 0 && <span className="text-red-500">*</span>}
+              </label>
+              <input
+                type="text"
+                name="bank_name"
+                value={formData.bank_name}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Cheque number
+              </label>
+              <input
+                type="text"
+                name="cheque_number"
+                value={formData.cheque_number}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Provide cheque number only if payment was made by cheque
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Branch
+              </label>
+              <input
+                type="text"
+                name="branch"
+                value={formData.branch}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Provide branch name only if payment was made by cheque
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 )}
@@ -1324,7 +1364,7 @@ const validateStep = (step) => {
                       
                       />
                        <p className="text-xs text-red-500 mt-1">
-                  Provide branch name only if payment was made by cheque
+                
                 </p>
                     </div>
 
@@ -1578,6 +1618,11 @@ const validateStep = (step) => {
                           <span className="text-gray-600">Rights Issue:</span>
                           <p className="font-medium mt-1">{formData.rights_issue}</p>
                         </div>
+
+                         <div className="bg-white p-3 rounded-lg">
+                          <span className="text-gray-600">Amount Due:</span>
+                          <p className="font-medium mt-1">{formData.amount_due}</p>
+                        </div>
                       </div>
                     </div>
             
@@ -1623,15 +1668,15 @@ const validateStep = (step) => {
                                   <span className="text-gray-600">Additional Amount Payable:</span>
                                   <p className="font-medium mt-1">₦{parseFloat(formData.additional_amount || 0).toLocaleString()}</p>
                                 </div>
-                                <div className="bg-white p-3 rounded-lg">
+                                {/* <div className="bg-white p-3 rounded-lg">
                                   <span className="text-gray-600">Accept Smaller Allotment:</span>
                                   <p className="font-medium mt-1">{formData.accept_smaller_allotment ? 'Yes' : 'No'}</p>
-                                </div>
+                                </div> */}
                               </>
                             )}
                             <div className="bg-white p-3 rounded-lg">
                               <span className="text-gray-600">Payment Amount:</span>
-                              <p className="font-medium mt-1">₦{parseFloat(formData.payment_amount || 0).toLocaleString()}</p>
+                              <p className="font-medium mt-1">₦{calculateTotalPayment().toLocaleString()}</p>
                             </div>
                             <div className="bg-white p-3 rounded-lg">
                               <span className="text-gray-600">Bank:</span>

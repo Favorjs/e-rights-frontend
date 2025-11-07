@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Download} from 'lucide-react'; //dont forget to add upload
+import { ArrowLeft, Download,Upload} from 'lucide-react'; //dont forget to add upload
 import { toast } from 'react-hot-toast';
 import { getShareholderById } from '../services/api';
 //  import axios from 'axios';
@@ -221,23 +221,23 @@ const handleDownloadPrefilledForm = async () => {
             </div>
 
             {/* Vertical OR Divider - Only show on large screens */}
-            {/* <div className="hidden lg:flex flex-col items-center justify-center">
+            <div className="hidden lg:flex flex-col items-center justify-center">
               <div className="h-0.5 w-12 bg-gray-300"></div>
               <div className="px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-500 my-2">OR</div>
               <div className="h-0.5 w-12 bg-gray-300"></div>
-            </div> */}
+            </div>
 
             {/* Horizontal OR Divider - Only show on mobile */}
-            {/* <div className="lg:hidden flex items-center justify-center my-2">
+            <div className="lg:hidden flex items-center justify-center my-2">
               <div className="w-full flex items-center">
                 <div className="flex-1 h-0.5 bg-gray-300"></div>
                 <span className="px-3 text-sm font-medium text-gray-500">OR</span>
                 <div className="flex-1 h-0.5 bg-gray-300"></div>
               </div>
-            </div> */}
+            </div>
 
             {/* Submit Form Online */}
-            {/* <div className="flex-1 border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors bg-green-50">
+            <div className="flex-1 border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors bg-green-50">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Upload className="h-8 w-8 text-green-600" />
               </div>
@@ -269,7 +269,7 @@ const handleDownloadPrefilledForm = async () => {
                 <Upload className="h-4 w-4 mr-2" />
                 Submit Online
               </Link>
-            </div> */}
+            </div>
           </div>
 
           {/* Additional Information */}
