@@ -300,7 +300,7 @@ const handleMouseUp = () => {
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Amount Payable:</span>
-                  <p className="font-semibold">₦{submission.amount_due ? parseFloat(submission.amount_due).toLocaleString('en-NG', { minimumFractionDigits: 2 }) : '0.00'}</p>
+                  <p className="font-semibold">₦{submission.amount_payable ? parseFloat(submission.amount_payable).toLocaleString('en-NG', { minimumFractionDigits: 2 }) : '0.00'}</p>
                 </div>
                 <div>
                   <span className="text-blue-700 font-medium">Status:</span>
