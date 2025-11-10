@@ -294,37 +294,53 @@ const calculateTotalPayment = () => {
     }));
   };
 
-  const handleFileChange = (e, field, index = null) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.includes('image') && !file.type.includes('pdf')) {
-        toast.error('Please upload an image or PDF file');
-        return;
-      }
-      
-      // Validate file size (5MB limit)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('File size must be less than 5MB');
-        return;
-      }
-
-      if (field === 'signatures' && index !== null) {
-        // For joint signatures
-        const newSignatures = [...formData.signatures];
-        newSignatures[index] = file;
-        setFormData(prev => ({
-          ...prev,
-          signatures: newSignatures
-        }));
-      } else {
-        setFormData(prev => ({
-          ...prev,
-          [field]: file
-        }));
-      }
-    }
+// In your FormSubmissionPage.js, update the file validation
+const handleFileChange = (e, field, index = null) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  // Define allowed file types
+  const allowedTypes = {
+    receipt: ['image/jpeg', 'image/jpg', 'image/png'],
+    signatures: ['image/jpeg', 'image/jpg', 'image/png']
   };
+  
+  // Get the allowed types for this field
+  const fieldType = field === 'receipt' ? 'receipt' : 'signatures';
+  const allowed = allowedTypes[fieldType];
+  
+  // Validate file type
+  if (!allowed.includes(file.type)) {
+    toast.error(`Invalid file type. Please upload only JPG, JPEG, or PNG images.`);
+    e.target.value = ''; // Clear the file input
+    return;
+  }
+  
+  // Validate file size (5MB limit)
+  const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+  if (file.size > maxSize) {
+    toast.error('File size must be less than 5MB');
+    e.target.value = ''; // Clear the file input
+    return;
+  }
+  
+  // If all validations pass, update the form data
+  if (field === 'signatures' && index !== null) {
+    const newSignatures = [...formData.signatures];
+    newSignatures[index] = file;
+    setFormData(prev => ({
+      ...prev,
+      signatures: newSignatures
+    }));
+    toast.success(`Signature ${index + 1} uploaded successfully`);
+  } else {
+    setFormData(prev => ({
+      ...prev,
+      [field]: file
+    }));
+    toast.success(`${field === 'receipt' ? 'Receipt' : 'Signature'} uploaded successfully`);
+  }
+};
 
   const addSignatureField = () => {
     setFormData(prev => ({
@@ -1467,7 +1483,7 @@ const validateStep = (step) => {
                         type="file"
                         id="receipt"
                         name="receipt"
-                        accept=".pdf,.jpg,.jpeg,.png"
+                        accept="image/jpeg,image/jpg,image/png"
                         onChange={(e) => handleFileChange(e, 'receipt')}
                         className="hidden"
                         required
@@ -1485,7 +1501,9 @@ const validateStep = (step) => {
                           <div className="text-gray-600">
                             <Receipt className="h-12 w-12 mx-auto mb-3" />
                             <p className="font-medium">Upload payment receipt</p>
-                            <p className="text-sm text-gray-500">PDF, JPG, or PNG format</p>
+                         <p className="text-sm text-gray-500">
+  JPG, JPEG, PNG format Only! (Max 5MB)
+</p>
                           </div>
                         )}
                       </label>
@@ -1506,7 +1524,7 @@ const validateStep = (step) => {
                           type="file"
                           id="signature_single"
                           name="signature_single"
-                          accept=".pdf,.jpg,.jpeg,.png"
+                          accept="image/jpeg,image/jpg,image/png" 
                           onChange={(e) => handleFileChange(e, 'signatures', 0)}
                           className="hidden"
                           required
@@ -1524,7 +1542,11 @@ const validateStep = (step) => {
                             <div className="text-gray-600">
                               <FileText className="h-12 w-12 mx-auto mb-3" />
                               <p className="font-medium">Upload signature file</p>
-                              <p className="text-sm text-gray-500">PDF, JPG, or PNG format</p>
+                            <p className="text-sm text-gray-500 mt-2">
+  {formData.signature_type === 'single' 
+    ? 'Provide your signature (scan or clear photo) - JPG, JPEG, or PNG only' 
+    : 'Each joint allottee must provide their signature - JPG, JPEG, or PNG only'}
+</p>
                             </div>
                           )}
                         </label>
@@ -1537,7 +1559,7 @@ const validateStep = (step) => {
                               type="file"
                               id={`signature_${index}`}
                               name={`signature_${index}`}
-                              accept=".pdf,.jpg,.jpeg,.png"
+                              accept="image/jpeg,image/jpg,image/png"
                               onChange={(e) => handleFileChange(e, 'signatures', index)}
                               className="hidden"
                               required
