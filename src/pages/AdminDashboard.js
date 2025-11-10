@@ -393,19 +393,32 @@ const AdminDashboard = () => {
             {submission.action_type === 'full_acceptance' ? 'Full Acceptance' : 'Renunciation/Partial'}
           </span>
         </td>
-        <td className="table-cell">₦{submission.amount_payable?.toLocaleString() || '0'}</td>
+        {/* <td className="table-cell">₦{submission.amount_payable?.toLocaleString() || '0'}</td> */}
         
-        {/* Additional Shares Column */}
+ {/* <div>
+                  <span className="text-blue-700 font-medium">Amount Payable:</span>
+                  <p className="font-semibold">₦{submission.amount_payable ? parseFloat(submission.amount_payable).toLocaleString('en-NG', { minimumFractionDigits: 2 }) : '0.00'}</p>
+                </div> */}
+
         <td className="table-cell">
-          {submission.apply_additional ? (
-            <span className="flex items-center text-green-600">
-              <CheckCircle className="h-4 w-4 mr-1" />
-              Yes ({submission.additional_shares?.toLocaleString() || '0'} shares)
-            </span>
-          ) : (
-            <span className="text-gray-400">No</span>
-          )}
-        </td>
+  ₦{submission.amount_payable 
+    ? parseFloat(submission.amount_payable).toLocaleString('en-NG', { 
+
+        maximumFractionDigits: 2 
+      }) 
+    : '0.00'}
+</td>
+       {/* Additional Shares Column */}
+<td className="table-cell">
+  {submission.apply_additional ? (
+    <span className="flex items-center text-green-600">
+      <CheckCircle className="h-4 w-4 mr-1" />
+      Yes ({submission.additional_shares?.toLocaleString() || '0'} shares)
+    </span>
+  ) : (
+    <span className="text-gray-400">No</span>
+  )}
+</td>
         
         {/* Renounced Shares Column */}
         <td className="table-cell">
