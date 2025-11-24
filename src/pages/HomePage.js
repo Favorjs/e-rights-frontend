@@ -53,7 +53,7 @@ const HomePage = () => {
     const formFiles = {
       'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1762418330/THE_INITIATES_PLC_2025_Right_Brokers_Docket_xwv82r.xls',
       'Dematerialization Form': 'https://res.cloudinary.com/apelng/image/upload/v1762418562/FULL-DEMATERIAL-MIGRATION-FORM-1_1_mmibqe.pdf',
-      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1761666590/TIP_Rights_Circular_ledega.pdf',
+      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1763988769/TIP_Rights_Circular_ledega_b_zke5hk.pdf',
       'Public Offer': 'https://res.cloudinary.com/apelng/image/upload/v1761666679/TIP_Public_Offer_bvnzju.pdf'
     };
 
