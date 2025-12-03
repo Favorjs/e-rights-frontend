@@ -325,6 +325,14 @@ const AdminDashboard = () => {
             </button>
           </div>
           
+          {activeTab === 'rights' && (
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <strong>Note:</strong> Scroll horizontally to view all columns. All data is included in the exported CSV file.
+              </p>
+            </div>
+          )}
+          
           <div className="table-container">
             <table className="table">
               <thead className="table-header">
@@ -332,19 +340,26 @@ const AdminDashboard = () => {
                   {activeTab === 'rights' ? (
                     <>
                       <th>CHN</th>
-    <th>REG ACCOUNT</th>
-    <th>NAME</th>
-    <th>HOLDINGS</th>
-    <th>RIGHTS ISSUE</th>
-    <th>HOLDINGS AFTER</th>
-    <th>ACCEPTANCE TYPE</th>
-    <th>AMOUNT PAYABLE</th>
-    <th>ADDITIONAL SHARES</th>
-    <th>RENOUNCED SHARES</th>
-    <th>FILLED FORM</th>
-    <th>RECEIPT</th>
-    <th>ACTIONS</th>
-  </>
+                      <th>REG ACCOUNT</th>
+                      <th>BVN</th>
+                      <th>PHONE NUMBER</th>
+                      <th>EMAIL ADDRESS</th>
+                      <th>NAME</th>
+                      <th>ALLOTED RIGHTS</th>
+                      <th>SHARES ACCEPTED</th>
+                      <th>ADDITIONAL SHARES</th>
+                      <th>TOTAL SHARES ACCEPTED & PAID</th>
+                      <th>VALUE OF ORDINARY SHARES (N)</th>
+                      <th>PAYMENT METHOD</th>
+                      <th>HOLDINGS</th>
+                      <th>HOLDINGS AFTER</th>
+                      <th>ACCEPTANCE TYPE</th>
+                      <th>AMOUNT PAYABLE</th>
+                      <th>RENOUNCED SHARES</th>
+                      <th>FILLED FORM</th>
+                      <th>RECEIPT</th>
+                      <th>ACTIONS</th>
+                    </>
                   ) : (
                     <>
                       <th>REG ACCOUNT</th>
@@ -362,14 +377,14 @@ const AdminDashboard = () => {
               <tbody className="table-body">
                 {loading ? (
                   <tr>
-                    <td colSpan={activeTab === 'rights' ? 11 : 8} className="table-cell text-center py-8">
+                    <td colSpan={activeTab === 'rights' ? 20 : 8} className="table-cell text-center py-8">
                       <div className="spinner mx-auto mb-2"></div>
                       <p className="text-gray-600">Loading submissions...</p>
                     </td>
                   </tr>
                 ) : (activeTab === 'rights' ? rightsSubmissions : submissions).length === 0 ? (
                   <tr>
-                    <td colSpan={activeTab === 'rights' ? 11 : 8} className="table-cell text-center py-8">
+                    <td colSpan={activeTab === 'rights' ? 20 : 8} className="table-cell text-center py-8">
                       <p className="text-gray-600">No submissions found</p>
                     </td>
                   </tr>
@@ -378,12 +393,46 @@ const AdminDashboard = () => {
                     <tr key={submission.id} className="table-row">
                       {activeTab === 'rights' ? (
                      <>
-        <td className="table-cell font-medium">{submission.chn}</td>
-        <td className="table-cell font-medium">{submission.reg_account_number}</td>
-        <td className="table-cell">{submission.name}</td>
-        <td className="table-cell">{submission.holdings.toLocaleString()}</td>
-        <td className="table-cell">{submission.rights_issue}</td>
-        <td className="table-cell">{submission.holdings_after.toLocaleString()}</td>
+        <td className="table-cell font-medium">{submission.chn || '-'}</td>
+        <td className="table-cell font-medium">{submission.reg_account_number || '-'}</td>
+        <td className="table-cell">{submission.bvn || '-'}</td>
+        <td className="table-cell">{submission.phone_number || '-'}</td>
+        <td className="table-cell">{submission.email || '-'}</td>
+        <td className="table-cell">{submission.name || '-'}</td>
+        <td className="table-cell">{submission.rights_issue ? submission.rights_issue.toLocaleString() : '-'}</td>
+        <td className="table-cell">{submission.shares_accepted ? submission.shares_accepted.toLocaleString() : '0'}</td>
+        <td className="table-cell">
+          {submission.apply_additional ? (
+            <span className="flex items-center text-green-600">
+              <CheckCircle className="h-4 w-4 mr-1" />
+              {submission.additional_shares ? submission.additional_shares.toLocaleString() : '0'} shares
+            </span>
+          ) : (
+            <span className="text-gray-400">No</span>
+          )}
+        </td>
+        <td className="table-cell">
+          {(() => {
+            const holdings = parseFloat(submission.holdings || 0);
+            const sharesAccepted = parseFloat(submission.shares_accepted || 0);
+            const additionalShares = parseFloat(submission.additional_shares || 0);
+            const sharesRenounced = parseFloat(submission.shares_renounced || 0);
+            const total = holdings + sharesAccepted + additionalShares - sharesRenounced;
+            return total.toLocaleString();
+          })()}
+        </td>
+        <td className="table-cell">
+          ₦{submission.additional_amount 
+            ? parseFloat(submission.additional_amount).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) 
+            : '0.00'}
+        </td>
+        <td className="table-cell">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            {submission.payment_method || 'Cash'}
+          </span>
+        </td>
+        <td className="table-cell">{submission.holdings ? submission.holdings.toLocaleString() : '-'}</td>
+        <td className="table-cell">{submission.holdings_after ? submission.holdings_after.toLocaleString() : '-'}</td>
         <td className="table-cell">
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
             submission.action_type === 'full_acceptance' 
@@ -393,34 +442,11 @@ const AdminDashboard = () => {
             {submission.action_type === 'full_acceptance' ? 'Full Acceptance' : 'Renunciation/Partial'}
           </span>
         </td>
-        {/* <td className="table-cell">₦{submission.amount_payable?.toLocaleString() || '0'}</td> */}
-        
- {/* <div>
-                  <span className="text-blue-700 font-medium">Amount Payable:</span>
-                  <p className="font-semibold">₦{submission.amount_payable ? parseFloat(submission.amount_payable).toLocaleString('en-NG', { minimumFractionDigits: 2 }) : '0.00'}</p>
-                </div> */}
-
         <td className="table-cell">
-  ₦{submission.amount_payable 
-    ? parseFloat(submission.amount_payable).toLocaleString('en-NG', { 
-
-        maximumFractionDigits: 2 
-      }) 
-    : '0.00'}
-</td>
-       {/* Additional Shares Column */}
-<td className="table-cell">
-  {submission.apply_additional ? (
-    <span className="flex items-center text-green-600">
-      <CheckCircle className="h-4 w-4 mr-1" />
-      Yes ({submission.additional_shares?.toLocaleString() || '0'} shares)
-    </span>
-  ) : (
-    <span className="text-gray-400">No</span>
-  )}
-</td>
-        
-        {/* Renounced Shares Column */}
+          ₦{submission.amount_payable 
+            ? parseFloat(submission.amount_payable).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) 
+            : '0.00'}
+        </td>
         <td className="table-cell">
           {submission.shares_renounced && submission.shares_renounced > 0 ? (
             <span className="flex items-center text-red-600">
@@ -431,7 +457,6 @@ const AdminDashboard = () => {
             <span className="text-gray-400">None</span>
           )}
         </td>
-        
         <td className="table-cell">
           {submission.filled_form_path ? (
             <CheckCircle className="h-5 w-5 text-green-600" />
