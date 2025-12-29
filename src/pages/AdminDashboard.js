@@ -177,6 +177,13 @@ const AdminDashboard = () => {
     }
   };
 
+  // Calculate total value of ordinary shares applied for (base rights + additional)
+  const calculateValueOfOrdinaryShares = (submission) => {
+    const baseAmount = parseFloat(submission.amount_due || 0);
+    const additionalAmount = parseFloat(submission.additional_amount || 0);
+    return baseAmount + additionalAmount;
+  };
+
   const handleFilterChange = (value) => {
     setRightsClaimingFilter(value);
     setCurrentPage(1);
@@ -339,6 +346,7 @@ const AdminDashboard = () => {
                 <tr>
                   {activeTab === 'rights' ? (
                     <>
+                      <th>SUBSCRIPTION DATE</th>
                       <th>CHN</th>
                       <th>REG ACCOUNT</th>
                       <th>BVN</th>
@@ -393,6 +401,8 @@ const AdminDashboard = () => {
                     <tr key={submission.id} className="table-row">
                       {activeTab === 'rights' ? (
                      <>
+                     
+        <td className="table-cell font-medium">{submission.created_at ? new Date(submission.created_at).toLocaleString('en-NG', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '-'}</td>
         <td className="table-cell font-medium">{submission.chn || '-'}</td>
         <td className="table-cell font-medium">{submission.reg_account_number || '-'}</td>
         <td className="table-cell">{submission.bvn || '-'}</td>
@@ -422,9 +432,10 @@ const AdminDashboard = () => {
           })()}
         </td>
         <td className="table-cell">
-          ₦{submission.additional_amount 
-            ? parseFloat(submission.additional_amount).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) 
-            : '0.00'}
+          ₦{calculateValueOfOrdinaryShares(submission).toLocaleString('en-NG', { 
+            minimumFractionDigits: 2, 
+            maximumFractionDigits: 2 
+          })}
         </td>
         <td className="table-cell">
           <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
