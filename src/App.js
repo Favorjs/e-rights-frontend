@@ -10,41 +10,20 @@ import DigitalFormPage from './pages/DigitalFormPage';
 import FormSubmissionPage from './pages/FormSubmissionPage';
 import RightsSubmissionDetailsPage from './pages/RightsSubmissionDetailsPage';
 import AdminDashboard from './pages/AdminDashboard';
+import RightsClosedPage from './pages/RightsClosedPage';
 import './App.css';
 import AdminLogin from './pages/AdminLogin';
 import ProtectedRoute from './components/ProtectedRoute';
-// import ComingSoon from './pages/ComingSoon';
 
 function App() {
   return (
     <Router>
       <div className="App min-h-screen bg-gray-50">
-        <Header />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            {/* <Route path="/" element={<ComingSoon />} /> */}
-            <Route path="/search-results" element={<SearchResultsPage />} />
-            <Route path="/shareholder/:id" element={<ShareholderDetailsPage />} />
-            <Route path="/digital-form/:shareholderId" element={<DigitalFormPage />} />
-            <Route path="/form-submission/:id" element={<FormSubmissionPage />} />
-            <Route path="/admin/rights-submission/:id" element={<RightsSubmissionDetailsPage />} />
-
-            {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
-            {/* <Route path="/admin" element={<AdminDashboard />} /> */}
-             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route 
-              path="/admin" 
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } 
-            />
-          </Routes>
-        </main>
-        <Footer />
-        <Toaster 
+        <Routes>
+          {/* All routes redirect to the Closed Page */}
+          <Route path="*" element={<RightsClosedPage />} />
+        </Routes>
+        <Toaster
           position="top-right"
           toastOptions={{
             duration: 4000,
