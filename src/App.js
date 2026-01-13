@@ -20,7 +20,16 @@ function App() {
     <Router>
       <div className="App min-h-screen bg-gray-50">
         <Routes>
-          {/* All routes redirect to the Closed Page */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          {/* All other routes redirect to the Closed Page */}
           <Route path="*" element={<RightsClosedPage />} />
         </Routes>
         <Toaster
