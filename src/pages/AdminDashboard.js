@@ -366,7 +366,9 @@ const AdminDashboard = () => {
                       <th>RENOUNCED SHARES</th>
                       <th>FILLED FORM</th>
                       <th>RECEIPT</th>
+                        <th>PAYMENT BANK</th>
                       <th>ACTIONS</th>
+                    
                     </>
                   ) : (
                     <>
@@ -482,6 +484,7 @@ const AdminDashboard = () => {
             <span className="text-gray-400">-</span>
           )}
         </td>
+              <td className="table-cell">{submission.bank_name_edividend || '-'}</td>
         <td className="table-cell">
           <div className="flex space-x-2">
             <button
