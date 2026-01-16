@@ -8,7 +8,7 @@ import { Toaster } from 'react-hot-toast';
 // import ShareholderDetailsPage from './pages/ShareholderDetailsPage';
 // import DigitalFormPage from './pages/DigitalFormPage';
 // import FormSubmissionPage from './pages/FormSubmissionPage';
-// import RightsSubmissionDetailsPage from './pages/RightsSubmissionDetailsPage';
+import RightsSubmissionDetailsPage from './pages/RightsSubmissionDetailsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import RightsClosedPage from './pages/RightsClosedPage';
 import './App.css';
@@ -22,10 +22,20 @@ function App() {
         <Routes>
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route
-            path="/admin"
+            path="/admin/rights-submission/:id"
+            element={
+              <ProtectedRoute>
+                <RightsSubmissionDetailsPage />
+              </ProtectedRoute>
+            }
+          />
+         
+          <Route
+            path="/admin/*"
             element={
               <ProtectedRoute>
                 <AdminDashboard />
+
               </ProtectedRoute>
             }
           />
