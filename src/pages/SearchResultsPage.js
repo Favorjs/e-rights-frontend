@@ -7,7 +7,7 @@ const SearchResultsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { searchTerm } = location.state || {};
-  
+
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -20,7 +20,7 @@ const SearchResultsPage = () => {
   useEffect(() => {
     const fetchSearchResults = async () => {
       if (!searchTerm) return;
-      
+
       try {
         setLoading(true);
         const response = await searchShareholders(
@@ -29,7 +29,7 @@ const SearchResultsPage = () => {
           pagination.limit
         );
         const data = response;
-        
+
         if (data.success) {
           setSearchResults(data.data);
           setPagination(prev => ({
@@ -44,10 +44,10 @@ const SearchResultsPage = () => {
         setLoading(false);
       }
     };
-  
+
     fetchSearchResults();
   }, [searchTerm, pagination.page, pagination.limit]); // All dependencies declared
-  
+
   const handleSelectShareholder = (shareholder) => {
     navigate(`/shareholder/${shareholder.id}`);
   };
@@ -60,11 +60,15 @@ const SearchResultsPage = () => {
 
   if (!searchTerm) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600 mb-4">No search term provided.</p>
-          <Link to="/" className="btn-primary">
-            Back to Search
+      <div className="App flex items-center justify-center p-8">
+        <div className="card max-w-md w-full p-12 text-center animate-fade-in">
+          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <ArrowLeft className="h-8 w-8 text-slate-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">No data found</h2>
+          <p className="text-slate-500 mb-8">It seems you reached this page without a valid search query.</p>
+          <Link to="/" className="btn-primary w-full py-3">
+            Go back to search
           </Link>
         </div>
       </div>
@@ -73,152 +77,147 @@ const SearchResultsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600 mb-4">Loading search results...</p>
+      <div className="App flex items-center justify-center p-8">
+        <div className="text-center animate-pulse">
+          <div className="loading-spinner h-12 w-12 mx-auto mb-4 border-t-emerald-600"></div>
+          <p className="text-slate-600 font-semibold tracking-wide">Syncing with database...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
-        <div className="mb-6">
-          <Link 
-            to="/" 
-            className="inline-flex items-center text-green-600 hover:text-green-700 mb-2"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Search
-          </Link>
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <span className="text-green-600">Search</span>
-            <span>/</span>
-            <span>Search Results</span>
+    <div className="App bg-slate-50/50">
+      <div className="container-custom py-12">
+        {/* Navigation & Context */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+          <div className="animate-fade-in">
+            <Link
+              to="/"
+              className="inline-flex items-center text-sm font-bold text-emerald-700 hover:text-emerald-800 mb-4 group transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+              BACK TO PORTAL
+            </Link>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
+              Search Results
+            </h1>
+            <p className="text-slate-500 mt-2 font-medium">
+              Found <span className="text-emerald-700 font-bold">{pagination.total}</span> records matching "{searchTerm}"
+            </p>
+          </div>
+
+          <div className="flex items-center bg-white border border-slate-200 px-4 py-2 rounded-full text-xs font-bold text-slate-500 shadow-sm">
+            <span className="text-emerald-600 uppercase tracking-widest">Database</span>
+            <span className="mx-2 opacity-30">/</span>
+            <span className="uppercase tracking-widest">Query results</span>
           </div>
         </div>
 
-        {/* Header */}
-        <div className="card mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Search Results</h1>
-          <p className="text-gray-600">
-            Found {pagination.total} shareholder(s) matching "{searchTerm}"
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            Page {pagination.page} of {pagination.totalPages}
-          </p>
-        </div>
-
-        {/* Results */}
-        <div className="space-y-4 mb-6">
+        {/* Results List */}
+        <div className="grid gap-4 mb-10">
           {searchResults.length > 0 ? (
-            searchResults.map((shareholder) => (
-              <div 
+            searchResults.map((shareholder, index) => (
+              <div
                 key={shareholder.id}
-                className="card hover:shadow-lg transition-shadow cursor-pointer"
+                style={{ animationDelay: `${index * 50}ms` }}
+                className="card group hover:border-emerald-200 hover:shadow-md transition-all cursor-pointer animate-fade-in flex flex-col md:flex-row md:items-center justify-between p-6 md:p-8"
                 onClick={() => handleSelectShareholder(shareholder)}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                      <User className="h-6 w-6 text-green-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {shareholder.name}
-                      </h3>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
-                        <div className="flex items-center space-x-1">
-                          <Hash className="h-4 w-4" />
-                          <span>{shareholder.reg_account_number}</span>
-                        </div>
-                        {/* <span>•</span>
-                        <span>{shareholder.holdings.toLocaleString()} shares</span> */}
-                        {/* <span>•</span>
-                        <span>{shareholder.rights_issue} rights</span> */}
+                <div className="flex items-center space-x-6">
+                  <div className="w-14 h-14 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100 group-hover:bg-emerald-50 group-hover:border-emerald-100 transition-colors">
+                    <User className="h-6 w-6 text-slate-400 group-hover:text-emerald-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                      {shareholder.name}
+                    </h3>
+                    <div className="flex flex-wrap items-center mt-2 gap-y-2">
+                      <div className="flex items-center text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md mr-4">
+                        <Hash className="h-3 w-3 mr-1.5" />
+                        {shareholder.reg_account_number}
                       </div>
+                      <span className="status-badge status-completed text-[10px]">Active Shareholder</span>
                     </div>
                   </div>
+                </div>
+
+                <div className="mt-6 md:mt-0 flex items-center space-x-4">
+                  <div className="hidden md:block text-right mr-4">
+                    <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Account ID</p>
+                    <p className="text-sm font-bold text-slate-700">{shareholder.id.toString().padStart(6, '0')}</p>
+                  </div>
+                  <button className="btn-outline border-slate-200 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 w-full md:w-auto">
+                    View Records
+                  </button>
                 </div>
               </div>
             ))
           ) : (
-            <div className="card text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <User className="h-8 w-8 text-gray-400" />
+            <div className="card p-16 text-center border-dashed bg-slate-50/30">
+              <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <User className="h-8 w-8 text-slate-300" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Shareholders Found</h3>
-              <p className="text-gray-600 mb-4">
-                No shareholders found matching "{searchTerm}". Please try a different search term.
+              <h3 className="text-xl font-bold text-slate-900 mb-2">No records match your search</h3>
+              <p className="text-slate-500 max-w-sm mx-auto mb-8">
+                We couldn't find any shareholders matching "{searchTerm}". Please verify the spelling and try again.
               </p>
-              <Link to="/" className="btn-primary">
-                Try Another Search
+              <Link to="/" className="btn-secondary px-8">
+                Return to Search Portal
               </Link>
             </div>
           )}
         </div>
 
-        {/* Pagination */}
+        {/* Global Pagination */}
         {pagination.totalPages > 1 && (
-          <div className="flex items-center justify-between border-t border-gray-200 pt-6">
-            <button
-              onClick={() => handlePageChange(pagination.page - 1)}
-              disabled={pagination.page === 1}
-              className={`inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium ${pagination.page === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-            >
-              <ChevronLeft className="h-5 w-5" />
-              Previous
-            </button>
-            
-            <div className="hidden md:flex space-x-2">
-              {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                // Show pages around current page
-                let pageNum;
-                if (pagination.totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (pagination.page <= 3) {
-                  pageNum = i + 1;
-                } else if (pagination.page >= pagination.totalPages - 2) {
-                  pageNum = pagination.totalPages - 4 + i;
-                } else {
-                  pageNum = pagination.page - 2 + i;
-                }
-                
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => handlePageChange(pageNum)}
-                    className={`px-4 py-2 border text-sm font-medium rounded-md ${pagination.page === pageNum ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-              
-              {pagination.totalPages > 5 && pagination.page < pagination.totalPages - 2 && (
-                <span className="px-4 py-2 text-sm text-gray-700">...</span>
-              )}
-              
-              {pagination.totalPages > 5 && pagination.page < pagination.totalPages - 2 && (
-                <button
-                  onClick={() => handlePageChange(pagination.totalPages)}
-                  className={`px-4 py-2 border text-sm font-medium rounded-md ${pagination.page === pagination.totalPages ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}`}
-                >
-                  {pagination.totalPages}
-                </button>
-              )}
+          <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-slate-200 gap-6">
+            <p className="text-sm font-medium text-slate-500 order-2 md:order-1">
+              Showing page <span className="text-slate-900 font-bold">{pagination.page}</span> of <span className="text-slate-900 font-bold">{pagination.totalPages}</span>
+            </p>
+
+            <div className="flex items-center space-x-2 order-1 md:order-2">
+              <button
+                onClick={() => handlePageChange(pagination.page - 1)}
+                disabled={pagination.page === 1}
+                className="p-2 border border-slate-300 rounded-md hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="h-5 w-5 text-slate-600" />
+              </button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (pagination.totalPages <= 5) pageNum = i + 1;
+                  else if (pagination.page <= 3) pageNum = i + 1;
+                  else if (pagination.page >= pagination.totalPages - 2) pageNum = pagination.totalPages - 4 + i;
+                  else pageNum = pagination.page - 2 + i;
+
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`min-w-[40px] h-10 flex items-center justify-center px-3 rounded-md text-sm font-bold transition-all ${pagination.page === pageNum
+                        ? 'bg-emerald-700 text-white shadow-sm'
+                        : 'text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200'
+                        }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => handlePageChange(pagination.page + 1)}
+                disabled={pagination.page === pagination.totalPages}
+                className="p-2 border border-slate-300 rounded-md hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                aria-label="Next page"
+              >
+                <ChevronRight className="h-5 w-5 text-slate-600" />
+              </button>
             </div>
-            
-            <button
-              onClick={() => handlePageChange(pagination.page + 1)}
-              disabled={pagination.page === pagination.totalPages}
-              className={`inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium ${pagination.page === pagination.totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-            >
-              Next
-              <ChevronRight className="h-5 w-5" />
-            </button>
           </div>
         )}
       </div>

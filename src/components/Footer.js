@@ -3,30 +3,46 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Navigation Links */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-          <div className="flex flex-col sm:flex-row items-center gap-6 mb-4 md:mb-0">
-            <Link to="/faq" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-              FAQ
-            </Link>
-            <Link to="mailto:registrars@apel.ng" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-              Contact Us
-            </Link>
+    <footer className="bg-slate-900 text-slate-400 py-16 border-t border-slate-800">
+      <div className="container-custom">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          {/* Brand Column */}
+          <div className="md:col-span-2">
+            <h3 className="text-white text-lg font-bold mb-4">APEL CAPITAL REGISTRARS</h3>
+            <p className="text-sm leading-relaxed max-w-sm">
+              Providing world-class registrar services and solutions.
+              We are committed to excellence in shareholder management and corporate registration.
+            </p>
           </div>
-          <div className="text-sm text-gray-300">
-            <span className="font-semibold">THE INITIATES PLC</span>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">Quick Links</h4>
+            <ul className="space-y-4 text-sm">
+              <li><Link to="/" className="hover:text-emerald-500 transition-colors">Home</Link></li>
+              <li><a href="https://apel.com.ng" className="hover:text-emerald-500 transition-colors">Main Website</a></li>
+              <li><a href="#" className="hover:text-emerald-500 transition-colors">Contact Support</a></li>
+            </ul>
+          </div>
+
+          {/* Legal/Regulatory */}
+          <div>
+            <h4 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">Regulatory</h4>
+            <ul className="space-y-4 text-sm">
+              <li><span className="text-slate-500">SEC Registered</span></li>
+              <li><span className="text-slate-500">ISO Certified</span></li>
+            </ul>
           </div>
         </div>
-        
-        {/* Copyright */}
-        <div className="border-t border-gray-700 pt-4">
-          <p className="text-center text-sm text-gray-400">
-            2025 All Rights Reserved. APEL CAPITAL REGISTRARS
-            <br />
-            APEL is registered and regulated by the Securities and Exchange Commission, Nigeria.
+
+        <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <p className="text-xs">
+            &copy; {new Date().getFullYear()} APEL Capital Registrars Limited. All rights reserved.
           </p>
+          <div className="flex space-x-6 text-xs">
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+          </div>
         </div>
       </div>
     </footer>

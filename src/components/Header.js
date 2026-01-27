@@ -1,34 +1,45 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
-import logo2 from '../assets/images/tip-logo.png';
+import logo2 from '../assets/images/linkage.png';
 
 const Header = () => {
-
   return (
-    <header className="bg-gray-100 text-gray-900 border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Left: Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <img
-              src={logo}
-              alt="APEL CAPITAL REGISTRARS"
-              className="h-20 sm:h-20 md:h-22 w-auto object-contain"
-            />
-          </Link>
+    <header className="sticky top-0 z-50 glass border-b border-slate-200">
+      <div className="container-custom">
+        <div className="flex items-center justify-between h-20">
+          {/* Left: Logos Container */}
+          <div className="flex items-center space-x-3 sm:space-x-8">
+            <Link to="/" className="flex items-center group">
+              <img
+                src={logo}
+                alt="APEL CAPITAL REGISTRARS"
+                className="h-9 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+            </Link>
 
-          {/* Second Logo */}
-          <div className="ml-6">
-            <img
-              src={logo2}
-              alt="TIP"
-              className="h-16 w-auto object-contain"
-            />
+            <div className="h-6 sm:h-8 w-px bg-slate-200"></div>
+
+            <div className="flex items-center">
+              <img
+                src={logo2}
+                alt="Linkage Assurance"
+                className="h-7 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity"
+              />
+            </div>
+          </div>
+
+          {/* Right: Navigation/Actions */}
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <Link to="/" className="text-[10px] sm:text-sm font-bold text-slate-600 hover:text-emerald-700 transition-colors uppercase tracking-wider">
+              Home
+            </Link>
+            <a href="https://apel.com.ng" target="_blank" rel="noopener noreferrer" className="btn-outline text-[9px] sm:text-xs px-2 py-1.5 sm:px-4 sm:py-2 whitespace-nowrap">
+              Visit <span className="hidden sm:inline">Website</span>
+            </a>
           </div>
         </div>
       </div>
-
     </header>
   );
 };

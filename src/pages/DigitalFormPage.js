@@ -38,7 +38,7 @@ const DigitalFormPage = () => {
       try {
         setLoading(true);
         const response = await axios.get(`/api/shareholders/${shareholderId}`);
-        
+
         if (response.data.success) {
           setShareholder(response.data.data);
           // Pre-fill form with shareholder data
@@ -127,10 +127,10 @@ const DigitalFormPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="App flex items-center justify-center p-8">
         <div className="text-center">
-          <div className="spinner mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading form...</p>
+          <div className="loading-spinner h-12 w-12 mx-auto mb-4 border-t-emerald-600"></div>
+          <p className="text-slate-600 font-semibold tracking-wide">Initializing application portal...</p>
         </div>
       </div>
     );
@@ -138,11 +138,15 @@ const DigitalFormPage = () => {
 
   if (!shareholder) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600 mb-4">Shareholder not found</p>
-          <Link to="/" className="btn-primary">
-            Back to Search
+      <div className="App flex items-center justify-center p-8">
+        <div className="card max-w-md w-full p-12 text-center animate-fade-in shadow-xl">
+          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <ArrowLeft className="h-8 w-8 text-slate-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Access Denied</h2>
+          <p className="text-slate-500 mb-8">This application session is no longer active or valid.</p>
+          <Link to="/" className="btn-secondary w-full py-3">
+            Return to search
           </Link>
         </div>
       </div>
@@ -150,548 +154,389 @@ const DigitalFormPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
-        <div className="mb-6">
-          <Link 
-            to={`/shareholder/${shareholderId}`}
-            className="inline-flex items-center text-green-600 hover:text-green-700 mb-2"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Shareholder Details
-          </Link>
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <span className="text-green-600">Search</span>
-            <span>/</span>
-            <span>Shareholder Details</span>
-            <span>/</span>
-            <span>Digital Form</span>
+    <div className="App bg-slate-50/50">
+      <div className="container-custom py-12">
+        {/* Navigation & Context */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div className="animate-fade-in">
+            <Link
+              to={`/shareholder/${shareholderId}`}
+              className="inline-flex items-center text-sm font-bold text-emerald-700 hover:text-emerald-800 mb-4 group transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+              BACK TO PROFILE
+            </Link>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 uppercase tracking-tight">
+              Rights Application
+            </h1>
+            <p className="text-slate-500 mt-2 font-medium">
+              Acceptance and renunciation portal for <span className="text-slate-900 font-bold">{shareholder.name}</span>
+            </p>
+          </div>
+
+          <div className="flex items-center bg-white border border-slate-200 px-4 py-2 rounded-full text-xs font-bold text-slate-500 shadow-sm">
+            <span className="text-emerald-600 uppercase tracking-widest">Portal Version 2.0</span>
+            <span className="mx-2 opacity-30">/</span>
+            <span className="uppercase tracking-widest">Secure session</span>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          {/* Form Header */}
-          <div className="card">
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">ACCEPTANCE/RENUNCIATION FORM</h1>
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>Application List Open: July 30, 2005</span>
-                <span>Application List Close: September 06, 2005</span>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
+          {/* Important Notice */}
+          <div className="card border-l-4 border-l-emerald-600 shadow-sm bg-white overflow-hidden">
+            <div className="p-8">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
+                  <AlertTriangle className="h-5 w-5 text-emerald-600" />
+                </div>
+                <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Financial Disclaimer</h2>
               </div>
-            </div>
-            
-            <div className="text-center text-sm text-gray-700 mb-6">
-              <p>
-                Rights Issue of 3,156,849,605 Ordinary Shares of 50 Kobo Each at N50 Per Share 
-                on the basis of 1 new ordinary share for every 10 ordinary shares held as at 
-                close of business on July 14, 2005. Payable in full on Acceptance.
+              <p className="text-slate-600 text-sm leading-relaxed max-w-3xl">
+                Rights Issue of 3,156,849,605 Ordinary Shares of 50 Kobo Each at N50 Per Share on the basis of 1 new ordinary share for every 10 ordinary shares held as at close of business on July 14, 2005. <span className="text-slate-900 font-bold underline">Payable in full on Acceptance.</span>
               </p>
             </div>
-          </div>
-
-          {/* Personal Details */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Personal Details</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="form-label">REG. ACCOUNT NUMBER</label>
-                <input
-                  type="text"
-                  value={shareholder.reg_account_number}
-                  className="form-input bg-gray-50"
-                  readOnly
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">NAME</label>
-                <input
-                  type="text"
-                  value={shareholder.name}
-                  className="form-input bg-gray-50"
-                  readOnly
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">UNITS HELD</label>
-                <input
-                  type="text"
-                  value={shareholder.holdings.toLocaleString()}
-                  className="form-input bg-gray-50"
-                  readOnly
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">RIGHTS DUE</label>
-                <input
-                  type="text"
-                  value={shareholder.rights_issue}
-                  className="form-input bg-gray-50"
-                  readOnly
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">AMOUNT</label>
-                <input
-                  type="text"
-                  value={`N${(shareholder.rights_issue * 50).toLocaleString()}.00`}
-                  className="form-input bg-gray-50"
-                  readOnly
-                />
-              </div>
+            <div className="bg-slate-50 px-8 py-3 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+              <span>Opening Date: July 30</span>
+              <span className="text-red-500">Closing Date: Sept 06</span>
             </div>
           </div>
 
-          {/* Acceptance Options */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Acceptance Options</h2>
-            
-            <div className="space-y-4">
-              <label className="flex items-start space-x-3">
-                <input
-                  type="radio"
-                  value="full"
-                  {...register('acceptance_type', { required: 'Please select an acceptance type' })}
-                  className="mt-1 text-green-600 focus:ring-green-500"
-                />
-                <div className="space-y-2">
-                  <span className="text-gray-900 block">
-                    We accept in full, the provisional allotment shown on the front of this form.
-                  </span>
-                  {acceptanceType === 'full' && (
-                    <div className="ml-6 space-y-2">
-                      <label className="flex items-center space-x-2 text-sm text-gray-700">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            {/* Left Column: Form Details */}
+            <div className="lg:col-span-8 space-y-10">
+
+              {/* Profile Data (Read Only) */}
+              <section className="space-y-6">
+                <div className="flex items-center space-x-3 opacity-50">
+                  <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">System Record Data</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">Reg ID</label>
+                    <p className="text-lg font-bold text-slate-900">{shareholder.reg_account_number}</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">Current Holdings</label>
+                    <p className="text-lg font-bold text-slate-900">{shareholder.holdings.toLocaleString()}</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">Due Allotment</label>
+                    <p className="text-lg font-bold text-emerald-700">{shareholder.rights_issue.toLocaleString()}</p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Acceptance Logic */}
+              <section className="space-y-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Acceptance Preferences</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <label className={`card p-6 cursor-pointer border-2 transition-all block ${acceptanceType === 'full' ? 'border-emerald-600 bg-emerald-50/30' : 'border-slate-200 hover:border-slate-300'}`}>
+                    <div className="flex items-start space-x-4">
+                      <div className="mt-1">
                         <input
-                          type="checkbox"
-                          {...register('apply_additional')}
-                          className="text-green-600 focus:ring-green-500"
+                          type="radio"
+                          value="full"
+                          {...register('acceptance_type', { required: 'Please select an acceptance type' })}
+                          className="h-5 w-5 text-emerald-600 border-slate-300 focus:ring-emerald-500"
                         />
-                        <span>Apply for additional shares</span>
-                      </label>
-                      
-                      {applyAdditional && (
-                        <div className="ml-6 space-y-3 p-3 bg-gray-50 rounded-md">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Number of Additional Shares
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-slate-900 text-lg">Full Acceptance</h4>
+                        <p className="text-slate-500 text-sm mt-1">Accept the complete provisional allotment in full.</p>
+
+                        {acceptanceType === 'full' && (
+                          <div className="mt-6 pt-6 border-t border-emerald-100 flex flex-col space-y-4">
+                            <label className="flex items-center space-x-3 group">
+                              <input
+                                type="checkbox"
+                                {...register('apply_additional')}
+                                className="h-5 w-5 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500"
+                              />
+                              <span className="text-sm font-bold text-slate-700 group-hover:text-emerald-800 transition-colors">Also apply for additional shares</span>
                             </label>
-                            <input
-                              type="number"
-                              {...register('additional_shares', {
-                                min: { value: 1, message: 'Must be at least 1 share' },
-                                valueAsNumber: true
-                              })}
-                              className="form-input w-full"
-                            />
-                            {errors.additional_shares && (
-                              <p className="text-red-600 text-xs mt-1">{errors.additional_shares.message}</p>
+
+                            {applyAdditional && (
+                              <div className="animate-fade-in grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 p-6 bg-white rounded-xl border border-emerald-100 shadow-inner">
+                                <div className="space-y-2">
+                                  <label className="label-custom">Shares Amount</label>
+                                  <input
+                                    type="number"
+                                    placeholder="0"
+                                    {...register('additional_shares', {
+                                      min: { value: 1, message: 'Must be at least 1' },
+                                      valueAsNumber: true
+                                    })}
+                                    className="input-custom"
+                                  />
+                                  {errors.additional_shares && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">{errors.additional_shares.message}</p>}
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="label-custom">Amount Payable (₦)</label>
+                                  <input
+                                    type="number"
+                                    placeholder="0.00"
+                                    {...register('additional_amount', {
+                                      required: 'Required',
+                                      min: { value: 0.01, message: 'Invalid amount' },
+                                      valueAsNumber: true
+                                    })}
+                                    className="input-custom"
+                                  />
+                                  {errors.additional_amount && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">{errors.additional_amount.message}</p>}
+                                </div>
+                                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                  <div className="space-y-2">
+                                    <label className="label-custom">Bank</label>
+                                    <input type="text" {...register('additional_payment_bank_name')} className="input-custom text-sm" />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <label className="label-custom">Cheque/Ref</label>
+                                    <input type="text" {...register('additional_payment_cheque_number')} className="input-custom text-sm" />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <label className="label-custom">Branch</label>
+                                    <input type="text" {...register('additional_payment_branch')} className="input-custom text-sm" />
+                                  </div>
+                                </div>
+                              </div>
                             )}
                           </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Additional Amount Payable
-                            </label>
-                            <div className="relative">
-                              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span className="text-gray-500 sm:text-sm">₦</span>
-                              </div>
+                        )}
+                      </div>
+                    </div>
+                  </label>
+
+                  <label className={`card p-6 cursor-pointer border-2 transition-all block ${acceptanceType === 'partial' ? 'border-emerald-600 bg-emerald-50/30' : 'border-slate-200 hover:border-slate-300'}`}>
+                    <div className="flex items-start space-x-4">
+                      <div className="mt-1">
+                        <input
+                          type="radio"
+                          value="partial"
+                          {...register('acceptance_type')}
+                          className="h-5 w-5 text-emerald-600 border-slate-300 focus:ring-emerald-500"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-slate-900 text-lg">Partial Acceptance</h4>
+                        <p className="text-slate-500 text-sm mt-1">Accept only a portion of your allotment.</p>
+
+                        {acceptanceType === 'partial' && (
+                          <div className="animate-fade-in grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-emerald-100">
+                            <div className="space-y-2">
+                              <label className="label-custom">Shares Accepted</label>
                               <input
                                 type="number"
-                                {...register('additional_amount', {
-                                  required: 'Additional amount is required',
-                                  min: { value: 0.01, message: 'Amount must be greater than 0' },
+                                placeholder="0"
+                                {...register('shares_accepted', {
+                                  required: 'Required',
+                                  min: { value: 1, message: 'Invalid' },
                                   valueAsNumber: true
                                 })}
-                                className="form-input pl-7 w-full"
+                                className="input-custom"
                               />
+                              {errors.shares_accepted && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">{errors.shares_accepted.message}</p>}
                             </div>
-                            {errors.additional_amount && (
-                              <p className="text-red-600 text-xs mt-1">{errors.additional_amount.message}</p>
-                            )}
-                          </div>
-                          
-                          <div className="mt-4">
-                            <h4 className="text-sm font-medium text-gray-700 mb-2">Additional Payment Details</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <label className="block text-sm text-gray-700 mb-1">Bank Name</label>
-                                <input
-                                  type="text"
-                                  {...register('additional_payment_bank_name', {
-                                    required: 'Bank name is required for additional payment'
-                                  })}
-                                  className="form-input w-full"
-                                />
-                                {errors.additional_payment_bank_name && (
-                                  <p className="text-red-600 text-xs mt-1">{errors.additional_payment_bank_name.message}</p>
-                                )}
+                            <div className="space-y-2">
+                              <label className="label-custom">Payment (₦)</label>
+                              <input
+                                type="number"
+                                placeholder="0.00"
+                                {...register('amount_payable', {
+                                  required: 'Required',
+                                  min: { value: 0.01, message: 'Invalid' },
+                                  valueAsNumber: true
+                                })}
+                                className="input-custom"
+                              />
+                              {errors.amount_payable && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">{errors.amount_payable.message}</p>}
+                            </div>
+                            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div className="space-y-2">
+                                <label className="label-custom">Bank</label>
+                                <input type="text" {...register('partial_payment_bank_name')} className="input-custom text-sm" />
                               </div>
-                              
-                              <div>
-                                <label className="block text-sm text-gray-700 mb-1">Cheque Number</label>
-                                <input
-                                  type="text"
-                                  {...register('additional_payment_cheque_number', {
-                                    required: 'Cheque number is required for additional payment'
-                                  })}
-                                  className="form-input w-full"
-                                />
-                                {errors.additional_payment_cheque_number && (
-                                  <p className="text-red-600 text-xs mt-1">{errors.additional_payment_cheque_number.message}</p>
-                                )}
+                              <div className="space-y-2">
+                                <label className="label-custom">Cheque/Ref</label>
+                                <input type="text" {...register('partial_payment_cheque_number')} className="input-custom text-sm" />
                               </div>
-                              
-                              <div className="md:col-span-2">
-                                <label className="block text-sm text-gray-700 mb-1">Branch</label>
-                                <input
-                                  type="text"
-                                  {...register('additional_payment_branch', {
-                                    required: 'Branch is required for additional payment'
-                                  })}
-                                  className="form-input w-full"
-                                />
-                                {errors.additional_payment_branch && (
-                                  <p className="text-red-600 text-xs mt-1">{errors.additional_payment_branch.message}</p>
-                                )}
+                              <div className="space-y-2">
+                                <label className="label-custom">Branch</label>
+                                <input type="text" {...register('partial_payment_branch')} className="input-custom text-sm" />
                               </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </label>
-              
-              <label className="flex items-start space-x-3">
-                <input
-                  type="radio"
-                  value="partial"
-                  {...register('acceptance_type')}
-                  className="mt-1 text-green-600 focus:ring-green-500"
-                />
-                <div className="space-y-2">
-                  <span className="text-gray-900">
-                    We accept only partial shares and enclose payment accordingly.
-                  </span>
-                  {acceptanceType === 'partial' && (
-                    <div className="ml-6 space-y-3 p-3 bg-gray-50 rounded-md">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Number of Shares Accepted
-                          </label>
-                          <input
-                            type="number"
-                            {...register('shares_accepted', {
-                              required: 'Number of shares is required',
-                              min: { value: 1, message: 'Must be at least 1 share' },
-                              valueAsNumber: true
-                            })}
-                            className="form-input w-full"
-                          />
-                          {errors.shares_accepted && (
-                            <p className="text-red-600 text-xs mt-1">{errors.shares_accepted.message}</p>
-                          )}
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Amount Payable
-                          </label>
-                          <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <span className="text-gray-500 sm:text-sm">₦</span>
-                            </div>
-                            <input
-                              type="number"
-                              {...register('amount_payable', {
-                                required: 'Amount payable is required',
-                                min: { value: 0.01, message: 'Amount must be greater than 0' },
-                                valueAsNumber: true
-                              })}
-                              className="form-input pl-7 w-full"
-                            />
-                          </div>
-                          {errors.amount_payable && (
-                            <p className="text-red-600 text-xs mt-1">{errors.amount_payable.message}</p>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="mt-4">
-                        <h4 className="text-sm font-medium text-gray-700 mb-2">Payment Details</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm text-gray-700 mb-1">Bank Name</label>
-                            <input
-                              type="text"
-                              {...register('partial_payment_bank_name', {
-                                required: 'Bank name is required for payment'
-                              })}
-                              className="form-input w-full"
-                            />
-                            {errors.partial_payment_bank_name && (
-                              <p className="text-red-600 text-xs mt-1">{errors.partial_payment_bank_name.message}</p>
-                            )}
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm text-gray-700 mb-1">Cheque Number</label>
-                            <input
-                              type="text"
-                              {...register('partial_payment_cheque_number', {
-                                required: 'Cheque number is required for payment'
-                              })}
-                              className="form-input w-full"
-                            />
-                            {errors.partial_payment_cheque_number && (
-                              <p className="text-red-600 text-xs mt-1">{errors.partial_payment_cheque_number.message}</p>
-                            )}
-                          </div>
-                          
-                          <div className="md:col-span-2">
-                            <label className="block text-sm text-gray-700 mb-1">Branch</label>
-                            <input
-                              type="text"
-                              {...register('partial_payment_branch', {
-                                required: 'Branch is required for payment'
-                              })}
-                              className="form-input w-full"
-                            />
-                            {errors.partial_payment_branch && (
-                              <p className="text-red-600 text-xs mt-1">{errors.partial_payment_branch.message}</p>
-                            )}
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </div>
-                  )}
+                  </label>
                 </div>
-              </label>
-            </div>
-            
-            {errors.acceptance_type && (
-              <p className="text-red-600 text-sm mt-2">{errors.acceptance_type.message}</p>
-            )}
-          </div>
+              </section>
 
-          {/* Contact Information */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Contact Information</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="form-label">Name(s) (in block letters)</label>
-                <input
-                  type="text"
-                  {...register('contact_name', { required: 'Contact name is required' })}
-                  className="form-input"
-                />
-                {errors.contact_name && (
-                  <p className="text-red-600 text-sm mt-1">{errors.contact_name.message}</p>
-                )}
-              </div>
-              
-              <div>
-                <label className="form-label">Next of Kin</label>
-                <input
-                  type="text"
-                  {...register('next_of_kin')}
-                  className="form-input"
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">Daytime Telephone Number</label>
-                <input
-                  type="tel"
-                  {...register('daytime_phone')}
-                  className="form-input"
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">Mobile (GSM) Telephone Number</label>
-                <input
-                  type="tel"
-                  {...register('mobile_phone')}
-                  className="form-input"
-                />
-              </div>
-              
-              <div className="md:col-span-2">
-                <label className="form-label">Email Address *</label>
-                <input
-                  type="email"
-                  {...register('email', { 
-                    required: 'Email is required',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Invalid email address'
-                    }
-                  })}
-                  className="form-input"
-                />
-                {errors.email && (
-                  <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
+              {/* Contact Information */}
+              <section className="space-y-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Registrant Contact Details</h3>
+                </div>
+                <div className="card p-8 bg-white grid grid-cols-1 md:grid-cols-2 gap-8 shadow-sm">
+                  <div className="md:col-span-2 space-y-2">
+                    <label className="label-custom">Contact Name *</label>
+                    <input type="text" {...register('contact_name', { required: 'Name is required' })} className="input-custom" placeholder="FULL LEGAL NAME" />
+                    {errors.contact_name && <p className="text-red-500 text-[10px] font-bold mt-1">{errors.contact_name.message}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="label-custom">Primary Phone</label>
+                    <input type="tel" {...register('mobile_phone')} className="input-custom" placeholder="+234..." />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="label-custom">Email Address *</label>
+                    <input type="email" {...register('email', { required: 'Email required' })} className="input-custom" placeholder="name@domain.com" />
+                    {errors.email && <p className="text-red-500 text-[10px] font-bold mt-1">{errors.email.message}</p>}
+                  </div>
+                  <div className="md:col-span-2 space-y-2">
+                    <label className="label-custom">Next of Kin</label>
+                    <input type="text" {...register('next_of_kin')} className="input-custom" placeholder="BENEFICIARY NAME" />
+                  </div>
+                </div>
+              </section>
 
-          {/* Bank Details */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Bank Details (For E-Dividend)</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="form-label">Name of Bank</label>
-                <input
-                  type="text"
-                  {...register('bank_name')}
-                  className="form-input"
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">Branch</label>
-                <input
-                  type="text"
-                  {...register('bank_branch')}
-                  className="form-input"
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">Account Number</label>
-                <input
-                  type="text"
-                  {...register('account_number')}
-                  className="form-input"
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">Bank Verification Number</label>
-                <input
-                  type="text"
-                  {...register('bvn')}
-                  className="form-input"
-                />
-              </div>
+              {/* Banking Section */}
+              <section className="space-y-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">E-Dividend Mandate</h3>
+                </div>
+                <div className="card p-8 bg-white grid grid-cols-1 md:grid-cols-2 gap-8 shadow-sm">
+                  <div className="space-y-2">
+                    <label className="label-custom">Mandate Bank</label>
+                    <input type="text" {...register('bank_name')} className="input-custom py-3" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="label-custom">Account Number</label>
+                    <input type="text" {...register('account_number')} className="input-custom py-3" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="label-custom">BVN (Optional)</label>
+                    <input type="text" {...register('bvn')} className="input-custom py-3" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="label-custom">Bank Branch</label>
+                    <input type="text" {...register('bank_branch')} className="input-custom py-3" />
+                  </div>
+                </div>
+              </section>
             </div>
-          </div>
 
-          {/* Required Documents */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Required Documents</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Signature Upload */}
-              <div>
-                <label className="form-label">Upload Signature *</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors">
-                  <Upload className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600 mb-2">Click to upload your signature</p>
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    onChange={handleSignatureUpload}
-                    className="file-upload"
-                  />
-                  <button type="button" className="btn-primary text-sm">
-                    Choose File
-                  </button>
-                  {signatureFile && (
-                    <p className="text-sm text-green-600 mt-2">{signatureFile.name}</p>
-                  )}
+            {/* Right Column: Uploads & Metadata */}
+            <div className="lg:col-span-4 space-y-8">
+
+              {/* Submission Checklist */}
+              <div className="card p-8 bg-slate-900 text-white shadow-xl">
+                <h3 className="text-lg font-bold mb-6">Verification Checklist</h3>
+                <div className="space-y-5">
+                  {[
+                    { label: 'Provisional entitlement', value: 'Verified', color: 'emerald' },
+                    { label: 'Payment Receipt', value: receiptFile ? 'Uploaded' : 'Pending', color: receiptFile ? 'emerald' : 'slate' },
+                    { label: 'Signature File', value: signatureFile ? 'Uploaded' : 'Pending', color: signatureFile ? 'emerald' : 'slate' }
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between">
+                      <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">{item.label}</span>
+                      <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest ${item.color === 'emerald' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/10 text-slate-400'}`}>
+                        {item.value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Receipt Upload */}
-              <div>
-                <label className="form-label">Upload Payment Receipt *</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors">
-                  <DollarSign className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600 mb-2">Upload your payment receipt</p>
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    onChange={handleReceiptUpload}
-                    className="file-upload"
-                  />
-                  <button type="button" className="btn-primary text-sm">
-                    Choose File
-                  </button>
-                  {receiptFile && (
-                    <p className="text-sm text-green-600 mt-2">{receiptFile.name}</p>
-                  )}
+              {/* File Upload Sections */}
+              <div className="space-y-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Artifact Uploads</h3>
+                </div>
+
+                {/* Signature */}
+                <div className={`card p-8 border-2 border-dashed transition-all relative ${signatureFile ? 'border-emerald-500 bg-emerald-50/20' : 'border-slate-200 bg-white hover:border-slate-400'}`}>
+                  <input type="file" accept="image/*,.pdf" onChange={handleSignatureUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                  <div className="text-center">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 ${signatureFile ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                      <Save className="h-6 w-6" />
+                    </div>
+                    <p className="text-xs font-bold text-slate-900 mb-1">{signatureFile ? signatureFile.name : 'Upload Signature'}</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Click or drag & drop</p>
+                  </div>
+                </div>
+
+                {/* Receipt */}
+                <div className={`card p-8 border-2 border-dashed transition-all relative ${receiptFile ? 'border-emerald-500 bg-emerald-50/20' : 'border-slate-200 bg-white hover:border-slate-400'}`}>
+                  <input type="file" accept="image/*,.pdf" onChange={handleReceiptUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                  <div className="text-center">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 ${receiptFile ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                      <Upload className="h-6 w-6" />
+                    </div>
+                    <p className="text-xs font-bold text-slate-900 mb-1">{receiptFile ? receiptFile.name : 'Proof of Payment'}</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Receipt / Transfer Screenshot</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Payment Information */}
-            <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <div className="flex items-start space-x-3">
-                <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5" />
-                <div>
-                  <h3 className="font-medium text-yellow-800 mb-2">Payment Account Numbers :</h3>
-                  <div className="space-y-1 text-sm text-yellow-700">
-                    <p><strong>Account Number:</strong> {paymentAccountNumber}</p>
-                    <p><strong>Bank:</strong> United Bank for Africa</p>
-                    <p>Please use this account number for payment and upload the receipt above.</p>
+              {/* Payment Details Card */}
+              <div className="card p-8 bg-amber-50 border border-amber-200">
+                <h4 className="text-[10px] font-black text-amber-900 uppercase tracking-[0.2em] mb-4">Official Payment Account</h4>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-[9px] text-amber-700 font-bold uppercase tracking-wider mb-1">Account Number</p>
+                    <p className="text-2xl font-black text-amber-900 tracking-tighter">{paymentAccountNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] text-amber-700 font-bold uppercase tracking-wider mb-1">Corporate Bank</p>
+                    <p className="text-sm font-bold text-amber-950">United Bank for Africa (UBA)</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Agreement and Submit */}
-          <div className="card">
-            <div className="flex items-start space-x-3 mb-6">
-              <input
-                type="checkbox"
-                {...register('agreement', { required: 'You must agree to the terms and conditions' })}
-                className="mt-1 text-green-600 focus:ring-green-500"
-              />
-              <label className="text-sm text-gray-700">
-                I agree to the terms and conditions and confirm that all information provided is accurate.
+          {/* Submission Finalization */}
+          <div className="pt-12 border-t border-slate-200">
+            <div className="max-w-xl mx-auto text-center">
+              <label className="flex items-start justify-center space-x-3 mb-10 group cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register('agreement', { required: 'Mandatory' })}
+                  className="h-6 w-6 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500 mt-1"
+                />
+                <span className="text-sm text-left text-slate-600 group-hover:text-slate-900 transition-colors">
+                  I hereby certify that all information provided in this digital application is accurate, and I authorize the processing of my rights allotment based on these details.
+                </span>
               </label>
-            </div>
-            
-            {errors.agreement && (
-              <p className="text-red-600 text-sm mb-4">{errors.agreement.message}</p>
-            )}
+              {errors.agreement && <p className="text-red-500 text-[10px] font-black uppercase tracking-widest mb-6 -mt-6">Agreement is required to proceed</p>}
 
-            <div className="flex justify-between items-center">
-              <Link to={`/shareholder/${shareholderId}`} className="text-green-600 hover:text-green-700">
-                Back
-              </Link>
-              
-              <button
-                type="submit"
-                disabled={submitting}
-                className="btn-primary flex items-center space-x-2"
-              >
-                {submitting ? (
-                  <>
-                    <div className="spinner"></div>
-                    <span>Submitting...</span>
-                  </>
-                ) : (
-                  <>
-                    <Save className="h-4 w-4" />
-                    <span>Save & Continue</span>
-                  </>
-                )}
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <Link to={`/shareholder/${shareholderId}`} className="text-sm font-bold text-slate-400 hover:text-slate-900 uppercase tracking-widest transition-colors">
+                  Review Profile
+                </Link>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="btn-primary px-12 py-5 text-lg font-bold shadow-xl shadow-emerald-700/20 disabled:opacity-50 min-w-[280px]"
+                >
+                  {submitting ? (
+                    <span className="flex items-center justify-center">
+                      <div className="loading-spinner h-5 w-5 border-t-white mr-3"></div>
+                      TRANSMITTING...
+                    </span>
+                  ) : (
+                    'EXECUTE APPLICATION'
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </form>
@@ -700,4 +545,4 @@ const DigitalFormPage = () => {
   );
 };
 
-export default DigitalFormPage; 
+export default DigitalFormPage;
