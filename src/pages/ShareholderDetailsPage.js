@@ -114,7 +114,7 @@ export default function ShareholderDetailsPage() {
             className="inline-flex items-center text-sm font-bold text-[#0A4269] hover:text-[#0D507F] transition-all"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            BACK TO PORTAL
+            Back to Search
           </Link>
           <div className="mt-4 md:mt-0 px-3 py-1 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-[#0A4269] shadow-sm uppercase tracking-widest flex items-center">
             <div className="w-1.5 h-1.5 rounded-full bg-[#F58220] mr-2"></div>
@@ -125,7 +125,7 @@ export default function ShareholderDetailsPage() {
         {/* Header Section */}
         <div className="mb-10 text-center md:text-left">
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight mb-2">
-            Shareholder Profile
+            Shareholder Information
           </h1>
           <p className="text-slate-500 font-medium">Review your account status and select a processing method.</p>
         </div>
@@ -140,14 +140,14 @@ export default function ShareholderDetailsPage() {
               <div>
                 <h2 className="text-2xl font-bold text-slate-900 leading-tight">{shareholder.name}</h2>
                 <div className="flex items-center mt-1 space-x-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">ID: {shareholder.reg_account_number}</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">REG ACCOUNT NUMBER: {shareholder.reg_account_number}</span>
                   <span className="h-1 w-1 rounded-full bg-slate-300"></span>
                   <span className="text-xs font-bold text-[#F58220] uppercase tracking-wider">Linkage Assurance Plc</span>
                 </div>
               </div>
             </div>
             <div className="bg-slate-50 px-8 py-6 rounded-2xl border border-slate-100 flex flex-col items-center md:items-end md:min-w-[200px]">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Current Portfolio Holding</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">HOLDINGS</p>
               <div className="flex items-baseline space-x-2">
                 <p className="text-3xl font-black text-[#0A4269]">{shareholder.holdings.toLocaleString()}</p>
                 <span className="text-xs font-bold text-slate-400 uppercase">Units</span>
@@ -173,7 +173,7 @@ export default function ShareholderDetailsPage() {
                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-6">
                   <Upload className="h-6 w-6 text-[#0A4269]" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3 tracking-tight">Electronic Submission</h3>
+                <h3 className="text-xl font-bold text-slate-900 mb-3 tracking-tight">Submit Form Online</h3>
                 <p className="text-slate-500 text-sm mb-10 leading-relaxed font-medium">
                   Process your rights issue completely online. Seamless, instant, and secure with no paperwork required.
                 </p>
@@ -181,7 +181,7 @@ export default function ShareholderDetailsPage() {
                   to={`/form-submission/${id}`}
                   className="w-full bg-[#0A4269] text-white py-5 text-sm font-bold tracking-widest rounded-xl block text-center uppercase shadow-lg shadow-blue-500/10 hover:bg-[#0D507F] transition-colors"
                 >
-                  START DIGITAL PORTAL
+                  Submit Online
                 </Link>
               </div>
             </div>
@@ -194,7 +194,7 @@ export default function ShareholderDetailsPage() {
                 </div>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-full border border-slate-100">Traditional</span>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3 tracking-tight">Paper Records</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-3 tracking-tight">Download Pre-filled Form</h3>
               <p className="text-slate-500 text-sm mb-10 leading-relaxed font-medium">
                 Download a pre-filled PDF document for manual signature, printing, and physical filing.
               </p>
@@ -208,7 +208,7 @@ export default function ShareholderDetailsPage() {
                 ) : (
                   <>
                     <Download className="h-5 w-5" />
-                    <span className="tracking-widest uppercase">DOWNLOAD PRE-FILLED PDF</span>
+                    <span className="tracking-widest uppercase">Download PDF Form</span>
                   </>
                 )}
               </button>
@@ -226,7 +226,7 @@ export default function ShareholderDetailsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
               <div className="space-y-8">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 block">Provisional Units</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 block">RIGHTS ISSUE</label>
                   <p className="text-2xl font-black text-slate-900">{shareholder.rights_issue.toLocaleString()}</p>
                 </div>
                 <div>
@@ -237,7 +237,7 @@ export default function ShareholderDetailsPage() {
 
               <div className="bg-[#0A4269] rounded-2xl p-8 text-white shadow-xl relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                <label className="text-[10px] font-bold text-blue-300 uppercase tracking-widest mb-4 block">Payable Amount</label>
+                <label className="text-[10px] font-bold text-blue-300 uppercase tracking-widest mb-4 block">AMOUNT PAYABLE</label>
                 <div className="flex items-baseline space-x-1.5 mb-6">
                   <span className="text-sm font-bold text-blue-300">NGN</span>
                   <span className="text-4xl font-black">{shareholder.amount_due.toLocaleString()}</span>
@@ -250,7 +250,7 @@ export default function ShareholderDetailsPage() {
 
               <div className="space-y-6">
                 <div className="p-6 bg-blue-50/50 rounded-2xl border border-blue-100/50">
-                  <label className="text-[10px] font-bold text-[#0A4269] uppercase tracking-widest mb-2 block">Post-Offer Holding</label>
+                  <label className="text-[10px] font-bold text-[#0A4269] uppercase tracking-widest mb-2 block">HOLDINGS AFTER</label>
                   <p className="text-2xl font-black text-slate-900">{shareholder.holdings_after.toLocaleString()} <span className="text-xs font-bold text-slate-400">UNITS</span></p>
                 </div>
                 <div className="flex items-center space-x-3 px-2">

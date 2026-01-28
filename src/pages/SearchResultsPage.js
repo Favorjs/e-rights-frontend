@@ -97,13 +97,13 @@ const SearchResultsPage = () => {
               className="inline-flex items-center text-sm font-bold text-emerald-700 hover:text-emerald-800 mb-4 group transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
-              BACK TO PORTAL
+              Back to Search
             </Link>
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
               Search Results
             </h1>
             <p className="text-slate-500 mt-2 font-medium">
-              Found <span className="text-emerald-700 font-bold">{pagination.total}</span> records matching "{searchTerm}"
+              Found {pagination.total} shareholder(s) matching "{searchTerm}"
             </p>
           </div>
 

@@ -142,8 +142,8 @@ const HomePage = () => {
                         <Search className="h-6 w-6 text-[#0A4269] group-hover:text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Shareholder Portal</h3>
-                        <p className="text-sm text-slate-500 font-medium">Verify account status and begin application</p>
+                        <h3 className="text-2xl font-bold text-slate-900 tracking-tight">APEL CAPITAL REGISTRARS</h3>
+                        <p className="text-sm text-slate-500 font-medium">LINKAGE ASSURANCE PLC RIGHTS ISSUE</p>
                       </div>
                     </div>
                     <div className="hidden md:flex flex-col items-end">
@@ -159,9 +159,9 @@ const HomePage = () => {
                     <div>
                       <div className="flex justify-between items-end mb-3">
                         <label htmlFor="searchName" className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">
-                          Registered Full Name
+                          Search for your name
                         </label>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase bg-slate-50 px-2 py-0.5 rounded border border-slate-100">Verification Required</span>
+
                       </div>
                       <div className="relative">
                         <input
@@ -169,7 +169,7 @@ const HomePage = () => {
                           id="searchName"
                           value={searchName}
                           onChange={(e) => setSearchName(e.target.value)}
-                          placeholder="Enter your name exactly as registered..."
+                          placeholder="Search name..."
                           className="form-input text-base md:text-lg py-5 px-6 bg-slate-50 border-slate-100 focus:bg-white focus:ring-8 focus:ring-emerald-500/5 transition-all rounded-2xl placeholder:text-slate-300"
                           disabled={isSearching}
                         />
@@ -190,12 +190,12 @@ const HomePage = () => {
                       {isSearching ? (
                         <>
                           <div className="loading-spinner h-5 w-5 border-t-white" />
-                          <span>SYNCHRONIZING RECORDS...</span>
+                          <span>SEARCHING...</span>
                         </>
                       ) : (
                         <>
                           <Search className="h-5 w-5 transition-transform group-hover:scale-110" />
-                          <span>LOCATE MY ENTITLEMENTS</span>
+                          <span>Search</span>
                         </>
                       )}
                     </button>
@@ -226,7 +226,7 @@ const HomePage = () => {
                     <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
                       <Download className="h-5 w-5 text-slate-700" />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 tracking-tight">Documentation</h3>
+                    <h3 className="text-lg font-bold text-slate-900 tracking-tight">Download Forms</h3>
                   </div>
 
                   <div className="space-y-3">
@@ -266,7 +266,7 @@ const HomePage = () => {
                       <Info className="h-4 w-4 text-[#F58220]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold uppercase tracking-[0.2em]">Trading Guide</h3>
+                      <h3 className="text-sm font-bold uppercase tracking-[0.2em]">RIGHTS TRADING PROCEDURE 2025</h3>
                       <p className="text-[10px] text-slate-400 font-bold uppercase mt-0.5">Updated 2025 Edition</p>
                     </div>
                   </div>
@@ -279,7 +279,7 @@ const HomePage = () => {
                   <div className="p-8 bg-white animate-fade-in space-y-8 divide-y divide-slate-100">
                     <div className="space-y-4">
                       <h4 className="flex items-center text-[10px] font-black text-[#0A4269] bg-blue-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
-                        Seller Protocol
+                        SELLER/EXISTING SHAREHOLDER:
                       </h4>
                       <ul className="space-y-4">
                         {[
@@ -300,7 +300,7 @@ const HomePage = () => {
 
                     <div className="pt-8 space-y-4">
                       <h4 className="flex items-center text-[10px] font-black text-blue-700 bg-blue-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
-                        Buyer Protocol
+                        BUYER/NEW SHAREHOLDER:
                       </h4>
                       <ul className="space-y-4">
                         {[

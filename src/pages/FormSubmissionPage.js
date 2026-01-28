@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Receipt, CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm } from '../services/api';
+import bankData from '../utils/banks.json';
 
 // Internal SearchableSelect for alignment with existing structure
 const InternalSearchableSelect = ({
@@ -10,7 +11,8 @@ const InternalSearchableSelect = ({
   value,
   onChange,
   placeholder = 'Select an option',
-  className = ''
+  className = '',
+  name // field name
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -45,10 +47,10 @@ const InternalSearchableSelect = ({
     <div className="relative w-full" ref={selectRef}>
       <button
         type="button"
-        className={`relative w-full bg-white border border-slate-200 rounded-xl shadow-sm pl-4 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-[#0A4269] text-sm ${className}`}
+        className={`relative w-full min-w-[240px] md:min-w-[320px] border rounded-xl shadow-sm pl-4 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-[#0A4269] text-sm ${className || 'bg-white border-slate-200 text-slate-900'}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className={`block truncate ${!displayValue ? 'text-slate-400' : 'font-medium text-slate-900'}`}>
+        <span className={`block truncate ${!displayValue ? 'text-slate-400' : 'font-medium'}`}>
           {displayValue || placeholder}
         </span>
         <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
@@ -63,7 +65,7 @@ const InternalSearchableSelect = ({
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <input
                 type="text"
-                className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-xs leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-[#0A4269]"
+                className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-xs leading-5 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-[#0A4269]"
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -83,7 +85,7 @@ const InternalSearchableSelect = ({
                     className={`px-4 py-2.5 text-sm transition-colors cursor-pointer ${value === optionValue ? 'bg-blue-50 text-[#0A4269] font-bold' : 'text-slate-700 hover:bg-slate-50'}`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      onChange({ target: { name: 'stockbroker', value: optionValue } });
+                      onChange({ target: { name: name || 'stockbroker', value: optionValue } });
                       setIsOpen(false);
                       setSearchTerm('');
                     }}
@@ -103,16 +105,17 @@ const InternalSearchableSelect = ({
 };
 
 const steps = [
-  { id: 1, title: 'Ownership & Records', description: 'Confirm your shareholder information' },
-  { id: 2, title: 'Guidelines & Instructions', description: 'Important information for participation' },
-  { id: 3, title: 'Stockbroker Information', description: 'CHN and Broker details' },
-  { id: 4, title: 'Participation Type', description: 'Choose how to participate' },
-  { id: 5, title: 'Payment Details', description: 'Amount and proof of payment' },
-  { id: 6, title: 'Mandate & Contact', description: 'Personal and banking details' },
-  { id: 7, title: 'Signature & Documentation', description: 'Sign and upload proof' },
-  { id: 8, title: 'Application Summary', description: 'Review and submit' }
+  { id: 1, title: 'Shareholder Information', description: 'Review your details' },
+  { id: 2, title: 'Instructions', description: 'Read and accept instructions' },
+  { id: 3, title: 'Stockbroker & CHN', description: 'Enter stockbroker and CHN details' },
+  { id: 4, title: 'Action Choice', description: 'Select your action type' },
+  { id: 5, title: 'Action Details', description: 'Complete your selected action' },
+  { id: 6, title: 'Personal & Bank Info', description: 'Contact and banking information' },
+  { id: 7, title: 'Signature & Receipt', description: 'Upload documents' },
+  { id: 8, title: 'Summary & Submit', description: 'Review and final submission' }
 ];
 const totalSteps = steps.length;
+const banks = bankData.data ? bankData.data.map(b => ({ id: b.bankname, name: b.bankname })) : [];
 
 const FormSubmissionPage = () => {
   const { id } = useParams();
@@ -285,9 +288,9 @@ const FormSubmissionPage = () => {
         if (formData.action_type === 'full_acceptance') {
           return formData.accept_full && formData.bank_name && (!formData.apply_additional || formData.additional_shares);
         }
-        return formData.shares_accepted && formData.amount_payable && (formData.accept_partial || formData.renounce_rights);
+        return formData.shares_accepted && formData.amount_payable && formData.bank_name && (formData.accept_partial || formData.renounce_rights);
       case 6:
-        return formData.contact_name && formData.mobile_phone && formData.email && formData.bank_name_edividend && formData.account_number && formData.bvn;
+        return formData.contact_name && formData.mobile_phone && formData.email && formData.account_number && formData.bvn;
       case 7:
         if (formData.signature_type === 'single') return formData.receipt && formData.signatures.length > 0 && !!formData.signatures[0];
         return formData.receipt && formData.signatures.length > 1 && !formData.signatures.includes(null);
@@ -305,7 +308,7 @@ const FormSubmissionPage = () => {
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
-      const loadingToast = toast.loading('Synchronizing application...');
+      const loadingToast = toast.loading('Submitting application...');
       const submitData = new FormData();
       Object.keys(formData).forEach(key => {
         if (!['receipt', 'signatures'].includes(key) && formData[key] !== null) submitData.append(key, formData[key]);
@@ -357,7 +360,7 @@ const FormSubmissionPage = () => {
     <div className="App flex items-center justify-center min-h-screen bg-slate-50/50">
       <div className="text-center">
         <div className="loading-spinner h-10 w-10 mx-auto mb-4 border-[#0A4269]"></div>
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Synchronizing Encrypted Registry</p>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Submitting Application...</p>
       </div>
     </div>
   );
@@ -390,7 +393,7 @@ const FormSubmissionPage = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
                 <div>
                   <h1 className="text-xl md:text-2xl font-black tracking-tight mb-1 uppercase">Electronic Allotment Form</h1>
-                  <p className="text-blue-200/70 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">Step {currentStep} of {totalSteps} • Verification Phase</p>
+                  <p className="text-blue-200/70 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">Step {currentStep} of {totalSteps}</p>
                 </div>
                 <div className="bg-white/10 px-4 py-2 rounded-xl backdrop-blur-md border border-white/10 hidden sm:block">
                   <p className="text-[10px] text-blue-200/50 font-black uppercase mb-0.5">Reference ID</p>
@@ -431,7 +434,7 @@ const FormSubmissionPage = () => {
                     <p className="font-bold text-slate-900">{submittedForm.name}</p>
                   </div>
                   <div className="space-y-1">
-                    <label className="label-custom">Account Reference</label>
+                    <label className="label-custom">Account Number</label>
                     <p className="font-bold text-slate-900">{submittedForm.reg_account_number}</p>
                   </div>
                   <div className="space-y-1">
@@ -537,11 +540,11 @@ const FormSubmissionPage = () => {
                 <div className="space-y-8 animate-fade-in">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                      <label className="label-custom">Registration Number</label>
+                      <label className="label-custom">REG ACCOUNT</label>
                       <p className="text-xl font-bold text-slate-900">{shareholder.reg_account_number}</p>
                     </div>
                     <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 md:text-right">
-                      <label className="label-custom">Verified Holdings</label>
+                      <label className="label-custom">HOLDINGS</label>
                       <p className="text-xl font-bold text-slate-900">{shareholder.holdings.toLocaleString()}</p>
                     </div>
                   </div>
@@ -638,20 +641,38 @@ const FormSubmissionPage = () => {
                     </div>
                   )}
 
-                  <div className="pt-8 space-y-6">
-                    <div className="bg-[#0A4269] p-8 rounded-2xl text-white flex flex-col sm:flex-row items-center justify-between gap-6">
-                      <div className="text-center sm:text-left">
-                        <label className="text-[9px] font-bold text-blue-400/70 uppercase tracking-widest mb-1 block">Total Consideration</label>
-                        <p className="text-3xl font-bold italic tracking-tighter">₦{calculateTotalPayment().toLocaleString()}</p>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full sm:w-auto">
-                        <div className="space-y-1"><label className="label-custom text-blue-400/50">Payment Bank</label><input type="text" name="bank_name" value={formData.bank_name} onChange={handleInputChange} className="w-full bg-white/10 border border-white/20 rounded-lg p-2 text-xs text-white font-medium" /></div>
-                        <div className="space-y-1">
-                          <label className="label-custom text-blue-400/50">Cheque Number</label>
-                          <input type="text" name="cheque_number" value={formData.cheque_number} onChange={handleInputChange} className="w-full bg-white/10 border border-white/20 rounded-lg p-2 text-xs text-white font-medium" />
-                          <p className="text-[8px] text-blue-400/40 uppercase font-bold mt-1 leading-tight">Only for cheque payments</p>
+                  <div className="pt-8">
+                    <div className="bg-[#0A4269] p-8 md:p-12 rounded-3xl text-white space-y-8 shadow-2xl">
+                      <div className="border-b border-white/10 pb-6">
+                        <div className="text-center sm:text-left">
+                          <label className="text-[10px] font-black text-blue-400/50 uppercase tracking-[0.2em] mb-2 block">Total Consideration</label>
+                          <p className="text-4xl md:text-5xl font-black italic tracking-tighter">₦{calculateTotalPayment().toLocaleString()}</p>
                         </div>
-                        <div className="space-y-1"><label className="label-custom text-blue-400/50">Branch</label><input type="text" name="branch" value={formData.branch} onChange={handleInputChange} className="w-full bg-white/10 border border-white/20 rounded-lg p-2 text-xs text-white font-medium" /></div>
+                      </div>
+                      <div className="space-y-6">
+                        <div className="w-full">
+                          <label className="label-custom text-blue-400/50">Payment Bank *</label>
+                          <InternalSearchableSelect
+                            options={banks}
+                            value={formData.bank_name}
+                            onChange={handleInputChange}
+                            name="bank_name"
+                            className="bg-white/10 border border-white/20 rounded-xl p-3 text-xs text-white font-medium w-full"
+                            placeholder="Select Bank"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full items-start">
+                          <div className="space-y-2">
+                            <label className="label-custom text-blue-400/50">Cheque Number</label>
+                            <input type="text" name="cheque_number" value={formData.cheque_number} onChange={handleInputChange} className="w-full bg-white/10 border border-white/20 rounded-xl p-4 text-xs text-white font-medium" placeholder="Optional" />
+                            <p className="text-[10px] text-blue-400/40 uppercase font-bold mt-2 leading-tight">Only for cheque payments</p>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="label-custom text-blue-400/50">Branch (Optional)</label>
+                            <input type="text" name="branch" value={formData.branch} onChange={handleInputChange} className="w-full bg-white/10 border border-white/20 rounded-xl p-4 text-xs text-white font-medium" placeholder="Optional" />
+                            <p className="text-[10px] text-blue-400/40 uppercase font-bold mt-2 leading-tight">If payment made by cheque</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -684,23 +705,69 @@ const FormSubmissionPage = () => {
                       <span className="ml-3 text-[10px] font-bold text-slate-600 uppercase">Authorize Rights Trading</span>
                     </label>
                   </div>
+
+                  {/* Payment Details for partial acceptance */}
+                  <div className="bg-[#0A4269] p-8 md:p-12 rounded-3xl text-white space-y-10 shadow-2xl">
+                    <div className="border-b border-white/10 pb-8">
+                      <div className="text-center sm:text-left">
+                        <label className="text-[10px] font-black text-blue-400/50 uppercase tracking-[0.2em] mb-2 block">Total Consideration</label>
+                        <p className="text-4xl md:text-5xl font-black italic tracking-tighter">₦{(parseFloat(formData.amount_payable) || 0).toLocaleString()}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-6">
+                      <div className="w-full">
+                        <label className="label-custom text-blue-400/50">Payment Bank *</label>
+                        <InternalSearchableSelect
+                          options={banks}
+                          value={formData.bank_name}
+                          onChange={handleInputChange}
+                          name="bank_name"
+                          className="bg-white/10 border border-white/20 rounded-xl p-3 text-xs text-white font-medium w-full"
+                          placeholder="Select Bank"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full items-start">
+                        <div className="space-y-2">
+                          <label className="label-custom text-blue-400/50">Cheque Number</label>
+                          <input type="text" name="cheque_number" value={formData.cheque_number} onChange={handleInputChange} className="w-full bg-white/10 border border-white/20 rounded-xl p-4 text-xs text-white font-medium shadow-inner" placeholder="Optional" />
+                          <p className="text-[10px] text-blue-400/40 uppercase font-bold mt-2 leading-tight">Only for cheque payments</p>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="label-custom text-blue-400/50">Branch (Optional)</label>
+                          <input type="text" name="branch" value={formData.branch} onChange={handleInputChange} className="w-full bg-white/10 border border-white/20 rounded-xl p-4 text-xs text-white font-medium shadow-inner" placeholder="Optional" />
+                          <p className="text-[10px] text-blue-400/40 uppercase font-bold mt-2 leading-tight">If payment made by cheque</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
               {currentStep === 6 && (
-                <div className="animate-fade-in space-y-10">
+                <div className="animate-fade-in space-y-12">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2"><label className="label-custom">Legal Beneficiary Name *</label><input type="text" name="contact_name" value={formData.contact_name} onChange={handleInputChange} className="input-custom" /></div>
-                    <div className="space-y-2"><label className="label-custom">Alternate Contact *</label><input type="text" name="next_of_kin" value={formData.next_of_kin} onChange={handleInputChange} className="input-custom" /></div>
+                    <div className="space-y-2"><label className="label-custom">Contact Name *</label><input type="text" name="contact_name" value={formData.contact_name} onChange={handleInputChange} className="input-custom" /></div>
+                    <div className="space-y-2"><label className="label-custom">Next of Kin *</label><input type="text" name="next_of_kin" value={formData.next_of_kin} onChange={handleInputChange} className="input-custom" /></div>
+                    <div className="space-y-2"><label className="label-custom">Daytime Phone(optional)</label><input type="tel" name="daytime_phone" value={formData.daytime_phone} onChange={handleInputChange} className="input-custom" /></div>
                     <div className="space-y-2"><label className="label-custom">Mobile Number *</label><input type="tel" name="mobile_phone" value={formData.mobile_phone} onChange={handleInputChange} className="input-custom" /></div>
                     <div className="space-y-2"><label className="label-custom">Email Address *</label><input type="email" name="email" value={formData.email} onChange={handleInputChange} className="input-custom" /></div>
                   </div>
                   <div className="p-8 bg-slate-50 rounded-2xl border border-slate-200 space-y-6">
                     <h4 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">E-Dividend Payment Profile</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2"><label className="label-custom">Mandate Bank</label><input type="text" name="bank_name_edividend" value={formData.bank_name_edividend} onChange={handleInputChange} className="input-custom bg-white" /></div>
-                      <div className="space-y-2"><label className="label-custom">Account Reference</label><input type="text" name="account_number" value={formData.account_number} onChange={handleInputChange} className="input-custom bg-white" /></div>
-                      <div className="space-y-2 md:col-span-2"><label className="label-custom">BVN identifier</label><input type="text" name="bvn" value={formData.bvn} onChange={handleInputChange} className="input-custom bg-white" /></div>
+                      <div className="space-y-2">
+                        <label className="label-custom">Mandate Bank(Optional)</label>
+                        <InternalSearchableSelect
+                          options={banks}
+                          value={formData.bank_name_edividend}
+                          onChange={handleInputChange}
+                          name="bank_name_edividend"
+                          placeholder="Select Bank"
+                        />
+                      </div>
+                      <div className="space-y-2"><label className="label-custom">Mandate Bank Branch (Optional)</label><input type="text" name="bank_branch_edividend" value={formData.bank_branch_edividend} onChange={handleInputChange} className="input-custom bg-white" placeholder="Optional" /></div>
+                      <div className="space-y-2"><label className="label-custom">Account Number</label><input type="text" name="account_number" value={formData.account_number} onChange={handleInputChange} className="input-custom bg-white" /></div>
+                      <div className="space-y-2"><label className="label-custom">BVN</label><input type="text" name="bvn" value={formData.bvn} onChange={handleInputChange} className="input-custom bg-white" /></div>
                     </div>
                   </div>
                 </div>
@@ -799,11 +866,11 @@ const FormSubmissionPage = () => {
                   <div className="space-y-4">
                     <h4 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest border-b border-slate-100 pb-2">Shareholder Information</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Registration Account</p><p className="text-xs font-bold text-slate-900">{formData.reg_account_number}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">REG ACCOUNT:</p><p className="text-xs font-bold text-slate-900">{formData.reg_account_number}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Name</p><p className="text-xs font-bold text-slate-900">{formData.name}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Holdings</p><p className="text-xs font-bold text-slate-900">{parseFloat(formData.holdings).toLocaleString()}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Rights Issue</p><p className="text-xs font-bold text-slate-900">{parseFloat(formData.rights_issue).toLocaleString()}</p></div>
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Amount Due</p><p className="text-xs font-bold text-slate-900">₦{parseFloat(formData.amount_due).toLocaleString()}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">AMOUNT PAYABLE:</p><p className="text-xs font-bold text-slate-900">₦{parseFloat(formData.amount_due).toLocaleString()}</p></div>
                     </div>
                   </div>
 
@@ -830,9 +897,9 @@ const FormSubmissionPage = () => {
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Additional Shares Applied</p><p className="text-xs font-bold text-slate-900">{formData.apply_additional ? formData.additional_shares.toLocaleString() : '0'}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Additional Amount Payable</p><p className="text-xs font-bold text-slate-900">₦{parseFloat(formData.additional_amount || 0).toLocaleString()}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Payment Amount</p><p className="text-xs font-bold text-[#0A4269]">₦{parseFloat(calculateTotalPayment()).toLocaleString()}</p></div>
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Bank</p><p className="text-xs font-bold text-slate-900">{formData.bank_name}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Bank</p><p className="text-xs font-bold text-slate-900">{formData.bank_name || 'NOT SPECIFIED'}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Cheque Number</p><p className="text-xs font-bold text-slate-900">{formData.cheque_number || 'N/A'}</p></div>
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Branch</p><p className="text-xs font-bold text-slate-900">{formData.branch}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Branch</p><p className="text-xs font-bold text-slate-900">{formData.branch || 'N/A'}</p></div>
                     </div>
                   </div>
 
@@ -845,8 +912,8 @@ const FormSubmissionPage = () => {
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Daytime Phone</p><p className="text-xs font-bold text-slate-900">{formData.daytime_phone}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Mobile Phone</p><p className="text-xs font-bold text-slate-900">{formData.mobile_phone}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Email</p><p className="text-xs font-bold text-slate-900 truncate">{formData.email}</p></div>
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">E-Dividend Bank</p><p className="text-xs font-bold text-slate-900">{formData.bank_name_edividend}</p></div>
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Branch</p><p className="text-xs font-bold text-slate-900">{formData.bank_branch_edividend || 'N/A'}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">E-Dividend Bank</p><p className="text-xs font-bold text-slate-900">{formData.bank_name_edividend || 'N/A'}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">E-Dividend Branch</p><p className="text-xs font-bold text-slate-900">{formData.bank_branch_edividend || 'N/A'}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Account Number</p><p className="text-xs font-bold text-slate-900">{formData.account_number}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">BVN</p><p className="text-xs font-bold text-slate-900">{formData.bvn}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Corporate Signatories</p><p className="text-xs font-bold text-slate-900">{formData.corporate_signatory_names || 'N/A'}</p></div>
