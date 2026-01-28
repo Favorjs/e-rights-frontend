@@ -79,9 +79,9 @@ const HomePage = () => {
             <h2 className="text-[#F58220] text-sm font-bold uppercase tracking-widest mb-4">
               Invest in the Future
             </h2>
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight tracking-tight">
-              LINKAGE ASSURANCE PLC <br />
-              <span className="text-[#F58220]">RIGHTS ISSUE 2025</span>
+            <h1 className="text-[2.2rem] sm:text-4xl md:text-7xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
+              LINKAGE ASSURANCE <br />
+              <span className="text-[#F58220] drop-shadow-sm">RIGHTS ISSUE 2025</span>
             </h1>
             <p className="text-slate-400 text-lg md:text-xl mb-8 leading-relaxed max-w-2xl">
               Access the official portal for shareholder rights applications.
@@ -107,6 +107,20 @@ const HomePage = () => {
         {/* Subtle Decorative Element */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-emerald-900/10 to-transparent"></div>
       </section>
+
+      {/* Official Declaration Banner */}
+      <div className="bg-white border-b border-slate-100">
+        <div className="container-custom py-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-center md:text-left">
+            <div className="flex-shrink-0 w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
+              <Info className="h-6 w-6 text-[#F58220]" />
+            </div>
+            <p className="text-sm md:text-base font-semibold text-slate-700 max-w-4xl leading-relaxed">
+              <span className="text-[#0A4269] font-bold">OFFICIAL DECLARATION:</span> Rights Issue of 12,320,000,000 Ordinary Shares of 50 kobo each at N1.32 per share on the basis of 2 new for every 3 Ordinary Shares held as at the close of business on 22 January, 2026.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content Area */}
       <div id="search-section" className="bg-slate-50/50 relative overflow-hidden">

@@ -108,8 +108,8 @@ const SearchResultsPage = () => {
           </div>
 
           <div className="flex items-center bg-white border border-slate-200 px-4 py-2 rounded-full text-xs font-bold text-slate-500 shadow-sm">
-            <span className="text-emerald-600 uppercase tracking-widest">Database</span>
-            <span className="mx-2 opacity-30">/</span>
+            {/* <span className="text-emerald-600 uppercase tracking-widest">Database</span>
+            <span className="mx-2 opacity-30">/</span> */}
             <span className="uppercase tracking-widest">Query results</span>
           </div>
         </div>
@@ -121,33 +121,33 @@ const SearchResultsPage = () => {
               <div
                 key={shareholder.id}
                 style={{ animationDelay: `${index * 50}ms` }}
-                className="card group hover:border-emerald-200 hover:shadow-md transition-all cursor-pointer animate-fade-in flex flex-col md:flex-row md:items-center justify-between p-6 md:p-8"
+                className="card group hover:border-[#0A4269] hover:shadow-md transition-all cursor-pointer animate-fade-in flex flex-col md:flex-row md:items-center justify-between p-6 md:p-8"
                 onClick={() => handleSelectShareholder(shareholder)}
               >
-                <div className="flex items-center space-x-6">
-                  <div className="w-14 h-14 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100 group-hover:bg-emerald-50 group-hover:border-emerald-100 transition-colors">
-                    <User className="h-6 w-6 text-slate-400 group-hover:text-emerald-600" />
+                <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+                  <div className="w-14 h-14 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors shrink-0">
+                    <User className="h-6 w-6 text-slate-400 group-hover:text-[#0A4269]" />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#0A4269] transition-colors truncate">
                       {shareholder.name}
                     </h3>
-                    <div className="flex flex-wrap items-center mt-2 gap-y-2">
-                      <div className="flex items-center text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md mr-4">
-                        <Hash className="h-3 w-3 mr-1.5" />
+                    <div className="flex flex-wrap items-center mt-2 gap-2">
+                      <div className="flex items-center text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
+                        <Hash className="h-3 w-3 mr-1" />
                         {shareholder.reg_account_number}
                       </div>
-                      <span className="status-badge status-completed text-[10px]">Active Shareholder</span>
+                      <span className="status-badge status-completed text-[9px] px-2 py-0.5">Verified</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 md:mt-0 flex items-center space-x-4">
+                <div className="mt-6 md:mt-0 flex items-center space-x-4 w-full md:w-auto">
                   <div className="hidden md:block text-right mr-4">
                     <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Account ID</p>
                     <p className="text-sm font-bold text-slate-700">{shareholder.id.toString().padStart(6, '0')}</p>
                   </div>
-                  <button className="btn-outline border-slate-200 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 w-full md:w-auto">
+                  <button className="btn-outline border-slate-200 group-hover:bg-[#0A4269] group-hover:text-white group-hover:border-[#0A4269] w-full md:w-auto px-6 py-3">
                     View Records
                   </button>
                 </div>

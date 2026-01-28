@@ -29,8 +29,8 @@ const Footer = () => {
           <div>
             <h4 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">Regulatory</h4>
             <ul className="space-y-4 text-sm">
-              <li><span className="text-slate-500">SEC Registered</span></li>
-              <li><span className="text-slate-500">ISO Certified</span></li>
+              <li><span className="text-slate-500">APEL is registered and regulated by the Securities and Exchange Commission, Nigeria.</span></li>
+
             </ul>
           </div>
         </div>
@@ -40,8 +40,8 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} APEL Capital Registrars Limited. All rights reserved.
           </p>
           <div className="flex space-x-6 text-xs">
-            <a href="mailto:registrar@apel.com.ng" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="mailto:registrar@apel.com.ng" className="hover:text-white transition-colors">Terms of Service</a>
+            {/* <a href="" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="" className="hover:text-white transition-colors">Terms of Service</a> */}
           </div>
         </div>
       </div>

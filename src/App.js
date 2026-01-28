@@ -48,14 +48,14 @@ function App() {
             {isClosed ? (
               <Route path="*" element={<RightsClosedPage />} />
             ) : (
-              <>
+              <React.Fragment>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/search-results" element={<SearchResultsPage />} />
                 <Route path="/shareholder/:id" element={<ShareholderDetailsPage />} />
                 <Route path="/digital-form/:id" element={<DigitalFormPage />} />
                 <Route path="/form-submission/:id" element={<FormSubmissionPage />} />
                 <Route path="*" element={<HomePage />} />
-              </>
+              </React.Fragment>
             )}
           </Routes>
         </main>

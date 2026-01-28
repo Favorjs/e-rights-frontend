@@ -139,6 +139,15 @@ h6 {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
+/* Touch targets for mobile */
+@media (max-width: 640px) {
+
+  button,
+  a {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
@@ -162,7 +171,7 @@ h6 {
 }
 
 .label-custom {
-  @apply block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5;
+  @apply block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5;
 }
 
 /* Loading state */

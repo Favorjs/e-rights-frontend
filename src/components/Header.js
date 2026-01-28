@@ -9,22 +9,22 @@ const Header = () => {
       <div className="container-custom">
         <div className="flex items-center justify-between h-20">
           {/* Left: Logos Container */}
-          <div className="flex items-center space-x-3 sm:space-x-8">
-            <Link to="/" className="flex items-center group">
+          <div className="flex items-center space-x-2 sm:space-x-8">
+            <Link to="/" className="flex items-center group shrink-0">
               <img
                 src={logo}
                 alt="APEL CAPITAL REGISTRARS"
-                className="h-11 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-10 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </Link>
 
-            <div className="h-6 sm:h-8 w-px bg-slate-200"></div>
+            <div className="h-6 sm:h-8 w-px bg-slate-200 shrink-0"></div>
 
-            <div className="flex items-center">
+            <div className="flex items-center shrink-0">
               <img
                 src={logo2}
                 alt="Linkage Assurance"
-                className="h-9 sm:h-11 w-auto object-contain transition-opacity"
+                className="h-8 sm:h-11 w-auto object-contain transition-opacity"
               />
             </div>
           </div>

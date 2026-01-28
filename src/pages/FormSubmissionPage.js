@@ -31,11 +31,15 @@ const InternalSearchableSelect = ({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
 
-  const selectedOption = options.find(opt => opt.id === value || opt === value);
-  const displayValue = selectedOption ? (selectedOption.name || selectedOption) : '';
+  const selectedOption = options.find(opt => String(opt.id || opt) === String(value));
+  const displayValue = selectedOption ? (selectedOption.name || (typeof selectedOption === 'string' ? selectedOption : '')) : '';
 
   return (
     <div className="relative w-full" ref={selectRef}>
@@ -53,7 +57,7 @@ const InternalSearchableSelect = ({
       </button>
 
       {isOpen && (
-        <div className="absolute z-20 mt-2 w-full bg-white shadow-xl rounded-xl py-1 text-sm ring-1 ring-slate-900/5 overflow-hidden animate-fade-in max-h-80">
+        <div className="absolute z-[100] mt-2 w-full bg-white shadow-2xl rounded-xl py-1 text-sm ring-1 ring-slate-900/5 overflow-hidden animate-fade-in max-h-[80vh] md:max-h-80">
           <div className="px-3 py-3 border-b border-slate-100 bg-slate-50/50">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
@@ -97,6 +101,18 @@ const InternalSearchableSelect = ({
     </div>
   );
 };
+
+const steps = [
+  { id: 1, title: 'Ownership & Records', description: 'Confirm your shareholder information' },
+  { id: 2, title: 'Guidelines & Instructions', description: 'Important information for participation' },
+  { id: 3, title: 'Stockbroker Information', description: 'CHN and Broker details' },
+  { id: 4, title: 'Participation Type', description: 'Choose how to participate' },
+  { id: 5, title: 'Payment Details', description: 'Amount and proof of payment' },
+  { id: 6, title: 'Mandate & Contact', description: 'Personal and banking details' },
+  { id: 7, title: 'Signature & Documentation', description: 'Sign and upload proof' },
+  { id: 8, title: 'Application Summary', description: 'Review and submit' }
+];
+const totalSteps = steps.length;
 
 const FormSubmissionPage = () => {
   const { id } = useParams();
@@ -153,16 +169,6 @@ const FormSubmissionPage = () => {
   const [submittedForm, setSubmittedForm] = useState(null);
   const [showFinalPreview, setShowFinalPreview] = useState(false);
 
-  const steps = [
-    { id: 1, title: 'Ownership & Records', description: 'Confirm your shareholder information' },
-    { id: 2, title: 'Guidelines & Instructions', description: 'Important information for participation' },
-    { id: 3, title: 'Stockbroker Information', description: 'CHN and Broker details' },
-    { id: 4, title: 'Participation Type', description: 'Choose how to participate' },
-    { id: 5, title: 'Payment Details', description: 'Amount and proof of payment' },
-    { id: 6, title: 'Mandate & Contact', description: 'Personal and banking details' },
-    { id: 7, title: 'Signature & Documentation', description: 'Sign and upload proof' },
-    { id: 8, title: 'Application Summary', description: 'Review and submit' }
-  ];
 
   useEffect(() => {
     if (formData.apply_additional && formData.additional_shares) {
@@ -290,7 +296,7 @@ const FormSubmissionPage = () => {
   };
 
   const handleNext = () => {
-    if (validateStep(currentStep)) setCurrentStep(prev => Math.min(prev + 1, 8));
+    if (validateStep(currentStep)) setCurrentStep(prev => Math.min(prev + 1, totalSteps));
     else toast.error('Required fields missing');
   };
 
@@ -357,44 +363,94 @@ const FormSubmissionPage = () => {
   );
 
   if (showFinalPreview && submittedForm) return (
-    <div className="App bg-slate-50/50 min-h-screen">
-      <div className="container-custom py-12 md:py-20">
-        <div className="max-w-3xl mx-auto space-y-12">
-          <div className="text-center space-y-4">
-            <div className="w-20 h-20 bg-[#0A4269] rounded-full flex items-center justify-center mx-auto shadow-xl shadow-blue-200">
-              <CheckCircle className="h-10 w-10 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-slate-900 uppercase tracking-tight">Application Lodged</h1>
-            <p className="text-slate-500 text-sm max-w-md mx-auto">Your rights issue acceptance has been recorded. Please retain your transaction document for future reference.</p>
+    <div className="App bg-slate-50/50 min-h-screen font-sans pb-20">
+      <div className="container-custom py-6 md:py-12">
+        {/* Navigation */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+          <Link
+            to={`/shareholder/${id}`}
+            className="inline-flex items-center text-xs font-bold text-[#0A4269] hover:text-[#0D507F] transition-all"
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            BACK TO PROFILE
+          </Link>
+          <div className="flex items-center space-x-2">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
+              Session Active
+            </span>
           </div>
+        </div>
 
-          <div className="card shadow-xl border-none">
-            <div className="p-8 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-1">
-                  <label className="label-custom">Shareholder Name</label>
-                  <p className="font-bold text-slate-900">{submittedForm.name}</p>
+        {/* Content Card */}
+        <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/50 max-w-4xl mx-auto">
+          {/* Progress Header */}
+          <div className="bg-[#0A4269] p-6 md:p-10 text-white relative rounded-t-2xl md:rounded-t-[1.4rem] overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div className="relative z-10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+                <div>
+                  <h1 className="text-xl md:text-2xl font-black tracking-tight mb-1 uppercase">Electronic Allotment Form</h1>
+                  <p className="text-blue-200/70 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">Step {currentStep} of {totalSteps} • Verification Phase</p>
                 </div>
-                <div className="space-y-1">
-                  <label className="label-custom">Account Reference</label>
-                  <p className="font-bold text-slate-900">{submittedForm.reg_account_number}</p>
+                <div className="bg-white/10 px-4 py-2 rounded-xl backdrop-blur-md border border-white/10 hidden sm:block">
+                  <p className="text-[10px] text-blue-200/50 font-black uppercase mb-0.5">Reference ID</p>
+                  <p className="text-xs font-mono font-bold">LAK-{id?.slice(-6).toUpperCase()}</p>
                 </div>
-                <div className="space-y-1">
-                  <label className="label-custom">Settlement Total</label>
-                  <p className="text-2xl font-bold text-[#0A4269]">₦{parseFloat(calculateTotalPayment(submittedForm)).toLocaleString()}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="label-custom">Execution Time</label>
-                  <p className="font-bold text-slate-600">{new Date(submittedForm.created_at).toLocaleString()}</p>
-                </div>
+              </div>
+
+              {/* Enhanced Stepper */}
+              <div className="flex items-center justify-between relative px-2 mb-2">
+                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/10 -translate-y-1/2"></div>
+                {Array.from({ length: totalSteps }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black transition-all duration-300 ${i + 1 <= currentStep ? 'bg-[#F58220] text-white scale-110 shadow-lg shadow-orange-500/20' : 'bg-white/10 text-white/40 border border-white/10'
+                      }`}
+                  >
+                    {i + 1 < currentStep ? '✓' : i + 1}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button onClick={handleViewForm} className="btn-secondary py-4 uppercase text-[10px] font-bold tracking-widest"><Eye className="h-4 w-4 mr-2" /> Preview Receipt</button>
-            <button onClick={handleDownloadForm} className="btn-primary py-4 uppercase text-[10px] font-bold tracking-widest"><Download className="h-4 w-4 mr-2" /> Download Document</button>
-            <Link to="/" className="sm:col-span-2 text-center text-slate-400 hover:text-slate-900 text-[10px] font-bold uppercase tracking-widest py-4">Exit Session</Link>
+          <div className="p-6 md:p-10">
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-[#0A4269] rounded-full flex items-center justify-center mx-auto shadow-xl shadow-blue-200">
+                <CheckCircle className="h-10 w-10 text-white" />
+              </div>
+              <h1 className="text-3xl font-bold text-slate-900 uppercase tracking-tight">Application Lodged</h1>
+              <p className="text-slate-500 text-sm max-w-md mx-auto">Your rights issue acceptance has been recorded. Please retain your transaction document for future reference.</p>
+            </div>
+
+            <div className="card shadow-xl border-none mt-8">
+              <div className="p-8 space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-1">
+                    <label className="label-custom">Shareholder Name</label>
+                    <p className="font-bold text-slate-900">{submittedForm.name}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="label-custom">Account Reference</label>
+                    <p className="font-bold text-slate-900">{submittedForm.reg_account_number}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="label-custom">Settlement Total</label>
+                    <p className="text-2xl font-bold text-[#0A4269]">₦{parseFloat(calculateTotalPayment(submittedForm)).toLocaleString()}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="label-custom">Execution Time</label>
+                    <p className="font-bold text-slate-600">{new Date(submittedForm.created_at).toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+              <button onClick={handleViewForm} className="btn-secondary py-4 uppercase text-[10px] font-bold tracking-widest"><Eye className="h-4 w-4 mr-2" /> Preview Receipt</button>
+              <button onClick={handleDownloadForm} className="btn-primary py-4 uppercase text-[10px] font-bold tracking-widest"><Download className="h-4 w-4 mr-2" /> Download Document</button>
+              <Link to="/" className="sm:col-span-2 text-center text-slate-400 hover:text-slate-900 text-[10px] font-bold uppercase tracking-widest py-4">Exit Session</Link>
+            </div>
           </div>
         </div>
       </div>
@@ -466,7 +522,7 @@ const FormSubmissionPage = () => {
 
         {/* Main Content Area */}
         <div className="max-w-4xl mx-auto">
-          <div className="card p-6 md:p-12 bg-white shadow-lg min-h-[500px] flex flex-col relative overflow-hidden">
+          <div className="card p-6 md:p-12 bg-white shadow-lg min-h-[500px] flex flex-col relative">
             <div className="absolute top-0 right-0 p-8 opacity-[0.02] pointer-events-none select-none">
               <span className="text-[140px] font-bold italic leading-none">{currentStep}</span>
             </div>
@@ -736,7 +792,7 @@ const FormSubmissionPage = () => {
                 </div>
               )}
 
-              {currentStep === 8 && (
+              {currentStep === totalSteps && (
                 <div className="animate-fade-in space-y-12">
                   <h2 className="text-2xl font-bold text-slate-900 mb-8">Form Summary</h2>
                   {/* Shareholder Information */}
@@ -828,8 +884,8 @@ const FormSubmissionPage = () => {
 
               <div className="mt-12 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <button type="button" onClick={handlePrevious} disabled={currentStep === 1} className="btn-outline w-full sm:w-auto px-10 py-4 text-xs font-bold uppercase tracking-widest disabled:opacity-30 flex items-center justify-center order-3 sm:order-1"><ChevronLeft className="h-4 w-4 mr-2" /> Back</button>
-                <div className="hidden sm:block order-2"><span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Step {currentStep} / 8</span></div>
-                {currentStep < 8 ? (
+                <div className="hidden sm:block order-2"><span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Step {currentStep} / {totalSteps}</span></div>
+                {currentStep < totalSteps ? (
                   <button type="button" onClick={handleNext} className="btn-primary w-full sm:w-auto px-10 py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center order-1 sm:order-3">Continue <ChevronRight className="h-4 w-4 ml-2" /></button>
                 ) : (
                   <button type="button" onClick={handleSubmit} disabled={submitting} className="btn-primary bg-slate-900 hover:bg-black w-full sm:w-auto px-10 py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center order-1 sm:order-3">
