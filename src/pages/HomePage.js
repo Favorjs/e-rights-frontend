@@ -54,7 +54,7 @@ const HomePage = () => {
       'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1764578164/LINKAGE_ASSURANCE_PLC_2025_Right_Brokers_Docket_wurfeu.xls',
       'Dematerialization Form': 'https://res.cloudinary.com/apelng/image/upload/v1762418562/FULL-DEMATERIAL-MIGRATION-FORM-1_1_mmibqe.pdf',
       'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1763988769/Linkage_Rights_Circular_ledega_b_zke5hk.pdf',
-      'Public Offer': 'https://res.cloudinary.com/apelng/image/upload/v1761666679/Linkage_Public_Offer_bvnzju.pdf'
+
     };
 
     const fileUrl = formFiles[formType];
@@ -84,7 +84,7 @@ const HomePage = () => {
               <span className="text-emerald-400">RIGHTS ISSUE 2025</span>
             </h1>
             <p className="text-slate-400 text-lg md:text-xl mb-8 leading-relaxed max-w-2xl">
-              Access the official portal for shareholder rights and public offer applications.
+              Access the official portal for shareholder rights applications.
               Manage your entitlements with ease and precision.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -226,7 +226,7 @@ const HomePage = () => {
                   <div className="space-y-3">
                     {[
                       { id: 'Rights Circular', icon: FileText, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                      { id: 'Public Offer', icon: FileDigit, color: 'text-slate-600', bg: 'bg-slate-50' },
+
                       { id: 'Stock Broker Docket', icon: FileDigit, color: 'text-amber-600', bg: 'bg-amber-50' },
                       { id: 'Dematerialization Form', icon: FileSpreadsheet, color: 'text-blue-600', bg: 'bg-blue-50' }
                     ].map((form) => (

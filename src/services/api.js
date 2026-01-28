@@ -10,10 +10,9 @@ if (process.env.REACT_API_URL) {
 } else {
   // For production - use API subdomain
   const currentHost = window.location.hostname;
-  
-  // If current host is tip.apel.com.ng, change to api.tip.apel.com.ng
-  if (currentHost === 'tip.apel.com.ng') {
-    baseURL = 'https://api.tip.apel.com.ng';
+
+  if (currentHost === 'linkage.apel.com.ng') {
+    baseURL = 'https://api.linkage.apel.com.ng';
   } else {
     // Fallback - try to replace subdomain with 'api'
     const domainParts = currentHost.split('.');
@@ -50,11 +49,11 @@ api.interceptors.request.use(
     if (token && token.length < 1000) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     // Remove any potentially large headers
     delete config.headers['Cookie'];
     delete config.headers['cookie'];
-    
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -118,7 +117,7 @@ export const getRightsSubmissionById = async (id) => {
 };
 
 export const exportSubmissions = async (params = {}) => {
-  const response = await api.get('/api/admin/export', { 
+  const response = await api.get('/api/admin/export', {
     params,
     responseType: 'blob'
   });
@@ -126,7 +125,7 @@ export const exportSubmissions = async (params = {}) => {
 };
 
 export const exportRightsSubmissions = async (params = {}) => {
-  const response = await api.get('/api/admin/export-rights', { 
+  const response = await api.get('/api/admin/export-rights', {
     params,
     responseType: 'blob'
   });

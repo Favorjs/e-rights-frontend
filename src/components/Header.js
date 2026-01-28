@@ -31,9 +31,7 @@ const Header = () => {
 
           {/* Right: Navigation/Actions */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <Link to="/" className="text-[10px] sm:text-sm font-bold text-slate-600 hover:text-emerald-700 transition-colors uppercase tracking-wider">
-              Home
-            </Link>
+
             <a href="https://apel.com.ng" target="_blank" rel="noopener noreferrer" className="btn-outline text-[9px] sm:text-xs px-2 py-1.5 sm:px-4 sm:py-2 whitespace-nowrap">
               Visit <span className="hidden sm:inline">Website</span>
             </a>
