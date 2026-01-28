@@ -21,7 +21,7 @@ const Footer = () => {
             <ul className="space-y-4 text-sm">
               <li><Link to="/" className="hover:text-emerald-500 transition-colors">Home</Link></li>
               <li><a href="https://apel.com.ng" className="hover:text-emerald-500 transition-colors">Main Website</a></li>
-              <li><a href="#" className="hover:text-emerald-500 transition-colors">Contact Support</a></li>
+              <li><a href="mailto:registrar@apel.com.ng" className="hover:text-emerald-500 transition-colors">Contact Support</a></li>
             </ul>
           </div>
 
@@ -40,8 +40,8 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} APEL Capital Registrars Limited. All rights reserved.
           </p>
           <div className="flex space-x-6 text-xs">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="mailto:registrar@apel.com.ng" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="mailto:registrar@apel.com.ng" className="hover:text-white transition-colors">Terms of Service</a>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { ArrowLeft, Upload, DollarSign, Save, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Upload, Save, AlertTriangle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
