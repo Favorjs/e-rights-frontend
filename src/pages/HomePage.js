@@ -76,12 +76,12 @@ const HomePage = () => {
       <section className="bg-slate-900 border-b border-slate-800 relative overflow-hidden">
         <div className="container-custom section relative z-10">
           <div className="max-w-3xl animate-fade-in">
-            <h2 className="text-emerald-500 text-sm font-bold uppercase tracking-widest mb-4">
+            <h2 className="text-[#F58220] text-sm font-bold uppercase tracking-widest mb-4">
               Invest in the Future
             </h2>
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight tracking-tight">
               LINKAGE ASSURANCE PLC <br />
-              <span className="text-emerald-400">RIGHTS ISSUE 2025</span>
+              <span className="text-[#F58220]">RIGHTS ISSUE 2025</span>
             </h1>
             <p className="text-slate-400 text-lg md:text-xl mb-8 leading-relaxed max-w-2xl">
               Access the official portal for shareholder rights applications.
@@ -119,13 +119,13 @@ const HomePage = () => {
 
             {/* Left: Search Portal */}
             <div className="lg:col-span-7 xl:col-span-8">
-              <div className="card shadow-2xl border-none overflow-hidden bg-white group transition-all duration-500 hover:shadow-emerald-900/5">
-                <div className="h-2 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600"></div>
+              <div className="card shadow-2xl border-none overflow-hidden bg-white group transition-all duration-500 hover:shadow-[#0A4269]/5">
+                <div className="h-2 bg-gradient-to-r from-[#0A4269] via-[#F58220] to-[#0A4269]"></div>
                 <div className="p-6 md:p-10">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
                     <div className="flex items-center space-x-4">
-                      <div className="p-3 bg-emerald-50 rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-500">
-                        <Search className="h-6 w-6" />
+                      <div className="p-3 bg-blue-50 rounded-2xl group-hover:bg-[#0A4269] group-hover:text-white transition-colors duration-500">
+                        <Search className="h-6 w-6 text-[#0A4269] group-hover:text-white" />
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Shareholder Portal</h3>
@@ -135,44 +135,35 @@ const HomePage = () => {
                     <div className="hidden md:flex flex-col items-end">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Secure Database</span>
                       <div className="flex items-center space-x-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Live Sync</span>
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#F58220] animate-pulse"></div>
+                        <span className="text-[10px] font-black text-[#0A4269] uppercase tracking-widest">Live Sync</span>
                       </div>
                     </div>
                   </div>
 
-                  <form onSubmit={handleSearch} className="space-y-8">
+                  <form onSubmit={handleSearch} className="space-y-6">
                     <div>
-                      <div className="flex justify-between items-end mb-2">
-                        <label htmlFor="searchName" className="text-xs font-bold text-slate-900 uppercase tracking-widest">
+                      <div className="flex justify-between items-end mb-3">
+                        <label htmlFor="searchName" className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">
                           Registered Full Name
                         </label>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase bg-slate-100 px-2 py-0.5 rounded">Required</span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase bg-slate-50 px-2 py-0.5 rounded border border-slate-100">Verification Required</span>
                       </div>
-                      <div className="relative group/input">
+                      <div className="relative">
                         <input
                           type="text"
                           id="searchName"
                           value={searchName}
                           onChange={(e) => setSearchName(e.target.value)}
-                          placeholder="Enter name (e.g. John Okoro)..."
-                          className="form-input text-lg py-5 px-6 bg-slate-50 border-slate-100 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 transition-all rounded-2xl"
+                          placeholder="Enter your name exactly as registered..."
+                          className="form-input text-base md:text-lg py-5 px-6 bg-slate-50 border-slate-100 focus:bg-white focus:ring-8 focus:ring-emerald-500/5 transition-all rounded-2xl placeholder:text-slate-300"
                           disabled={isSearching}
                         />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-2">
-                          {isSearching ? (
-                            <div className="loading-spinner h-5 w-5 border-t-emerald-600" />
-                          ) : (
-                            <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center opacity-0 group-focus-within/input:opacity-100 transition-opacity">
-                              <Search className="h-4 w-4" />
-                            </div>
-                          )}
-                        </div>
                       </div>
-                      <div className="mt-3 flex items-center space-x-2">
-                        <Info className="h-3.5 w-3.5 text-slate-400" />
-                        <p className="text-[11px] text-slate-500 font-medium">
-                          Use exact spelling as shown on your share certificate or CSCS statement.
+                      <div className="mt-4 flex items-center space-x-2 px-1">
+                        <Info className="h-3.5 w-3.5 text-[#0A4269]" />
+                        <p className="text-[11px] text-slate-500 font-semibold italic">
+                          Minimum 2 characters required for database lookup.
                         </p>
                       </div>
                     </div>
@@ -180,7 +171,7 @@ const HomePage = () => {
                     <button
                       type="submit"
                       disabled={isSearching}
-                      className="w-full btn-primary text-base py-5 font-bold tracking-widest transition-all hover:scale-[1.01] active:scale-[0.98] shadow-xl shadow-emerald-700/20 rounded-2xl flex items-center justify-center space-x-3"
+                      className="w-full btn-primary text-base py-5 font-black tracking-[0.1em] transition-all hover:shadow-2xl hover:shadow-[#0A4269]/20 active:scale-[0.98] rounded-2xl flex items-center justify-center space-x-3 group"
                     >
                       {isSearching ? (
                         <>
@@ -189,6 +180,7 @@ const HomePage = () => {
                         </>
                       ) : (
                         <>
+                          <Search className="h-5 w-5 transition-transform group-hover:scale-110" />
                           <span>LOCATE MY ENTITLEMENTS</span>
                         </>
                       )}
@@ -225,15 +217,15 @@ const HomePage = () => {
 
                   <div className="space-y-3">
                     {[
-                      { id: 'Rights Circular', icon: FileText, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                      { id: 'Rights Circular', icon: FileText, color: 'text-[#0A4269]', bg: 'bg-blue-50' },
 
-                      { id: 'Stock Broker Docket', icon: FileDigit, color: 'text-amber-600', bg: 'bg-amber-50' },
-                      { id: 'Dematerialization Form', icon: FileSpreadsheet, color: 'text-blue-600', bg: 'bg-blue-50' }
+                      { id: 'Stock Broker Docket', icon: FileDigit, color: 'text-[#F58220]', bg: 'bg-orange-50' },
+                      { id: 'Dematerialization Form', icon: FileSpreadsheet, color: 'text-slate-600', bg: 'bg-slate-50' }
                     ].map((form) => (
                       <button
                         key={form.id}
                         onClick={() => downloadForm(form.id)}
-                        className="w-full flex items-center justify-between p-4 border border-slate-50 rounded-xl hover:border-emerald-200 hover:bg-emerald-50/20 transition-all group"
+                        className="w-full flex items-center justify-between p-4 border border-slate-50 rounded-xl hover:border-blue-200 hover:bg-blue-50/20 transition-all group"
                       >
                         <div className="flex items-center space-x-4">
                           <div className={`p-2 rounded-lg ${form.bg} group-hover:scale-110 transition-transform`}>
@@ -241,7 +233,7 @@ const HomePage = () => {
                           </div>
                           <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900">{form.id}</span>
                         </div>
-                        <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-emerald-600 transition-all translate-x-0 group-hover:translate-x-1" />
+                        <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-[#0A4269] transition-all translate-x-0 group-hover:translate-x-1" />
                       </button>
                     ))}
                   </div>
@@ -257,7 +249,7 @@ const HomePage = () => {
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-                      <Info className="h-4 w-4 text-emerald-400" />
+                      <Info className="h-4 w-4 text-[#F58220]" />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold uppercase tracking-[0.2em]">Trading Guide</h3>
@@ -272,7 +264,7 @@ const HomePage = () => {
                 {isProcedureOpen && (
                   <div className="p-8 bg-white animate-fade-in space-y-8 divide-y divide-slate-100">
                     <div className="space-y-4">
-                      <h4 className="flex items-center text-[10px] font-black text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
+                      <h4 className="flex items-center text-[10px] font-black text-[#0A4269] bg-blue-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
                         Seller Protocol
                       </h4>
                       <ul className="space-y-4">

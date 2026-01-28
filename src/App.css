@@ -3,10 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --primary: #047857;
-  /* Emerald-700 */
-  --primary-hover: #065f46;
-  /* Emerald-800 */
+  --primary: #0A4269;
+  /* Linkage Blue */
+  --primary-hover: #073454;
+  /* Darker Linkage Blue */
+  --accent: #F58220;
+  /* Linkage Orange */
+  --accent-hover: #D66E14;
+  /* Darker Linkage Orange */
   --secondary: #0f172a;
   /* Slate-900 */
   --background: #f8fafc;
@@ -163,5 +167,43 @@ h6 {
 
 /* Loading state */
 .loading-spinner {
-  @apply animate-spin rounded-full h-5 w-5 border-2 border-slate-200 border-t-emerald-600;
+  @apply animate-spin rounded-full h-5 w-5 border-2 border-slate-200;
+  border-top-color: var(--primary);
+}
+
+/* Mobile Specific Fixes */
+@media (max-width: 768px) {
+
+  input,
+  select,
+  textarea,
+  .form-input,
+  .input-custom {
+    font-size: 16px !important;
+  }
+}
+
+/* Table styles for Admin */
+.table-container {
+  @apply w-full overflow-x-auto;
+}
+
+.table {
+  @apply w-full text-left border-collapse;
+}
+
+.table-header {
+  @apply bg-slate-50 border-b border-slate-200;
+}
+
+.table-header th {
+  @apply px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest;
+}
+
+.table-row {
+  @apply border-b border-slate-50 hover:bg-slate-50/50 transition-colors;
+}
+
+.table-cell {
+  @apply px-4 py-4 text-sm text-slate-700;
 }

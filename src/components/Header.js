@@ -14,7 +14,7 @@ const Header = () => {
               <img
                 src={logo}
                 alt="APEL CAPITAL REGISTRARS"
-                className="h-9 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-11 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </Link>
 
@@ -24,16 +24,15 @@ const Header = () => {
               <img
                 src={logo2}
                 alt="Linkage Assurance"
-                className="h-7 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity"
+                className="h-9 sm:h-11 w-auto object-contain transition-opacity"
               />
             </div>
           </div>
 
           {/* Right: Navigation/Actions */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-
             <a href="https://apel.com.ng" target="_blank" rel="noopener noreferrer" className="btn-outline text-[9px] sm:text-xs px-2 py-1.5 sm:px-4 sm:py-2 whitespace-nowrap">
-              Visit <span className="hidden sm:inline">Website</span>
+              FAQ <span className="hidden sm:inline"></span>
             </a>
           </div>
         </div>

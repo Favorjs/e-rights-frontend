@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Search, X, ChevronDown } from 'lucide-react';
+import { Search, X, ChevronDown, CheckCircle } from 'lucide-react';
 
 const SearchableSelect = ({
   options = [],
@@ -49,7 +49,7 @@ const SearchableSelect = ({
       <div className="relative" ref={selectRef}>
         <button
           type="button"
-          className={`relative w-full bg-white border ${error ? 'border-red-300' : 'border-slate-200'} rounded-xl shadow-sm pl-4 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-4 ${error ? 'focus:ring-red-500/10 focus:border-red-500' : 'focus:ring-emerald-500/10 focus:border-emerald-600'} text-sm ${disabled ? 'bg-slate-50 text-slate-400' : 'text-slate-900'}`}
+          className={`relative w-full bg-white border ${error ? 'border-red-300' : 'border-slate-200'} rounded-xl shadow-sm pl-4 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-4 ${error ? 'focus:ring-red-500/10 focus:border-red-500' : 'focus:ring-blue-500/10 focus:border-[#0A4269]'} text-sm ${disabled ? 'bg-slate-50 text-slate-400' : 'text-slate-900'}`}
           onClick={() => !disabled && setIsOpen(!isOpen)}
           disabled={disabled}
         >
@@ -70,7 +70,7 @@ const SearchableSelect = ({
                 </div>
                 <input
                   type="text"
-                  className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-xs leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-600"
+                  className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-xs leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-[#0A4269]"
                   placeholder="Filter brokers..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -101,7 +101,7 @@ const SearchableSelect = ({
                   return (
                     <div
                       key={`${optionValue}-${index}`}
-                      className={`px-4 py-2.5 text-sm transition-colors cursor-pointer ${isSelected ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-700 hover:bg-slate-50'
+                      className={`px-4 py-2.5 text-sm transition-colors cursor-pointer ${isSelected ? 'bg-blue-50 text-[#0A4269] font-bold' : 'text-slate-700 hover:bg-slate-50'
                         }`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -114,7 +114,7 @@ const SearchableSelect = ({
                     >
                       <div className="flex items-center justify-between">
                         <span className="truncate">{optionLabel}</span>
-                        {isSelected && <CheckCircle className="h-3 w-3 text-emerald-600" />}
+                        {isSelected && <CheckCircle className="h-3 w-3 text-[#0A4269]" />}
                       </div>
                     </div>
                   );
