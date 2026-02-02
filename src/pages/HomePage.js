@@ -81,11 +81,11 @@ const HomePage = () => {
             </h2>
             <h1 className="text-[2.2rem] sm:text-4xl md:text-7xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
               LINKAGE ASSURANCE <br />
-              <span className="text-[#F58220] drop-shadow-sm">RIGHTS ISSUE 2025</span>
+              <span className="text-[#F58220] drop-shadow-sm">Rights Issue 2025</span>
             </h1>
             <p className="text-slate-400 text-lg md:text-xl mb-8 leading-relaxed max-w-2xl">
               Access the official portal for shareholder rights applications.
-              Manage your entitlements with ease and precision.
+              Manage your Rights Issues with ease and precision.
             </p>
             <div className="flex flex-wrap gap-4">
               <button
@@ -143,7 +143,7 @@ const HomePage = () => {
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold text-slate-900 tracking-tight">APEL CAPITAL REGISTRARS</h3>
-                        <p className="text-sm text-slate-500 font-medium">LINKAGE ASSURANCE PLC RIGHTS ISSUE</p>
+                        <p className="text-sm text-slate-500 font-medium">LINKAGE ASSURANCE PLC Rights Issue</p>
                       </div>
                     </div>
                     <div className="hidden md:flex flex-col items-end">

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Download, 
-  Search, 
-  Eye, 
+import {
+  Download,
+  Search,
+  Eye,
   Users,
   CheckCircle,
   FileText,
@@ -14,12 +14,12 @@ import {
   LogOut // Added LogOut icon
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { 
-  getDashboardStats, 
-  getSubmissions, 
-  getRightsSubmissions, 
-  exportSubmissions, 
-  exportRightsSubmissions 
+import {
+  getDashboardStats,
+  getSubmissions,
+  getRightsSubmissions,
+  exportSubmissions,
+  exportRightsSubmissions
 } from '../services/api';
 
 const AdminDashboard = () => {
@@ -69,7 +69,7 @@ const AdminDashboard = () => {
       }
 
       const response = await getSubmissions(params);
-      
+
       if (response.success) {
         setSubmissions(response.data);
         setTotalPages(response.pagination.totalPages);
@@ -100,7 +100,7 @@ const AdminDashboard = () => {
       }
 
       const response = await getRightsSubmissions(params);
-      
+
       if (response.success) {
         setRightsSubmissions(response.data);
         setTotalPages(response.pagination.totalPages);
@@ -134,7 +134,7 @@ const AdminDashboard = () => {
   const handleExport = async () => {
     try {
       const response = await exportSubmissions({ format: 'csv' });
-      
+
       const url = window.URL.createObjectURL(new Blob([response]));
       const link = document.createElement('a');
       link.href = url;
@@ -142,7 +142,7 @@ const AdminDashboard = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      
+
       toast.success('Data exported successfully');
     } catch (error) {
       console.error('Error exporting data:', error);
@@ -161,7 +161,7 @@ const AdminDashboard = () => {
       }
 
       const response = await exportRightsSubmissions(params);
-      
+
       const url = window.URL.createObjectURL(new Blob([response]));
       const link = document.createElement('a');
       link.href = url;
@@ -169,7 +169,7 @@ const AdminDashboard = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      
+
       toast.success('Rights data exported successfully');
     } catch (error) {
       console.error('Error exporting rights data:', error);
@@ -215,7 +215,7 @@ const AdminDashboard = () => {
             <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
             <p className="text-gray-600">Rights Issue Submissions Management</p>
           </div>
-          
+
           <div className="flex space-x-4">
             <button
               onClick={handleLogout}
@@ -261,8 +261,8 @@ const AdminDashboard = () => {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Submission Rate</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {stats.totalShareholders > 0 
-                    ? (((stats.rightsSubmissions || 0) / stats.totalShareholders) * 100).toFixed(2) 
+                  {stats.totalShareholders > 0
+                    ? (((stats.rightsSubmissions || 0) / stats.totalShareholders) * 100).toFixed(2)
                     : 0}%
                 </p>
               </div>
@@ -282,7 +282,7 @@ const AdminDashboard = () => {
                 className="form-input"
               />
             </div>
-            
+
             {activeTab === 'rights' && (
               <div className="w-full sm:w-48">
                 <div className="relative">
@@ -309,7 +309,7 @@ const AdminDashboard = () => {
                 Clear Filters
               </button>
             )}
-            
+
             <button type="submit" className="btn-primary flex items-center space-x-2">
               <Search className="h-4 w-4" />
               <span>Search</span>
@@ -331,7 +331,7 @@ const AdminDashboard = () => {
               <span>Export {activeTab === 'rights' ? 'Rights' : 'Forms'}</span>
             </button>
           </div>
-          
+
           {activeTab === 'rights' && (
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">
@@ -339,7 +339,7 @@ const AdminDashboard = () => {
               </p>
             </div>
           )}
-          
+
           <div className="table-container">
             <table className="table">
               <thead className="table-header">
@@ -366,16 +366,16 @@ const AdminDashboard = () => {
                       <th>RENOUNCED SHARES</th>
                       <th>FILLED FORM</th>
                       <th>RECEIPT</th>
-                        <th>PAYMENT BANK</th>
+                      <th>PAYMENT BANK</th>
                       <th>ACTIONS</th>
-                    
+
                     </>
                   ) : (
                     <>
                       <th>REG ACCOUNT</th>
                       <th>NAME</th>
                       <th>HOLDINGS</th>
-                      <th>RIGHTS ISSUE</th>
+                      <th>Rights Issue</th>
                       <th>HOLDINGS AFTER</th>
                       <th>SIGNATURE</th>
                       <th>RECEIPT</th>
@@ -402,101 +402,100 @@ const AdminDashboard = () => {
                   (activeTab === 'rights' ? rightsSubmissions : submissions).map((submission) => (
                     <tr key={submission.id} className="table-row">
                       {activeTab === 'rights' ? (
-                     <>
-                     
-        <td className="table-cell font-medium">{submission.created_at ? new Date(submission.created_at).toLocaleString('en-NG', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '-'}</td>
-        <td className="table-cell font-medium">{submission.chn || '-'}</td>
-        <td className="table-cell font-medium">{submission.reg_account_number || '-'}</td>
-        <td className="table-cell">{submission.bvn || '-'}</td>
-        <td className="table-cell">{submission.phone_number || '-'}</td>
-        <td className="table-cell">{submission.email || '-'}</td>
-        <td className="table-cell">{submission.name || '-'}</td>
-        <td className="table-cell">{submission.rights_issue ? submission.rights_issue.toLocaleString() : '-'}</td>
-        <td className="table-cell">{submission.shares_accepted ? submission.shares_accepted.toLocaleString() : '0'}</td>
-        <td className="table-cell">
-          {submission.apply_additional ? (
-            <span className="flex items-center text-green-600">
-              <CheckCircle className="h-4 w-4 mr-1" />
-              {submission.additional_shares ? submission.additional_shares.toLocaleString() : '0'} shares
-            </span>
-          ) : (
-            <span className="text-gray-400">No</span>
-          )}
-        </td>
-        <td className="table-cell">
-          {(() => {
-            const holdings = parseFloat(submission.holdings || 0);
-            const sharesAccepted = parseFloat(submission.shares_accepted || 0);
-            const additionalShares = parseFloat(submission.additional_shares || 0);
-            const sharesRenounced = parseFloat(submission.shares_renounced || 0);
-            const total = holdings + sharesAccepted + additionalShares - sharesRenounced;
-            return total.toLocaleString();
-          })()}
-        </td>
-        <td className="table-cell">
-          ₦{calculateValueOfOrdinaryShares(submission).toLocaleString('en-NG', { 
-            minimumFractionDigits: 2, 
-            maximumFractionDigits: 2 
-          })}
-        </td>
-        <td className="table-cell">
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {submission.payment_method || 'Cash'}
-          </span>
-        </td>
-        <td className="table-cell">{submission.holdings ? submission.holdings.toLocaleString() : '-'}</td>
-        <td className="table-cell">{submission.holdings_after ? submission.holdings_after.toLocaleString() : '-'}</td>
-        <td className="table-cell">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-            submission.action_type === 'full_acceptance' 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-yellow-100 text-yellow-800'
-          }`}>
-            {submission.action_type === 'full_acceptance' ? 'Full Acceptance' : 'Renunciation/Partial'}
-          </span>
-        </td>
-        <td className="table-cell">
-          ₦{submission.amount_payable 
-            ? parseFloat(submission.amount_payable).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) 
-            : '0.00'}
-        </td>
-        <td className="table-cell">
-          {submission.shares_renounced && submission.shares_renounced > 0 ? (
-            <span className="flex items-center text-red-600">
-              <span className="mr-1">📤</span>
-              {submission.shares_renounced.toLocaleString()} shares
-            </span>
-          ) : (
-            <span className="text-gray-400">None</span>
-          )}
-        </td>
-        <td className="table-cell">
-          {submission.filled_form_path ? (
-            <CheckCircle className="h-5 w-5 text-green-600" />
-          ) : (
-            <span className="text-gray-400">-</span>
-          )}
-        </td>
-        <td className="table-cell">
-          {submission.receipt_path ? (
-            <CheckCircle className="h-5 w-5 text-green-600" />
-          ) : (
-            <span className="text-gray-400">-</span>
-          )}
-        </td>
-              <td className="table-cell">{submission.bank_name_edividend || '-'}</td>
-        <td className="table-cell">
-          <div className="flex space-x-2">
-            <button
-              onClick={() => navigate(`/admin/rights-submission/${submission.id}`)}
-              className="text-blue-600 hover:text-blue-800"
-              title="View Details"
-            >
-              <Eye className="h-4 w-4" />
-            </button>
-          </div>
-        </td>
-      </>
+                        <>
+
+                          <td className="table-cell font-medium">{submission.created_at ? new Date(submission.created_at).toLocaleString('en-NG', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '-'}</td>
+                          <td className="table-cell font-medium">{submission.chn || '-'}</td>
+                          <td className="table-cell font-medium">{submission.reg_account_number || '-'}</td>
+                          <td className="table-cell">{submission.bvn || '-'}</td>
+                          <td className="table-cell">{submission.phone_number || '-'}</td>
+                          <td className="table-cell">{submission.email || '-'}</td>
+                          <td className="table-cell">{submission.name || '-'}</td>
+                          <td className="table-cell">{submission.rights_issue ? submission.rights_issue.toLocaleString() : '-'}</td>
+                          <td className="table-cell">{submission.shares_accepted ? submission.shares_accepted.toLocaleString() : '0'}</td>
+                          <td className="table-cell">
+                            {submission.apply_additional ? (
+                              <span className="flex items-center text-green-600">
+                                <CheckCircle className="h-4 w-4 mr-1" />
+                                {submission.additional_shares ? submission.additional_shares.toLocaleString() : '0'} shares
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">No</span>
+                            )}
+                          </td>
+                          <td className="table-cell">
+                            {(() => {
+                              const holdings = parseFloat(submission.holdings || 0);
+                              const sharesAccepted = parseFloat(submission.shares_accepted || 0);
+                              const additionalShares = parseFloat(submission.additional_shares || 0);
+                              const sharesRenounced = parseFloat(submission.shares_renounced || 0);
+                              const total = holdings + sharesAccepted + additionalShares - sharesRenounced;
+                              return total.toLocaleString();
+                            })()}
+                          </td>
+                          <td className="table-cell">
+                            ₦{calculateValueOfOrdinaryShares(submission).toLocaleString('en-NG', {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2
+                            })}
+                          </td>
+                          <td className="table-cell">
+                            <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {submission.payment_method || 'Cash'}
+                            </span>
+                          </td>
+                          <td className="table-cell">{submission.holdings ? submission.holdings.toLocaleString() : '-'}</td>
+                          <td className="table-cell">{submission.holdings_after ? submission.holdings_after.toLocaleString() : '-'}</td>
+                          <td className="table-cell">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${submission.action_type === 'full_acceptance'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                              {submission.action_type === 'full_acceptance' ? 'Full Acceptance' : 'Renunciation/Partial'}
+                            </span>
+                          </td>
+                          <td className="table-cell">
+                            ₦{submission.amount_payable
+                              ? parseFloat(submission.amount_payable).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                              : '0.00'}
+                          </td>
+                          <td className="table-cell">
+                            {submission.shares_renounced && submission.shares_renounced > 0 ? (
+                              <span className="flex items-center text-red-600">
+                                <span className="mr-1">📤</span>
+                                {submission.shares_renounced.toLocaleString()} shares
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">None</span>
+                            )}
+                          </td>
+                          <td className="table-cell">
+                            {submission.filled_form_path ? (
+                              <CheckCircle className="h-5 w-5 text-green-600" />
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </td>
+                          <td className="table-cell">
+                            {submission.receipt_path ? (
+                              <CheckCircle className="h-5 w-5 text-green-600" />
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </td>
+                          <td className="table-cell">{submission.bank_name_edividend || '-'}</td>
+                          <td className="table-cell">
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => navigate(`/admin/rights-submission/${submission.id}`)}
+                                className="text-blue-600 hover:text-blue-800"
+                                title="View Details"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </>
                       ) : (
                         <>
                           <td className="table-cell font-medium">
@@ -546,7 +545,7 @@ const AdminDashboard = () => {
               <div className="text-sm text-gray-700">
                 Showing {((currentPage - 1) * 10) + 1} to {Math.min(currentPage * 10, totalCount)} of {totalCount} results
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
@@ -556,11 +555,11 @@ const AdminDashboard = () => {
                   <ChevronLeft className="h-4 w-4" />
                   Previous
                 </button>
-                
+
                 <span className="px-3 py-1 bg-gray-100 rounded-md text-sm font-medium">
                   {currentPage}
                 </span>
-                
+
                 <button
                   onClick={() => setCurrentPage(currentPage + 1)}
                   disabled={currentPage === totalPages}

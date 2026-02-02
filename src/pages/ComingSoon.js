@@ -26,18 +26,18 @@ const ComingSoon = () => {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-6">
             <Clock className="h-10 w-10 text-green-600" />
           </div>
-          
+
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Coming Soon</h1>
-          
+
           <p className="text-xl text-gray-600 mb-8">
             Dear Shareholder, Stay tuned for updates!
           </p>
-          
-       
-          
+
+
+
           <div className="mt-10 flex items-center justify-center space-x-6">
-            <a 
-              href="mailto:registrars@apel.ng" 
+            <a
+              href="mailto:registrars@apel.ng"
               className="text-gray-500 hover:text-green-600 flex items-center"
             >
               <Mail className="h-5 w-5 mr-2" />

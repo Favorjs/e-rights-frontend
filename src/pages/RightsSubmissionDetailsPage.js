@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Download, Eye, FileText, Receipt, CheckCircle, X, ZoomIn, ZoomOut} from 'lucide-react';
+import { ArrowLeft, Download, Eye, FileText, Receipt, CheckCircle, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getRightsSubmissionById } from '../services/api';
 
@@ -42,83 +42,83 @@ const RightsSubmissionDetailsPage = () => {
   }, [id, navigate]);
 
   // Generate Cloudinary view URL (for preview)
- // Update the Cloudinary URL generation functions
-// Generate Cloudinary view URL
-const getCloudinaryViewUrl = (publicId, fileType = 'auto') => {
-  if (!publicId) return null;
-  const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
-  
-  // For PDF files, use raw upload delivery
-  if (publicId.toLowerCase().endsWith('.pdf') || fileType === 'pdf') {
+  // Update the Cloudinary URL generation functions
+  // Generate Cloudinary view URL
+  const getCloudinaryViewUrl = (publicId, fileType = 'auto') => {
+    if (!publicId) return null;
+    const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
+
+    // For PDF files, use raw upload delivery
+    if (publicId.toLowerCase().endsWith('.pdf') || fileType === 'pdf') {
+      return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+    }
+
+    // For images, use `image upload
     return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
-  }
-  
-  // For images, use `image upload
-  return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
-};
+  };
 
-// Generate Cloudinary download URL using the API format
-const getCloudinaryDownloadUrl = (publicId, fileName = 'download') => {
-  if (!publicId) return null;
+  // Generate Cloudinary download URL using the API format
+  const getCloudinaryDownloadUrl = (publicId, fileName = 'download') => {
+    if (!publicId) return null;
 
-  const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
+    const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
 
-  const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
-  const cleanFileName = fileNameWithoutExtension
-    .replace(/[^a-zA-Z0-9.-]/g, '_')
-    .toLowerCase();
+    const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
+    const cleanFileName = fileNameWithoutExtension
+      .replace(/[^a-zA-Z0-9.-]/g, '_')
+      .toLowerCase();
 
- 
-  // For PDF files, use raw upload with attachment
-  if (publicId.toLowerCase().endsWith('.pdf') || fileName.toLowerCase().endsWith('.pdf')) {
+
+    // For PDF files, use raw upload with attachment
+    if (publicId.toLowerCase().endsWith('.pdf') || fileName.toLowerCase().endsWith('.pdf')) {
+      return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
+    }
+
+    // For images, use image upload with attachment
     return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
-  }
-  
-  // For images, use image upload with attachment
-  return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
-};
+  };
 
-// Alternative direct download URL (simpler approach)
-// const getDirectDownloadUrl = (publicId, fileName = 'download') => {
-//   if (!publicId) return null;
-  
-//   const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
-//   const cleanFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
-  
-//   return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
-// };
+  // Alternative direct download URL (simpler approach)
+  // const getDirectDownloadUrl = (publicId, fileName = 'download') => {
+  //   if (!publicId) return null;
+
+  //   const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'apelng';
+  //   const cleanFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
+
+  //   return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment:${cleanFileName}/${publicId}`;
+  // };
 
 
 
-// Update the handleViewFile function to handle PDFs properly
-const handleViewFile = (publicId, fileName) => {
-  try {
-    if (!publicId) {
-      toast.error('File not available for viewing');
-      return;
+  // Update the handleViewFile function to handle PDFs properly
+  const handleViewFile = (publicId, fileName) => {
+    try {
+      if (!publicId) {
+        toast.error('File not available for viewing');
+        return;
+      }
+
+      // Determine file type
+      const isPDF = publicId.toLowerCase().endsWith('.pdf') || fileName.toLowerCase().endsWith('.pdf');
+      const viewUrl = getCloudinaryViewUrl(publicId, isPDF ? 'pdf' : 'image');
+
+      if (!viewUrl) {
+        toast.error('Could not generate view URL');
+        return;
+      }
+
+      setSelectedFile({
+        url: viewUrl,
+        name: fileName,
+        publicId: publicId,
+        type: isPDF ? 'pdf' : 'image'
+      });
+      setShowFileViewer(true);
+    } catch (error) {
+      console.error('Error loading file:', error);
+      toast.error('Error loading file');
     }
-
-    // Determine file type
-    const isPDF = publicId.toLowerCase().endsWith('.pdf') || fileName.toLowerCase().endsWith('.pdf');
-    const viewUrl = getCloudinaryViewUrl(publicId, isPDF ? 'pdf' : 'image');
-
-    if (!viewUrl) {
-      toast.error('Could not generate view URL');
-      return;
-    }
-
-    setSelectedFile({
-      url: viewUrl,
-      name: fileName,
-      publicId: publicId,
-      type: isPDF ? 'pdf' : 'image'
-    });
-    setShowFileViewer(true);
-  } catch (error) {
-    console.error('Error loading file:', error);
-    toast.error('Error loading file');
-  }
-};
+  };
   // Generate Cloudinary download URL
 
 
@@ -168,43 +168,43 @@ const handleViewFile = (publicId, fileName) => {
         return `${baseName}-document-${timestamp}.pdf`;
     }
   };
-// Add these helper functions
-const handleZoomIn = () => {
-  setZoomLevel(prev => Math.min(prev + 0.2, 3));
-};
+  // Add these helper functions
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 0.2, 3));
+  };
 
-const handleZoomOut = () => {
-  setZoomLevel(prev => Math.max(prev - 0.2, 0.5));
-};
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 0.2, 0.5));
+  };
 
-const handleResetZoom = () => {
-  setZoomLevel(1);
-  setPosition({ x: 0, y: 0 });
-};
+  const handleResetZoom = () => {
+    setZoomLevel(1);
+    setPosition({ x: 0, y: 0 });
+  };
 
-const handleMouseDown = (e) => {
-  if (e.button !== 0) return; // Only left mouse button
-  setIsDragging(true);
-  setDragStart({
-    x: e.clientX - position.x,
-    y: e.clientY - position.y
-  });
-  document.body.style.cursor = 'grabbing';
-};
+  const handleMouseDown = (e) => {
+    if (e.button !== 0) return; // Only left mouse button
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
+    document.body.style.cursor = 'grabbing';
+  };
 
-const handleMouseMove = (e) => {
-  if (!isDragging) return;
-  
-  const x = e.clientX - dragStart.x;
-  const y = e.clientY - dragStart.y;
-  
-  setPosition({ x, y });
-};
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
 
-const handleMouseUp = () => {
-  setIsDragging(false);
-  document.body.style.cursor = 'default';
-}; 
+    const x = e.clientX - dragStart.x;
+    const y = e.clientY - dragStart.y;
+
+    setPosition({ x, y });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    document.body.style.cursor = 'default';
+  };
   // Debug: Log the submission data to see what's in filled_form_path
   useEffect(() => {
     if (submission) {
@@ -306,8 +306,8 @@ const handleMouseUp = () => {
                   <span className="text-blue-700 font-medium">Status:</span>
                   <div className="inline-block">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${submission.status === 'completed' ? 'bg-green-100 text-green-800' :
-                        submission.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                          'bg-yellow-100 text-yellow-800'
+                      submission.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
                       }`}>
                       {(submission.status || 'pending').charAt(0).toUpperCase() + (submission.status || 'pending').slice(1)}
                     </span>
@@ -454,121 +454,121 @@ const handleMouseUp = () => {
       </div>
 
       {/* File Viewer Modal */}
-{showFileViewer && selectedFile && (
-  <div 
-    className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
-    onMouseUp={handleMouseUp}
-    onMouseLeave={handleMouseUp}
-  >
-    <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] flex flex-col">
-      <div className="flex justify-between items-center p-4 border-b">
-        <h3 className="text-lg font-medium">{selectedFile.name || 'Document'}</h3>
-        <div className="flex items-center space-x-2">
-          {selectedFile.type === 'image' && (
-            <>
-              <button
-                onClick={handleZoomOut}
-                className="p-1 hover:bg-gray-100 rounded"
-                disabled={zoomLevel <= 0.5}
-              >
-                <ZoomOut className="h-5 w-5" />
-              </button>
-              <span className="text-sm">{Math.round(zoomLevel * 100)}%</span>
-              <button
-                onClick={handleZoomIn}
-                className="p-1 hover:bg-gray-100 rounded"
-                disabled={zoomLevel >= 3}
-              >
-                <ZoomIn className="h-5 w-5" />
-              </button>
-              <button
-                onClick={handleResetZoom}
-                className="text-xs text-blue-600 hover:underline ml-2"
-              >
-                Reset
-              </button>
-            </>
-          )}
-          <button
-            onClick={closeFileViewer}
-            className="text-gray-500 hover:text-gray-700 ml-4"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-      </div>
-      <div 
-        className="flex-1 overflow-auto p-4 relative"
-        onMouseMove={selectedFile.type === 'image' ? handleMouseMove : undefined}
-      >
-        {selectedFile.type === 'pdf' ? (
-          <div className="w-full h-full">
-            <iframe
-              src={`${selectedFile.url}#toolbar=1&navpanes=1&view=FitH`}
-              className="w-full h-[70vh] border-0"
-              title={selectedFile.name || 'PDF Document'}
-            />
-          </div>
-        ) : (
-          <div 
-            className="w-full h-full overflow-auto"
-            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-            onMouseDown={handleMouseDown}
-          >
+      {showFileViewer && selectedFile && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
+          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] flex flex-col">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="text-lg font-medium">{selectedFile.name || 'Document'}</h3>
+              <div className="flex items-center space-x-2">
+                {selectedFile.type === 'image' && (
+                  <>
+                    <button
+                      onClick={handleZoomOut}
+                      className="p-1 hover:bg-gray-100 rounded"
+                      disabled={zoomLevel <= 0.5}
+                    >
+                      <ZoomOut className="h-5 w-5" />
+                    </button>
+                    <span className="text-sm">{Math.round(zoomLevel * 100)}%</span>
+                    <button
+                      onClick={handleZoomIn}
+                      className="p-1 hover:bg-gray-100 rounded"
+                      disabled={zoomLevel >= 3}
+                    >
+                      <ZoomIn className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={handleResetZoom}
+                      className="text-xs text-blue-600 hover:underline ml-2"
+                    >
+                      Reset
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={closeFileViewer}
+                  className="text-gray-500 hover:text-gray-700 ml-4"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+            </div>
             <div
-              style={{
-                transform: `scale(${zoomLevel}) translate(${position.x}px, ${position.y}px)`,
-                transformOrigin: 'center',
-                transition: isDragging ? 'none' : 'transform 0.2s ease',
-                width: 'fit-content',
-                height: 'fit-content',
-                maxWidth: '100%',
-                maxHeight: '100%'
-              }}
+              className="flex-1 overflow-auto p-4 relative"
+              onMouseMove={selectedFile.type === 'image' ? handleMouseMove : undefined}
             >
-              <img
-                src={selectedFile.url}
-                alt={selectedFile.name || 'Document'}
-                className="max-w-none"
-                style={{
-                  maxWidth: 'none',
-                  pointerEvents: 'none'
-                }}
-              />
+              {selectedFile.type === 'pdf' ? (
+                <div className="w-full h-full">
+                  <iframe
+                    src={`${selectedFile.url}#toolbar=1&navpanes=1&view=FitH`}
+                    className="w-full h-[70vh] border-0"
+                    title={selectedFile.name || 'PDF Document'}
+                  />
+                </div>
+              ) : (
+                <div
+                  className="w-full h-full overflow-auto"
+                  style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+                  onMouseDown={handleMouseDown}
+                >
+                  <div
+                    style={{
+                      transform: `scale(${zoomLevel}) translate(${position.x}px, ${position.y}px)`,
+                      transformOrigin: 'center',
+                      transition: isDragging ? 'none' : 'transform 0.2s ease',
+                      width: 'fit-content',
+                      height: 'fit-content',
+                      maxWidth: '100%',
+                      maxHeight: '100%'
+                    }}
+                  >
+                    <img
+                      src={selectedFile.url}
+                      alt={selectedFile.name || 'Document'}
+                      className="max-w-none"
+                      style={{
+                        maxWidth: 'none',
+                        pointerEvents: 'none'
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t flex justify-between items-center">
+              <div className="text-sm text-gray-500">
+                {selectedFile.type === 'image' && (
+                  <span>Drag to pan | Scroll to zoom</span>
+                )}
+              </div>
+              <div className="flex space-x-2">
+                <a
+                  href={getCloudinaryDownloadUrl(selectedFile.publicId, selectedFile.name)}
+                  download
+                  className="btn-secondary"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toast.success('Download started');
+                  }}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </a>
+                <button
+                  onClick={closeFileViewer}
+                  className="btn-primary"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
-        )}
-      </div>
-      <div className="p-4 border-t flex justify-between items-center">
-        <div className="text-sm text-gray-500">
-          {selectedFile.type === 'image' && (
-            <span>Drag to pan | Scroll to zoom</span>
-          )}
         </div>
-        <div className="flex space-x-2">
-          <a
-            href={getCloudinaryDownloadUrl(selectedFile.publicId, selectedFile.name)}
-            download
-            className="btn-secondary"
-            onClick={(e) => {
-              e.stopPropagation();
-              toast.success('Download started');
-            }}
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Download
-          </a>
-          <button
-            onClick={closeFileViewer}
-            className="btn-primary"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 };

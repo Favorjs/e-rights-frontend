@@ -23,23 +23,23 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
       toast.error('Please fill in all fields');
       return;
     }
 
     setLoading(true);
-    
+
     try {
       const response = await adminLogin(formData);
-      
+
       if (response.success) {
         toast.success('Login successful!');
         // Store authentication token or flag in localStorage/sessionStorage
         localStorage.setItem('adminAuth', 'true');
         localStorage.setItem('adminEmail', formData.email);
-        
+
         // Redirect to admin dashboard
         navigate('/admin');
       } else {

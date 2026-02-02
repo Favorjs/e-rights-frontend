@@ -440,7 +440,7 @@ const DigitalFormPage = () => {
                 <h3 className="text-lg font-bold mb-6">Verification Checklist</h3>
                 <div className="space-y-5">
                   {[
-                    { label: 'Provisional entitlement', value: 'Verified', color: 'emerald' },
+                    { label: 'Provisional Rights Issue', value: 'Verified', color: 'emerald' },
                     { label: 'Payment Receipt', value: receiptFile ? 'Uploaded' : 'Pending', color: receiptFile ? 'emerald' : 'slate' },
                     { label: 'Signature File', value: signatureFile ? 'Uploaded' : 'Pending', color: signatureFile ? 'emerald' : 'slate' }
                   ].map((item, i) => (
