@@ -440,16 +440,35 @@ const AdminDashboard = () => {
                             })}
                           </td>
                           <td className="table-cell">
-                            <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              {submission.payment_method || 'Cash'}
-                            </span>
+                            {submission.payment_ref ? (
+                              <div className="flex flex-col gap-1">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zm14 5H2v5a2 2 0 002 2h12a2 2 0 002-2V9z" />
+                                  </svg>
+                                  Online
+                                </span>
+                                {submission.payment_status && (
+                                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${submission.payment_status === 'successful' ? 'bg-green-100 text-green-700' :
+                                    submission.payment_status === 'failed' ? 'bg-red-100 text-red-700' :
+                                      'bg-yellow-100 text-yellow-700'
+                                    }`}>
+                                    {submission.payment_status.charAt(0).toUpperCase() + submission.payment_status.slice(1)}
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                Bank Transfer
+                              </span>
+                            )}
                           </td>
                           <td className="table-cell">{submission.holdings ? submission.holdings.toLocaleString() : '-'}</td>
                           <td className="table-cell">{submission.holdings_after ? submission.holdings_after.toLocaleString() : '-'}</td>
                           <td className="table-cell">
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${submission.action_type === 'full_acceptance'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-yellow-100 text-yellow-800'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-yellow-100 text-yellow-800'
                               }`}>
                               {submission.action_type === 'full_acceptance' ? 'Full Acceptance' : 'Renunciation/Partial'}
                             </span>
@@ -479,6 +498,11 @@ const AdminDashboard = () => {
                           <td className="table-cell">
                             {submission.receipt_path ? (
                               <CheckCircle className="h-5 w-5 text-green-600" />
+                            ) : submission.payment_ref ? (
+                              <div className="flex items-center text-purple-600" title="Paid via Gateway">
+                                <CheckCircle className="h-5 w-5 mr-1" />
+                                <span className="text-[10px] font-bold uppercase tracking-tight">Online</span>
+                              </div>
                             ) : (
                               <span className="text-gray-400">-</span>
                             )}

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Download, FileText, FileSpreadsheet, FileDigit, Info, AlertCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { searchShareholders } from '../services/api';
+import linkageLogo from '../assets/images/linkage.png';
 
 const HomePage = () => {
   const [searchName, setSearchName] = useState('');
@@ -51,7 +52,7 @@ const HomePage = () => {
   const downloadForm = (formType) => {
     // Map form types to their corresponding Cloudinary URLs
     const formFiles = {
-      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1764578164/LINKAGE_ASSURANCE_PLC_2025_Right_Brokers_Docket_wurfeu.xls',
+      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1764578164/LINKAGE_ASSURANCE_PLC_2026_Right_Brokers_Docket_wurfeu.xls',
       'Dematerialization Form': 'https://res.cloudinary.com/apelng/image/upload/v1762418562/FULL-DEMATERIAL-MIGRATION-FORM-1_1_mmibqe.pdf',
       'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1763988769/Linkage_Rights_Circular_ledega_b_zke5hk.pdf',
 
@@ -76,12 +77,16 @@ const HomePage = () => {
       <section className="bg-slate-900 border-b border-slate-800 relative overflow-hidden">
         <div className="container-custom section relative z-10">
           <div className="max-w-3xl animate-fade-in">
-            <h2 className="text-[#F58220] text-sm font-bold uppercase tracking-widest mb-4">
-              Invest in the Future
-            </h2>
-            <h1 className="text-[2.2rem] sm:text-4xl md:text-7xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
-              LINKAGE ASSURANCE <br />
-              <span className="text-[#F58220] drop-shadow-sm">Rights Issue 2025</span>
+            <div className="flex items-center gap-4 mb-8">
+              <div className="bg-white/10 p-2 rounded-xl backdrop-blur-sm border border-white/10">
+                <img src={linkageLogo} alt="Linkage Logo" className="h-12 md:h-16 w-auto object-contain" />
+              </div>
+              <h2 className="text-[#F58220] text-sm font-bold uppercase tracking-widest">
+                Invest in the Future
+              </h2>
+            </div>
+            <h1 className="text-[2.2rem] sm:text-4xl md:text-5xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
+              LINKAGE ASSURANCE PLC <br></br> <span className="text-[#F58220] drop-shadow-sm">Rights Issue 2026</span>
             </h1>
             <p className="text-slate-400 text-lg md:text-xl mb-8 leading-relaxed max-w-2xl">
               Access the official portal for shareholder rights applications.
@@ -147,7 +152,7 @@ const HomePage = () => {
                       </div>
                     </div>
                     <div className="hidden md:flex flex-col items-end">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Secure Database</span>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1"></span>
                       <div className="flex items-center space-x-1">
                         <div className="w-1.5 h-1.5 rounded-full bg-[#F58220] animate-pulse"></div>
                         <span className="text-[10px] font-black text-[#0A4269] uppercase tracking-widest">Live Sync</span>
@@ -266,8 +271,8 @@ const HomePage = () => {
                       <Info className="h-4 w-4 text-[#F58220]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold uppercase tracking-[0.2em]">RIGHTS TRADING PROCEDURE 2025</h3>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase mt-0.5">Updated 2025 Edition</p>
+                      <h3 className="text-sm font-bold uppercase tracking-[0.2em]">RIGHTS TRADING PROCEDURE 2026</h3>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase mt-0.5">Updated 2026 Edition</p>
                     </div>
                   </div>
                   <div className={`p-1.5 rounded-full bg-white/10 border border-white/5 transition-transform duration-500 ${isProcedureOpen ? 'rotate-180' : ''}`}>

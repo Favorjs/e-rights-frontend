@@ -181,4 +181,25 @@ export const downloadBasicPdf = async (formData) => {
   return response.data;
 };
 
+// Wallet API methods (public - no auth required)
+export const generatePaymentAccount = async (amount, shareholderId, email, name) => {
+  const response = await api.post('/api/wallet/public/generate-account', {
+    amount,
+    shareholder_id: shareholderId,
+    email,
+    name
+  });
+  return response.data;
+};
+
+export const verifyPayment = async (txRef, email, name, submissionId) => {
+  const response = await api.post('/api/wallet/public/verify', {
+    txRef,
+    email,
+    name,
+    submissionId
+  });
+  return response.data;
+};
+
 export default api;

@@ -313,6 +313,47 @@ const RightsSubmissionDetailsPage = () => {
                     </span>
                   </div>
                 </div>
+                {/* Payment Method Indicator */}
+                <div>
+                  <span className="text-blue-700 font-medium">Payment Method:</span>
+                  <div className="mt-1">
+                    {submission.payment_ref ? (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200">
+                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zm14 5H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" />
+                            </svg>
+                            Online Payment
+                          </span>
+                          {submission.payment_status && (
+                            <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${submission.payment_status === 'successful' ? 'bg-green-100 text-green-700' :
+                              submission.payment_status === 'failed' ? 'bg-red-100 text-red-700' :
+                                'bg-yellow-100 text-yellow-700'
+                              }`}>
+                              {submission.payment_status.charAt(0).toUpperCase() + submission.payment_status.slice(1)}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-600">
+                          Ref: <span className="font-mono font-medium">{submission.payment_ref}</span>
+                        </p>
+                        {submission.payment_date && (
+                          <p className="text-xs text-gray-500">
+                            Paid: {new Date(submission.payment_date).toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v4H7V5zm6 6H7v2h6v-2z" clipRule="evenodd" />
+                        </svg>
+                        Manual / Bank Transfer
+                      </span>
+                    )}
+                  </div>
+                </div>
                 <div>
                   <span className="text-blue-700 font-medium">Submitted:</span>
                   <p className="font-semibold">{new Date(submission.created_at).toLocaleString()}</p>
@@ -368,6 +409,8 @@ const RightsSubmissionDetailsPage = () => {
                     </div>
                     {submission.receipt_path ? (
                       <CheckCircle className="h-5 w-5 text-green-600" />
+                    ) : submission.payment_ref ? (
+                      <CheckCircle className="h-5 w-5 text-purple-600" title="Verified Online Payment" />
                     ) : (
                       <span className="text-red-500 text-sm">Missing</span>
                     )}
@@ -388,6 +431,15 @@ const RightsSubmissionDetailsPage = () => {
                         <Download className="h-4 w-4 mr-1" />
                         Download
                       </button>
+                    </div>
+                  ) : submission.payment_ref ? (
+                    <div className="bg-purple-50 border border-purple-100 rounded p-2 flex items-center">
+                      <span className="text-purple-700 text-xs font-semibold uppercase tracking-wider flex items-center">
+                        <svg className="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zm14 5H2v5a2 2 0 002 2h12a2 2 0 002-2V9z" />
+                        </svg>
+                        Paid via payment gateway
+                      </span>
                     </div>
                   ) : (
                     <p className="text-gray-500 text-sm">No receipt uploaded</p>

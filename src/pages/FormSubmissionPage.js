@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Receipt, CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, } from 'lucide-react';
+import { Receipt, CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, CreditCard } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm } from '../services/api';
+import FundWalletModal from '../components/FundWalletModal';
 import bankData from '../utils/banks.json';
 import linkageLogo from '../assets/images/linkage.png';
 import apelLogo from '../assets/images/Apel-ASSET-Logo.png';
@@ -125,7 +126,20 @@ const FormSubmissionPage = () => {
   const [shareholder, setShareholder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const storageKey = `e_rights_form_${id}`;
+  const paymentStorageKey = `e_rights_payment_${id}`;
+
+  // Persist payment verified status in sessionStorage
+  const [paymentVerified, setPaymentVerified] = useState(() => {
+    const saved = sessionStorage.getItem(paymentStorageKey);
+    return saved === 'true';
+  });
+  // Track the online payment transaction reference
+  const [paymentTxRef, setPaymentTxRef] = useState(() => {
+    const saved = sessionStorage.getItem(`${paymentStorageKey}_txRef`);
+    return saved || null;
+  });
 
   const [currentStep, setCurrentStep] = useState(() => {
     const saved = localStorage.getItem(storageKey);
@@ -218,11 +232,18 @@ const FormSubmissionPage = () => {
   const [submittedForm, setSubmittedForm] = useState(null);
   const [showFinalPreview, setShowFinalPreview] = useState(false);
 
+  // Persist payment status to sessionStorage
+  useEffect(() => {
+    if (paymentVerified) {
+      sessionStorage.setItem(paymentStorageKey, 'true');
+    }
+  }, [paymentVerified, paymentStorageKey]);
+
 
   useEffect(() => {
     if (formData.apply_additional && formData.additional_shares) {
       const shares = parseFloat(formData.additional_shares) || 0;
-      const additionalAmount = (shares * 7).toFixed(2);
+      const additionalAmount = (shares * 1.32).toFixed(2);
       setCalculatedAmount(parseFloat(additionalAmount));
       setFormData(prev => ({ ...prev, additional_amount: additionalAmount }));
     } else {
@@ -338,8 +359,8 @@ const FormSubmissionPage = () => {
       case 5:
         return formData.contact_name && formData.mobile_phone && formData.email && formData.account_number && formData.bvn;
       case 6:
-        if (formData.signature_type === 'single') return formData.receipt && formData.signatures.length > 0 && !!formData.signatures[0];
-        return formData.receipt && formData.signatures.length > 1 && !formData.signatures.includes(null);
+        if (formData.signature_type === 'single') return (formData.receipt || paymentVerified) && formData.signatures.length > 0 && !!formData.signatures[0];
+        return (formData.receipt || paymentVerified) && formData.signatures.length > 1 && !formData.signatures.includes(null);
       default: return true;
     }
   };
@@ -361,6 +382,8 @@ const FormSubmissionPage = () => {
       });
       submitData.append('shareholder_id', id);
       if (formData.receipt) submitData.append('receipt', formData.receipt);
+      if (paymentVerified) submitData.append('payment_verified', 'true');
+      if (paymentTxRef) submitData.append('payment_ref', paymentTxRef);
       formData.signatures.forEach((sig, idx) => { if (sig) submitData.append(`signature_${idx}`, sig); });
 
       const response = await submitRightsForm(submitData);
@@ -483,15 +506,15 @@ const FormSubmissionPage = () => {
                     <p className="font-bold text-slate-900">{submittedForm.name}</p>
                   </div>
                   <div className="space-y-1">
-                    <label className="label-custom">Account Number</label>
+                    <label className="label-custom">Registrars Account Number</label>
                     <p className="font-bold text-slate-900">{submittedForm.reg_account_number}</p>
                   </div>
                   <div className="space-y-1">
-                    <label className="label-custom">Settlement Total</label>
+                    <label className="label-custom">Total Amount Payable</label>
                     <p className="text-2xl font-bold text-[#0A4269]">₦{parseFloat(calculateTotalPayment(submittedForm)).toLocaleString()}</p>
                   </div>
                   <div className="space-y-1">
-                    <label className="label-custom">Execution Time</label>
+                    <label className="label-custom">Submission Time</label>
                     <p className="font-bold text-slate-600">{new Date(submittedForm.created_at).toLocaleString()}</p>
                   </div>
                 </div>
@@ -499,7 +522,7 @@ const FormSubmissionPage = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-              <button onClick={handleViewForm} className="btn-secondary py-4 uppercase text-[10px] font-bold tracking-widest"><Eye className="h-4 w-4 mr-2" /> Preview Receipt</button>
+              <button onClick={handleViewForm} className="btn-secondary py-4 uppercase text-[10px] font-bold tracking-widest"><Eye className="h-4 w-4 mr-2" /> Preview Document</button>
               <button onClick={handleDownloadForm} className="btn-primary py-4 uppercase text-[10px] font-bold tracking-widest"><Download className="h-4 w-4 mr-2" /> Download Document</button>
               <Link to="/" className="sm:col-span-2 text-center text-slate-400 hover:text-slate-900 text-[10px] font-bold uppercase tracking-widest py-4">Exit Session</Link>
             </div>
@@ -564,7 +587,7 @@ const FormSubmissionPage = () => {
           </div>
           <div className="bg-[#0A4269] px-6 py-3 flex flex-col md:flex-row justify-between items-center text-[13px] font-bold uppercase tracking-widest text-blue-50 gap-2">
             <div className="flex gap-4"><span>Providus: 1308407124</span><span>Taj Bank: 0013161672</span></div>
-            <span className="hidden md:inline italic opacity-80">Linkage Assurance Plc Rights Issue 2025</span>
+            <span className="hidden md:inline italic opacity-80">Linkage Assurance Plc Rights Issue 2026</span>
           </div>
         </div>
 
@@ -862,7 +885,8 @@ const FormSubmissionPage = () => {
               )}
 
               {currentStep === 6 && (
-                <div className="animate-fade-in space-y-8">
+                <div className="animate-fade-in space-y-10">
+                  {/* Signature Type Selection */}
                   <div className="space-y-4">
                     <label className="label-custom">Signature Type</label>
                     <div className="grid grid-cols-2 gap-4">
@@ -883,73 +907,146 @@ const FormSubmissionPage = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-4">
-                      <label className="label-custom font-bold">Proof of Payment</label>
-                      <div className={`relative h-40 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center transition-all ${formData.receipt ? 'border-[#0A4269] bg-blue-50' : 'border-slate-200 bg-slate-50'}`}>
-                        <input type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, 'receipt')} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                        {formData.receipt ? (
-                          <div className="text-center p-4">
-                            <CheckCircle className="h-8 w-8 text-[#0A4269] mx-auto mb-2" />
-                            <p className="text-[10px] font-bold text-slate-900 truncate max-w-[200px]">{formData.receipt.name}</p>
+                  {/* Payment and Receipt Section - Side by Side */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Make Payment Online Card */}
+                    <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-[#0A4269] rounded-xl flex items-center justify-center">
+                          <CreditCard className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wide">Make Payment Online</h4>
+                          <p className="text-[10px] text-slate-400 font-medium">Secure payment gateway</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-500 mb-6 leading-relaxed flex-grow">
+                        Pay directly through our secure payment gateway. Your transaction will be verified automatically.
+                      </p>
+                      <div className="mt-auto">
+                        {paymentVerified ? (
+                          <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-xl">
+                            <CheckCircle className="h-6 w-6 text-green-500" />
+                            <div>
+                              <p className="text-xs font-bold text-green-700 uppercase">Payment Verified</p>
+                              <p className="text-[10px] text-green-600">Transaction complete</p>
+                            </div>
                           </div>
                         ) : (
-                          <div className="text-center p-4">
-                            <Receipt className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Upload Receipt</p>
-                            <p className="text-[8px] text-slate-400 font-medium">PDF, JPG, PNG allowed</p>
-                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setIsPaymentModalOpen(true);
+                            }}
+                            className="w-full px-6 py-4 bg-[#0A4269] hover:bg-[#0D507F] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                          >
+                            <CreditCard className="h-4 w-4" />
+                            Pay Now
+                          </button>
                         )}
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <label className="label-custom font-bold">Authorized Signature(s)</label>
-                      <div className="space-y-4">
-                        {formData.signatures.map((sig, index) => (
-                          <div key={index} className="relative group">
-                            <div className={`relative h-32 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center transition-all ${sig ? 'border-[#0A4269] bg-blue-50' : 'border-slate-200 bg-slate-50'}`}>
-                              <input
-                                type="file"
-                                accept="image/jpeg,image/jpg,image/png"
-                                capture="environment"
-                                onChange={(e) => handleFileChange(e, 'signatures', index)}
-                                className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                              />
-                              {sig ? (
-                                <div className="text-center">
-                                  <CheckCircle className="h-6 w-6 text-[#0A4269] mx-auto mb-1" />
-                                  <p className="text-[9px] font-bold text-slate-900 truncate max-w-[150px]">{sig.name}</p>
-                                </div>
-                              ) : (
-                                <div className="text-center">
-                                  <Eye className="h-6 w-6 text-slate-300 mx-auto mb-1" />
-                                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Signature {index + 1}</p>
-                                  <p className="text-[7px] text-slate-400 font-medium mt-1">Images only / Camera</p>
-                                </div>
-                              )}
-                            </div>
-                            {formData.signature_type === 'joint' && formData.signatures.length > 2 && (
-                              <button
-                                type="button"
-                                onClick={() => removeSignatureField(index)}
-                                className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-20"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
+                    {/* Upload Receipt Card */}
+                    <div className={`bg-white border-2 border-dashed p-6 rounded-2xl transition-all ${paymentVerified ? 'border-slate-100 opacity-50 pointer-events-none' : 'border-slate-200 hover:border-[#0A4269] group'}`}>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${paymentVerified ? 'bg-slate-100' : 'bg-slate-100 group-hover:bg-blue-50'}`}>
+                          <Receipt className={`h-5 w-5 transition-colors ${paymentVerified ? 'text-slate-300' : 'text-slate-400 group-hover:text-[#0A4269]'}`} />
+                        </div>
+                        <div>
+                          <h4 className={`text-sm font-bold uppercase tracking-wide ${paymentVerified ? 'text-slate-400' : 'text-slate-900'}`}>Upload Receipt</h4>
+                          <p className="text-[10px] text-slate-400 font-medium">
+                            {paymentVerified ? 'Online payment completed' : 'For offline payments'}
+                          </p>
+                        </div>
+                      </div>
+                      {paymentVerified ? (
+                        <div className="flex items-center gap-2 p-4 bg-slate-50 rounded-xl">
+                          <CheckCircle className="h-5 w-5 text-slate-400" />
+                          <p className="text-xs text-slate-400">Not required - payment verified online</p>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+                            Already paid via bank transfer? Upload your payment receipt for manual verification.
+                          </p>
+                          <div className={`relative h-28 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all ${formData.receipt ? 'border-[#0A4269] bg-blue-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`}>
+                            <input type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, 'receipt')} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                            {formData.receipt ? (
+                              <div className="text-center p-4">
+                                <CheckCircle className="h-8 w-8 text-[#0A4269] mx-auto mb-2" />
+                                <p className="text-[10px] font-bold text-slate-900 truncate max-w-[180px]">{formData.receipt.name}</p>
+                              </div>
+                            ) : (
+                              <div className="text-center p-4">
+                                <Receipt className="h-6 w-6 text-slate-300 mx-auto mb-2" />
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Click or Drag to Upload</p>
+                                <p className="text-[8px] text-slate-400 font-medium mt-1">PDF, JPG, PNG (Max 5MB)</p>
+                              </div>
                             )}
                           </div>
-                        ))}
-                        {formData.signature_type === 'joint' && (
-                          <button
-                            type="button"
-                            onClick={addSignatureField}
-                            className="w-full py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:border-[#F58220] hover:text-[#F58220] transition-all text-[10px] font-bold uppercase tracking-widest"
-                          >
-                            + Add Signature
-                          </button>
-                        )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Authorized Signatures Section - Full Width Below */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 md:p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-[#0A4269] rounded-xl flex items-center justify-center">
+                        <Eye className="h-5 w-5 text-white" />
                       </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wide">Authorized Signature(s)</h4>
+                        <p className="text-[10px] text-slate-400 font-medium">Upload clear images of signatures</p>
+                      </div>
+                    </div>
+                    <div className={`grid gap-4 ${formData.signature_type === 'joint' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2'}`}>
+                      {formData.signatures.map((sig, index) => (
+                        <div key={index} className="relative group">
+                          <div className={`relative h-36 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all bg-white ${sig ? 'border-[#0A4269] bg-blue-50/50' : 'border-slate-200 hover:border-slate-300'}`}>
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/jpg,image/png"
+                              capture="environment"
+                              onChange={(e) => handleFileChange(e, 'signatures', index)}
+                              className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                            />
+                            {sig ? (
+                              <div className="text-center">
+                                <CheckCircle className="h-8 w-8 text-[#0A4269] mx-auto mb-2" />
+                                <p className="text-[10px] font-bold text-slate-900 truncate max-w-[150px]">{sig.name}</p>
+                              </div>
+                            ) : (
+                              <div className="text-center">
+                                <Eye className="h-6 w-6 text-slate-300 mx-auto mb-2" />
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Signature {index + 1}</p>
+                                <p className="text-[8px] text-slate-400 font-medium mt-1">Images only / Camera</p>
+                              </div>
+                            )}
+                          </div>
+                          {formData.signature_type === 'joint' && formData.signatures.length > 2 && (
+                            <button
+                              type="button"
+                              onClick={() => removeSignatureField(index)}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                      {formData.signature_type === 'joint' && (
+                        <button
+                          type="button"
+                          onClick={addSignatureField}
+                          className="h-36 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:border-[#F58220] hover:text-[#F58220] hover:bg-orange-50/30 transition-all text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+                        >
+                          <span className="text-lg">+</span> Add Signature
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1022,7 +1119,7 @@ const FormSubmissionPage = () => {
                     <h4 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest border-b border-slate-100 pb-2">Signature & Receipt</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Signature Type</p><p className="text-xs font-bold text-slate-900 uppercase">{formData.signature_type}</p></div>
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Receipt Uploaded</p><p className="text-xs font-bold text-slate-900">{formData.receipt ? formData.receipt.name : 'No'}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Receipt Uploaded</p><p className="text-xs font-bold text-slate-900">{formData.receipt ? formData.receipt.name : paymentVerified ? 'Paid Online' : 'No'}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Signature(s) Uploaded</p><p className="text-xs font-bold text-slate-900">{formData.signatures.filter(s => s !== null).length} file(s)</p></div>
                     </div>
                   </div>
@@ -1060,6 +1157,24 @@ const FormSubmissionPage = () => {
           </div>
         </div>
       </div>
+      <FundWalletModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        shareholder={shareholder}
+        shareholderEmail={formData.email}
+        shareholderName={formData.name || shareholder?.name}
+        fixedAmount={parseFloat(calculateTotalPayment())}
+        rightsAmount={parseFloat(formData.amount_due) || 0}
+        additionalAmount={parseFloat(formData.additional_amount) || 0}
+        onPaymentSuccess={(data) => {
+          setPaymentVerified(true);
+          if (data?.txRef) {
+            setPaymentTxRef(data.txRef);
+            sessionStorage.setItem(`${paymentStorageKey}_txRef`, data.txRef);
+          }
+          toast.success('Online payment recorded!');
+        }}
+      />
     </div>
   );
 };

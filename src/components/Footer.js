@@ -21,7 +21,7 @@ const Footer = () => {
             <ul className="space-y-4 text-sm">
               <li><Link to="/" className="hover:text-emerald-500 transition-colors">Home</Link></li>
               <li><a href="https://apel.com.ng" className="hover:text-emerald-500 transition-colors">Main Website</a></li>
-              <li><a href="mailto:registrar@apel.com.ng" className="hover:text-emerald-500 transition-colors">Contact Support</a></li>
+              <li><a href="mailto:registrars@apel.ng" className="hover:text-emerald-500 transition-colors">Contact Support</a></li>
             </ul>
           </div>
 
