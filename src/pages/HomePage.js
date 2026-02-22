@@ -271,8 +271,8 @@ const HomePage = () => {
                       <Info className="h-4 w-4 text-[#F58220]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold uppercase tracking-[0.2em]">RIGHTS TRADING PROCEDURE 2026</h3>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase mt-0.5">Updated 2026 Edition</p>
+                      <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-white">RIGHTS TRADING PROCEDURE 2026</h3>
+
                     </div>
                   </div>
                   <div className={`p-1.5 rounded-full bg-white/10 border border-white/5 transition-transform duration-500 ${isProcedureOpen ? 'rotate-180' : ''}`}>
