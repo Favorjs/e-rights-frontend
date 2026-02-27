@@ -81,9 +81,7 @@ const HomePage = () => {
               <div className="bg-white/10 p-2 rounded-xl backdrop-blur-sm border border-white/10">
                 <img src={linkageLogo} alt="Linkage Logo" className="h-12 md:h-16 w-auto object-contain" />
               </div>
-              <h2 className="text-[#F58220] text-sm font-bold uppercase tracking-widest">
-                Invest in the Future
-              </h2>
+
             </div>
             <h1 className="text-[2.2rem] sm:text-4xl md:text-5xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
               LINKAGE ASSURANCE PLC <br></br> <span className="text-[#F58220] drop-shadow-sm">Rights Issue 2026</span>

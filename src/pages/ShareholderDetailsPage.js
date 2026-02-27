@@ -140,7 +140,7 @@ export default function ShareholderDetailsPage() {
             {/* Field 2: Rights Issue */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Rights Issue</p>
-              <p className="text-xl font-bold text-[#0A4269]">{shareholder.rights_issue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <p className="text-xl font-bold text-[#0A4269]">{Math.round(shareholder.rights_issue).toLocaleString()}</p>
             </div>
 
             {/* Field 3: Name */}
@@ -152,13 +152,13 @@ export default function ShareholderDetailsPage() {
             {/* Field 4: Holdings After */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">HOLDINGS AFTER</p>
-              <p className="text-xl font-bold text-emerald-600">{shareholder.holdings_after.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <p className="text-xl font-bold text-emerald-600">{Math.round(shareholder.holdings_after).toLocaleString()}</p>
             </div>
 
             {/* Field 5: Holdings */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">HOLDINGS</p>
-              <p className="text-xl font-bold text-[#0A4269]">{shareholder.holdings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <p className="text-xl font-bold text-[#0A4269]">{Math.round(shareholder.holdings).toLocaleString()}</p>
             </div>
 
             {/* Field 6: Amount Payable */}
@@ -166,6 +166,14 @@ export default function ShareholderDetailsPage() {
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">AMOUNT PAYABLE</p>
               <p className="text-xl font-bold text-emerald-600">₦{shareholder.amount_due.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
+
+            {/* Field 7: Address */}
+            {shareholder.address && (
+              <div className="md:col-span-2">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">ADDRESS</p>
+                <p className="text-xl font-bold text-[#0A4269]">{shareholder.address}</p>
+              </div>
+            )}
           </div>
         </div>
 

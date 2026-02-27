@@ -39,8 +39,10 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                 setCountdown(prev => {
                     if (prev <= 1) {
                         clearInterval(timer);
-                        toast.error('Payment session expired. Please try again.');
-                        onClose();
+                        setStep(5);
+                        if (bankingInfo?.txRef) {
+                            onPaymentSuccess && onPaymentSuccess({ txRef: bankingInfo.txRef, isProcessing: true });
+                        }
                         return 0;
                     }
                     return prev - 1;
@@ -324,6 +326,31 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                             </div>
                             <button
                                 onClick={onClose}
+                                className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold transition-colors"
+                            >
+                                Close & Continue
+                            </button>
+                        </div>
+                    )}
+
+                    {step === 5 && (
+                        <div className="text-center py-6 space-y-4">
+                            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full text-blue-600">
+                                <Clock size={36} strokeWidth={1.5} />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-xl font-bold text-slate-900">Processing</h3>
+                                <p className="text-slate-500 text-sm max-w-[280px] mx-auto">
+                                    We will confirm your transaction once it has been processed and you will be notified. You can safely close this window now.
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    if (bankingInfo?.txRef) {
+                                        onPaymentSuccess && onPaymentSuccess({ txRef: bankingInfo.txRef, isProcessing: true });
+                                    }
+                                    onClose();
+                                }}
                                 className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold transition-colors"
                             >
                                 Close & Continue

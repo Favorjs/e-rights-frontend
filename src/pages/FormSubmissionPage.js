@@ -141,6 +141,11 @@ const FormSubmissionPage = () => {
     return saved || null;
   });
 
+  // Track if payment is in background processing
+  const [paymentProcessing, setPaymentProcessing] = useState(() => {
+    return sessionStorage.getItem(`${paymentStorageKey}_processing`) === 'true';
+  });
+
   const [currentStep, setCurrentStep] = useState(() => {
     const saved = localStorage.getItem(storageKey);
     if (saved) {
@@ -925,11 +930,15 @@ const FormSubmissionPage = () => {
                       </p>
                       <div className="mt-auto">
                         {paymentVerified ? (
-                          <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-xl">
-                            <CheckCircle className="h-6 w-6 text-green-500" />
+                          <div className={`flex items-center gap-3 p-4 border rounded-xl ${paymentProcessing ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200'}`}>
+                            <CheckCircle className={`h-6 w-6 ${paymentProcessing ? 'text-amber-500' : 'text-green-500'}`} />
                             <div>
-                              <p className="text-xs font-bold text-green-700 uppercase">Payment Verified</p>
-                              <p className="text-[10px] text-green-600">Transaction complete</p>
+                              <p className={`text-xs font-bold uppercase ${paymentProcessing ? 'text-amber-700' : 'text-green-700'}`}>
+                                {paymentProcessing ? 'Transaction Processing' : 'Payment Verified'}
+                              </p>
+                              <p className={`text-[10px] ${paymentProcessing ? 'text-amber-600' : 'text-green-600'}`}>
+                                {paymentProcessing ? 'Processing your payment...' : 'Transaction complete'}
+                              </p>
                             </div>
                           </div>
                         ) : (
@@ -965,7 +974,9 @@ const FormSubmissionPage = () => {
                       {paymentVerified ? (
                         <div className="flex items-center gap-2 p-4 bg-slate-50 rounded-xl">
                           <CheckCircle className="h-5 w-5 text-slate-400" />
-                          <p className="text-xs text-slate-400">Not required - payment verified online</p>
+                          <p className="text-xs text-slate-400">
+                            {paymentProcessing ? 'Not required - payment processing online' : 'Not required - payment verified online'}
+                          </p>
                         </div>
                       ) : (
                         <>
@@ -1118,8 +1129,7 @@ const FormSubmissionPage = () => {
                   <div className="space-y-4">
                     <h4 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest border-b border-slate-100 pb-2">Signature & Receipt</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Signature Type</p><p className="text-xs font-bold text-slate-900 uppercase">{formData.signature_type}</p></div>
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Receipt Uploaded</p><p className="text-xs font-bold text-slate-900">{formData.receipt ? formData.receipt.name : paymentVerified ? 'Paid Online' : 'No'}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Receipt Uploaded</p><p className="text-xs font-bold text-slate-900">{formData.receipt ? formData.receipt.name : paymentVerified ? (paymentProcessing ? 'Processing Gateway Payment' : 'Payment Verified') : 'No'}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Signature(s) Uploaded</p><p className="text-xs font-bold text-slate-900">{formData.signatures.filter(s => s !== null).length} file(s)</p></div>
                     </div>
                   </div>
@@ -1168,11 +1178,19 @@ const FormSubmissionPage = () => {
         additionalAmount={parseFloat(formData.additional_amount) || 0}
         onPaymentSuccess={(data) => {
           setPaymentVerified(true);
+          const isProc = !!data?.isProcessing;
+          setPaymentProcessing(isProc);
+          sessionStorage.setItem(`${paymentStorageKey}_processing`, isProc ? 'true' : 'false');
+
           if (data?.txRef) {
             setPaymentTxRef(data.txRef);
             sessionStorage.setItem(`${paymentStorageKey}_txRef`, data.txRef);
           }
-          toast.success('Online payment recorded!');
+          if (isProc) {
+            toast.success('Payment initiated! We will verify it in the background.');
+          } else {
+            toast.success('Online payment recorded!');
+          }
         }}
       />
     </div>
