@@ -103,7 +103,8 @@ const HomePage = () => {
           backgroundSize: '200% 100%',
           overflow: 'hidden',
           padding: '14px 0',
-          position: 'relative',
+          position: 'sticky',
+          top: 0,
           zIndex: 50,
           borderBottom: '3px solid #fbbf24',
         }}
