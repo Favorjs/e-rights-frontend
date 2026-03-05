@@ -50,7 +50,7 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
             }, 1000);
         }
         return () => clearInterval(timer);
-    }, [step, countdown, onClose]);
+    }, [step, countdown, bankingInfo, onPaymentSuccess]);
 
     useEffect(() => {
         let pollInterval;
