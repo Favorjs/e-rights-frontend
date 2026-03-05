@@ -76,12 +76,25 @@ const HomePage = () => {
       {/* Marquee Banner - Rights Issue Not Yet Open */}
       <style>{`
         @keyframes marquee-scroll {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
         @keyframes pulse-glow {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.6; }
+        }
+        .marquee-track {
+          display: flex;
+          width: max-content;
+          animation: marquee-scroll 20s linear infinite;
+        }
+        @media (max-width: 768px) {
+          .marquee-track {
+            animation: marquee-scroll 12s linear infinite;
+          }
+          .marquee-text {
+            font-size: 0.85rem !important;
+          }
         }
       `}</style>
       <div
@@ -95,38 +108,31 @@ const HomePage = () => {
           borderBottom: '3px solid #fbbf24',
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            whiteSpace: 'nowrap',
-            animation: 'marquee-scroll 18s linear infinite',
-          }}
-        >
-          <span
-            style={{
-              color: '#ffffff',
-              fontSize: '1.1rem',
-              fontWeight: 900,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '16px',
-            }}
-          >
-            <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
-            IMPORTANT NOTICE: THE RIGHTS ISSUE IS NOT YET OPEN FOR APPLICATION.
-            <span style={{ color: '#fde047', fontWeight: 900 }}>THE RIGHTS ISSUE OPENS ON 11TH MARCH, 2026.</span>
-            PLEASE CHECK BACK ON THE OPENING DATE TO SUBMIT YOUR APPLICATION.
-            <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
-            IMPORTANT NOTICE: THE RIGHTS ISSUE IS NOT YET OPEN FOR APPLICATION.
-            <span style={{ color: '#fde047', fontWeight: 900 }}>THE RIGHTS ISSUE OPENS ON 11TH MARCH, 2026.</span>
-            PLEASE CHECK BACK ON THE OPENING DATE TO SUBMIT YOUR APPLICATION.
-            <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
-          </span>
+        <div className="marquee-track">
+          {[0, 1].map((i) => (
+            <span
+              key={i}
+              className="marquee-text"
+              style={{
+                color: '#ffffff',
+                fontSize: '1.1rem',
+                fontWeight: 900,
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '16px',
+                whiteSpace: 'nowrap',
+                paddingRight: '80px',
+              }}
+            >
+              <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
+              IMPORTANT NOTICE: THE RIGHTS ISSUE IS NOT YET OPEN FOR APPLICATION.
+              <span style={{ color: '#fde047', fontWeight: 900 }}>THE RIGHTS ISSUE OPENS ON 11TH MARCH, 2026.</span>
+              PLEASE CHECK BACK ON THE OPENING DATE TO SUBMIT YOUR APPLICATION.
+              <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
+            </span>
+          ))}
         </div>
       </div>
 
