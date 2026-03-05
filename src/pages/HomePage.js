@@ -73,6 +73,63 @@ const HomePage = () => {
 
   return (
     <div className="App">
+      {/* Marquee Banner - Rights Issue Not Yet Open */}
+      <style>{`
+        @keyframes marquee-scroll {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
+        }
+      `}</style>
+      <div
+        style={{
+          background: 'linear-gradient(90deg, #dc2626, #ef4444, #f97316, #ef4444, #dc2626)',
+          backgroundSize: '200% 100%',
+          overflow: 'hidden',
+          padding: '14px 0',
+          position: 'relative',
+          zIndex: 50,
+          borderBottom: '3px solid #fbbf24',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            whiteSpace: 'nowrap',
+            animation: 'marquee-scroll 18s linear infinite',
+          }}
+        >
+          <span
+            style={{
+              color: '#ffffff',
+              fontSize: '1.1rem',
+              fontWeight: 900,
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '16px',
+            }}
+          >
+            <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
+            IMPORTANT NOTICE: THE RIGHTS ISSUE IS NOT YET OPEN FOR APPLICATION.
+            <span style={{ color: '#fde047', fontWeight: 900 }}>THE RIGHTS ISSUE OPENS ON 11TH MARCH, 2026.</span>
+            PLEASE CHECK BACK ON THE OPENING DATE TO SUBMIT YOUR APPLICATION.
+            <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
+            IMPORTANT NOTICE: THE RIGHTS ISSUE IS NOT YET OPEN FOR APPLICATION.
+            <span style={{ color: '#fde047', fontWeight: 900 }}>THE RIGHTS ISSUE OPENS ON 11TH MARCH, 2026.</span>
+            PLEASE CHECK BACK ON THE OPENING DATE TO SUBMIT YOUR APPLICATION.
+            <span style={{ animation: 'pulse-glow 1.2s ease-in-out infinite', fontSize: '1.4rem' }}>🚨</span>
+          </span>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section className="bg-slate-900 border-b border-slate-800 relative overflow-hidden">
         <div className="container-custom section relative z-10">
