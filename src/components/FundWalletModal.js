@@ -6,8 +6,8 @@ import {
     CheckCircle2,
     Loader2,
     Wallet,
-
     Clock,
+    AlertTriangle,
 } from 'lucide-react';
 import { generatePaymentAccount, verifyPayment } from '../services/api';
 import toast from 'react-hot-toast';
@@ -20,6 +20,7 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
     const [polling, setPolling] = useState(false);
     const [paymentInfo, setPaymentInfo] = useState(null);
     const [countdown, setCountdown] = useState(600);
+    const [paymentVariance, setPaymentVariance] = useState(null); // { type, amountExpected, amountPaid, excess?, balance? }
 
     useEffect(() => {
         if (isOpen) {
@@ -29,6 +30,7 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
             setPolling(false);
             setPaymentInfo(null);
             setCountdown(600);
+            setPaymentVariance(null);
         }
     }, [isOpen, fixedAmount]);
 
@@ -58,12 +60,34 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
             pollInterval = setInterval(async () => {
                 try {
                     const response = await verifyPayment(bankingInfo.txRef, shareholderEmail, shareholderName);
+
                     if (response.paymentReceived) {
                         setPolling(false);
-                        setStep(4);
-                        // Include txRef in callback so it can be passed to form submission
-                        onPaymentSuccess && onPaymentSuccess({ ...response.data, txRef: bankingInfo.txRef });
-                        toast.success('Payment verified successfully!');
+                        if (response.paymentStatus === 'OVERPAID') {
+                            setPaymentVariance({
+                                type: 'OVERPAID',
+                                amountExpected: response.amountExpected,
+                                amountPaid: response.amountPaid,
+                                excess: response.excess,
+                            });
+                            setStep(6);
+                            onPaymentSuccess && onPaymentSuccess({ ...response.data, txRef: bankingInfo.txRef });
+                            toast.success('Payment accepted — overpayment noted.');
+                        } else {
+                            setStep(4);
+                            onPaymentSuccess && onPaymentSuccess({ ...response.data, txRef: bankingInfo.txRef });
+                            toast.success('Payment verified successfully!');
+                        }
+                    } else if (response.paymentStatus === 'UNDERPAID') {
+                        setPolling(false);
+                        setPaymentVariance({
+                            type: 'UNDERPAID',
+                            amountExpected: response.amountExpected,
+                            amountPaid: response.amountPaid,
+                            balance: response.balance,
+                        });
+                        setStep(6);
+                        toast.error('Incomplete payment — please pay the balance.');
                     }
                 } catch (error) {
                     console.error('Polling error:', error);
@@ -355,6 +379,94 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                             >
                                 Close & Continue
                             </button>
+                        </div>
+                    )}
+
+                    {step === 6 && paymentVariance && (
+                        <div className="py-4 space-y-4">
+                            {paymentVariance.type === 'OVERPAID' && (
+                                <>
+                                    <div className="text-center">
+                                        <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-100 rounded-full text-amber-600 mb-3">
+                                            <AlertTriangle size={30} strokeWidth={1.5} />
+                                        </div>
+                                        <h3 className="text-lg font-bold text-slate-900">Overpayment Detected</h3>
+                                        <p className="text-slate-500 text-xs mt-1">Your application will proceed</p>
+                                    </div>
+
+                                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-amber-700">Amount Required</span>
+                                            <span className="font-semibold text-slate-900">₦{parseFloat(paymentVariance.amountExpected).toLocaleString()}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-amber-700">Amount Sent</span>
+                                            <span className="font-semibold text-slate-900">₦{parseFloat(paymentVariance.amountPaid).toLocaleString()}</span>
+                                        </div>
+                                        <div className="h-px bg-amber-200" />
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-bold text-amber-800">Excess Sent</span>
+                                            <span className="text-lg font-bold text-amber-600">₦{parseFloat(paymentVariance.excess).toLocaleString()}</span>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-xs text-slate-500 text-center leading-relaxed">
+                                        The excess of <strong>₦{parseFloat(paymentVariance.excess).toLocaleString()}</strong> will be reconciled and returned to you after the offer period. A confirmation email has been sent.
+                                    </p>
+
+                                    <button
+                                        onClick={onClose}
+                                        className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold transition-colors"
+                                    >
+                                        Continue →
+                                    </button>
+                                </>
+                            )}
+
+                            {paymentVariance.type === 'UNDERPAID' && (
+                                <>
+                                    <div className="text-center">
+                                        <div className="inline-flex items-center justify-center w-14 h-14 bg-red-100 rounded-full text-red-600 mb-3">
+                                            <AlertTriangle size={30} strokeWidth={1.5} />
+                                        </div>
+                                        <h3 className="text-lg font-bold text-slate-900">Incomplete Payment</h3>
+                                        <p className="text-slate-500 text-xs mt-1">Balance required to complete application</p>
+                                    </div>
+
+                                    <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-red-700">Amount Required</span>
+                                            <span className="font-semibold text-slate-900">₦{parseFloat(paymentVariance.amountExpected).toLocaleString()}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-red-700">Amount Sent</span>
+                                            <span className="font-semibold text-slate-900">₦{parseFloat(paymentVariance.amountPaid).toLocaleString()}</span>
+                                        </div>
+                                        <div className="h-px bg-red-200" />
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-bold text-red-800">Balance to Pay</span>
+                                            <span className="text-xl font-bold text-red-600">₦{parseFloat(paymentVariance.balance).toLocaleString()}</span>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-xs text-slate-500 text-center leading-relaxed">
+                                        You sent <strong>₦{parseFloat(paymentVariance.amountPaid).toLocaleString()}</strong> instead of <strong>₦{parseFloat(paymentVariance.amountExpected).toLocaleString()}</strong>. Please pay the remaining balance to complete your application. A notification has been sent to your email.
+                                    </p>
+
+                                    <button
+                                        onClick={() => {
+                                            setAmount(paymentVariance.balance.toString());
+                                            setBankingInfo(null);
+                                            setPaymentVariance(null);
+                                            setCountdown(600);
+                                            setStep(1);
+                                        }}
+                                        className="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition-colors"
+                                    >
+                                        Pay Balance — ₦{parseFloat(paymentVariance.balance).toLocaleString()}
+                                    </button>
+                                </>
+                            )}
                         </div>
                     )}
                 </div>

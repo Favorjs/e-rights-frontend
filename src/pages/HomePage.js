@@ -53,8 +53,8 @@ const HomePage = () => {
     // Map form types to their corresponding Cloudinary URLs
     const formFiles = {
       'Stock Broker Docket': '',
-      'Dematerialization Form': '',
-      'Rights Circular': '',
+      'Dematerialization Form': 'https://registrars.apel.com.ng/forms/FULL-DEMATERIAL-MIGRATION-FORM-1.pdf',
+      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1773052709/LINKAGE_ASSURANCE_PLC_Rights_Circular_vmer7h.pdf',
 
     };
 
