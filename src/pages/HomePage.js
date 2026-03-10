@@ -52,7 +52,7 @@ const HomePage = () => {
   const downloadForm = (formType) => {
     // Map form types to their corresponding Cloudinary URLs
     const formFiles = {
-      'Stock Broker Docket': '',
+      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1773173566/LINKAGE_ASSURANCE_PLC_-_docket_yzh4bl.xlsx',
       'Dematerialization Form': 'https://registrars.apel.com.ng/forms/FULL-DEMATERIAL-MIGRATION-FORM-1.pdf',
       'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1773148172/LINKAGE_ASSURANCE_PLC_Rights_Circular_npv7ql.pdf',
 
@@ -276,7 +276,7 @@ const HomePage = () => {
                     <div className="text-sm">
                       <p className="font-bold text-amber-900 mb-1 tracking-tight">Accessing your records</p>
                       <p className="text-amber-800/70 leading-relaxed font-medium">
-                        If your records aren't found under your primary name, try common variations or contact our registrar support immediately at <span className="underline font-bold">registrars@apel.ng</span>.
+                        If your records aren't found under your primary name, try common variations or contact our registrar support immediately at <span className="underline font-bold">linkagerights2026@apel.ng</span>.
                       </p>
                     </div>
                   </div>
@@ -343,46 +343,59 @@ const HomePage = () => {
                 </button>
 
                 {isProcedureOpen && (
-                  <div className="p-8 bg-white animate-fade-in space-y-8 divide-y divide-slate-100">
+                  <div className="p-6 md:p-8 bg-white animate-fade-in space-y-8">
+
+                    {/* Step-by-step Application Process */}
                     <div className="space-y-4">
-                      <h4 className="flex items-center text-[10px] font-black text-[#0A4269] bg-blue-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
-                        SELLER/EXISTING SHAREHOLDER:
+                      <h4 className="text-[10px] font-black text-[#0A4269] bg-blue-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
+                        How to Apply — Step by Step
                       </h4>
                       <ul className="space-y-4">
                         {[
-                          'Access the Rights Circular via our portal.',
-                          'Endorse the units to be accepted or renounced.',
-                          'Complete the Rights Demat/Migration form.',
-                          'Authorize your stockbroker via a formal cover letter.'
+                          { title: 'Search for your name', desc: 'Use the search box on this page to find your shareholder record by name. Select your name from the results.' },
+                          { title: 'Verify your details', desc: 'Confirm your registered name, CHN, CSCS number, and your rights entitlement (number of shares offered to you).' },
+                          { title: 'Pay For THe Rights issue', desc: 'Click "Pay now" and pay the exact amount due or transfer and upload reciept of payment.' },
+                          { title: 'Complete the application form', desc: 'Fill in your stockbroker, decide how many shares to accept and/or renounce, upload your signature, and submit the form.' },
+                          { title: 'Download your PDF', desc: 'After submission, download your completed Rights Application Form as you will also receive a mail confirming your submissions with your submission form . This is your official document — print or save a copy.' },
+                          //{ title: 'Stockbroker docket', desc: 'Your stockbroker will receive a docket summarising your application. Ensure your broker is aware of your submission.' },
                         ].map((step, i) => (
                           <li key={i} className="flex items-start space-x-3 text-xs text-slate-600 leading-relaxed font-medium">
-                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-slate-100 text-slate-900 flex items-center justify-center text-[10px] font-black">
+                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#0A4269] text-white flex items-center justify-center text-[10px] font-black mt-0.5">
                               {i + 1}
                             </span>
-                            <span>{step}</span>
+                            <span><span className="font-bold text-slate-800">{step.title} — </span>{step.desc}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
 
-                    <div className="pt-8 space-y-4">
-                      <h4 className="flex items-center text-[10px] font-black text-blue-700 bg-blue-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
-                        BUYER/NEW SHAREHOLDER:
+                    <div className="border-t border-slate-100 pt-7 space-y-4">
+                      <h4 className="text-[10px] font-black text-[#F58220] bg-orange-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
+                        Required Documents
                       </h4>
-                      <ul className="space-y-4">
+                      <ul className="space-y-3">
                         {[
-                          'Update KYC information with your preferred stockbroker.',
-                          'Ensure broker submits executed transfer form to CSCS.'
-                        ].map((step, i) => (
+                          
+                          { doc: 'Signature', note: 'A clear image of your signature (JPG/PNG) — uploaded during the application form' },
+                          { doc: 'CHN / CSCS Number', note: 'Your Central Securities Clearing System account number (on your share certificate or e-dividend mandate form)' },
+                          { doc: 'Bank Account Details', note: 'Account number and bank name for e-dividend payments (must be linked to your BVN)' },
+                          { doc: 'Stockbroker Information', note: 'Name of your registered stockbroker who will process the application on your behalf' },
+                         
+                        ].map((item, i) => (
                           <li key={i} className="flex items-start space-x-3 text-xs text-slate-600 leading-relaxed font-medium">
-                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-slate-100 text-slate-900 flex items-center justify-center text-[10px] font-black">
-                              {i + 1}
-                            </span>
-                            <span>{step}</span>
+                            <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#F58220] mt-1.5"></span>
+                            <span><span className="font-bold text-slate-800">{item.doc} — </span>{item.note}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
+
+                    <div className="border-t border-slate-100 pt-6 bg-amber-50/60 rounded-xl px-4 py-4">
+                      <p className="text-[11px] text-amber-800 font-semibold leading-relaxed">
+                        <span className="font-black text-amber-900">Note:</span> All share applications must be submitted before the Rights Issue closing date. Late submissions will not be accepted. For assistance, contact <span className="underline font-bold">linkagerights2026@apel.ng</span>.
+                      </p>
+                    </div>
+
                   </div>
                 )}
               </div>
