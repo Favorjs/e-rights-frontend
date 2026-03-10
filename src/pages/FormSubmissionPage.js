@@ -591,8 +591,8 @@ const FormSubmissionPage = () => {
             </div>
           </div>
           <div className="bg-[#0A4269] px-6 py-3 flex flex-col md:flex-row justify-between items-center text-[13px] font-bold uppercase tracking-widest text-blue-50 gap-2">
-            <div className="flex gap-4"><span>Providus: 1308407124</span><span>Taj Bank: 0013161672</span></div>
-            <span className="hidden md:inline italic opacity-80">Linkage Assurance Plc Rights Issue 2026</span>
+            <div className="flex gap-4"><span>Stanbic IBTC Bank: 0080935824</span></div>
+            <span className="hidden md:inline italic opacity-80">LINKAGE ASSURANCE PLC RIGHT ISSUE PROCEED ACCOUNT</span>
           </div>
         </div>
 

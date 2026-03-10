@@ -164,7 +164,7 @@ export default function ShareholderDetailsPage() {
             {/* Field 6: Amount Payable */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">AMOUNT PAYABLE</p>
-              <p className="text-xl font-bold text-emerald-600">₦{shareholder.amount_due.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <p className="text-xl font-bold text-emerald-600">₦{parseFloat(shareholder.amount_due).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
 
             {/* Field 7: Address */}

@@ -54,7 +54,7 @@ const HomePage = () => {
     const formFiles = {
       'Stock Broker Docket': '',
       'Dematerialization Form': 'https://registrars.apel.com.ng/forms/FULL-DEMATERIAL-MIGRATION-FORM-1.pdf',
-      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1773052709/LINKAGE_ASSURANCE_PLC_Rights_Circular_vmer7h.pdf',
+      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1773148172/LINKAGE_ASSURANCE_PLC_Rights_Circular_npv7ql.pdf',
 
     };
 
