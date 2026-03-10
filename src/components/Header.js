@@ -31,8 +31,8 @@ const Header = () => {
 
           {/* Right: Navigation/Actions */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <a href="https://apel.com.ng" target="_blank" rel="noopener noreferrer" className="btn-outline text-[9px] sm:text-xs px-2 py-1.5 sm:px-4 sm:py-2 whitespace-nowrap">
-              FAQ <span className="hidden sm:inline"></span>
+            <a href="/faq" target="_blank" rel="noopener noreferrer" className="btn-outline text-[9px] sm:text-xs px-2 py-1.5 sm:px-4 sm:py-2 whitespace-nowrap">
+              FAQ
             </a>
           </div>
         </div>

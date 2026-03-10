@@ -761,7 +761,7 @@ const FormSubmissionPage = () => {
                     <div className="bg-[#0A4269] p-8 md:p-12 rounded-3xl text-white space-y-8 shadow-2xl">
                       <div className="border-b border-white/10 pb-6">
                         <div className="text-center sm:text-left">
-                          <label className="text-[10px] font-black text-blue-400/50 uppercase tracking-[0.2em] mb-2 block">Total Consideration</label>
+                          <label className="text-[10px] font-black text-blue-400/50 uppercase tracking-[0.2em] mb-2 block">Total Amount Payable: the bank you are paying from</label>
                           <p className="text-4xl md:text-5xl font-black italic tracking-tighter">₦{calculateTotalPayment().toLocaleString()}</p>
                         </div>
                       </div>
@@ -826,7 +826,7 @@ const FormSubmissionPage = () => {
                   <div className="bg-[#0A4269] p-8 md:p-12 rounded-3xl text-white space-y-10 shadow-2xl">
                     <div className="border-b border-white/10 pb-8">
                       <div className="text-center sm:text-left">
-                        <label className="text-[10px] font-black text-blue-400/50 uppercase tracking-[0.2em] mb-2 block">Total Consideration</label>
+                        <label className="text-[10px] font-black text-blue-400/50 uppercase tracking-[0.2em] mb-2 block">Total Amount Payable</label>
                         <p className="text-4xl md:text-5xl font-black italic tracking-tighter">₦{(parseFloat(formData.amount_payable) || 0).toLocaleString()}</p>
                       </div>
                     </div>
@@ -1021,7 +1021,6 @@ const FormSubmissionPage = () => {
                             <input
                               type="file"
                               accept="image/jpeg,image/jpg,image/png"
-                              capture="environment"
                               onChange={(e) => handleFileChange(e, 'signatures', index)}
                               className="absolute inset-0 opacity-0 cursor-pointer z-10"
                             />
@@ -1034,7 +1033,7 @@ const FormSubmissionPage = () => {
                               <div className="text-center">
                                 <Eye className="h-6 w-6 text-slate-300 mx-auto mb-2" />
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Signature {index + 1}</p>
-                                <p className="text-[8px] text-slate-400 font-medium mt-1">Images only / Camera</p>
+                                <p className="text-[8px] text-slate-400 font-medium mt-1">Gallery / Camera / Files</p>
                               </div>
                             )}
                           </div>

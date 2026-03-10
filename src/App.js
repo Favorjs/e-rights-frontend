@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { APP_CONFIG } from './config/appConfig';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import FaqPage from './pages/FaqPage';
 
 function App() {
   const isClosed = APP_CONFIG.IS_RIGHTS_ISSUE_CLOSED;
@@ -25,6 +26,7 @@ function App() {
         {!isClosed && <Header />}
         <main className="flex-grow">
           <Routes>
+            <Route path="/faq" element={<FaqPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
               path="/admin/rights-submission/:id"

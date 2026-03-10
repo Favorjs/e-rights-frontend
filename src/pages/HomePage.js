@@ -74,7 +74,7 @@ const HomePage = () => {
   return (
     <div className="App">
       {/* Marquee Banner - Rights Issue Not Yet Open */}
-      <style>{`
+      {/* <style>{`
         @keyframes marquee-scroll {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
@@ -135,7 +135,7 @@ const HomePage = () => {
             </span>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Hero Section */}
       <section className="bg-slate-900 border-b border-slate-800 relative overflow-hidden">
