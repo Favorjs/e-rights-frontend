@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  // Download,
+  Download,
   Search,
   Eye,
   Users,
@@ -24,8 +24,8 @@ import {
   getDashboardStats,
   getSubmissions,
   getRightsSubmissions,
-  // exportSubmissions,
-  // exportRightsSubmissions
+  exportSubmissions,
+  exportRightsSubmissions
 } from '../services/api';
 
 /* ─── Styles ─── */
@@ -539,29 +539,29 @@ const AdminDashboard = () => {
 
   const handleSearch = (e) => { e.preventDefault(); setCurrentPage(1); };
 
-  // const handleExport = async () => {
-  //   try {
-  //     const response = await exportSubmissions({ format: 'csv' });
-  //     const url = window.URL.createObjectURL(new Blob([response]));
-  //     const link = document.createElement('a');
-  //     link.href = url; link.setAttribute('download', 'submissions.csv');
-  //     document.body.appendChild(link); link.click(); link.remove();
-  //     toast.success('Data exported successfully');
-  //   } catch (error) { console.error('Error exporting data:', error); toast.error('Error exporting data'); }
-  // };
+  const handleExport = async () => {
+    try {
+      const response = await exportSubmissions({ format: 'csv' });
+      const url = window.URL.createObjectURL(new Blob([response]));
+      const link = document.createElement('a');
+      link.href = url; link.setAttribute('download', 'submissions.csv');
+      document.body.appendChild(link); link.click(); link.remove();
+      toast.success('Data exported successfully');
+    } catch (error) { console.error('Error exporting data:', error); toast.error('Error exporting data'); }
+  };
 
-  // const handleExportRights = async () => {
-  //   try {
-  //     const params = { format: 'csv' };
-  //     if (rightsClaimingFilter) params.rightsClaiming = rightsClaimingFilter;
-  //     const response = await exportRightsSubmissions(params);
-  //     const url = window.URL.createObjectURL(new Blob([response]));
-  //     const link = document.createElement('a');
-  //     link.href = url; link.setAttribute('download', 'rights_submissions.csv');
-  //     document.body.appendChild(link); link.click(); link.remove();
-  //     toast.success('Rights data exported successfully');
-  //   } catch (error) { console.error('Error exporting rights data:', error); toast.error('Error exporting rights data'); }
-  // };
+  const handleExportRights = async () => {
+    try {
+      const params = { format: 'csv' };
+      if (rightsClaimingFilter) params.rightsClaiming = rightsClaimingFilter;
+      const response = await exportRightsSubmissions(params);
+      const url = window.URL.createObjectURL(new Blob([response]));
+      const link = document.createElement('a');
+      link.href = url; link.setAttribute('download', 'rights_submissions.csv');
+      document.body.appendChild(link); link.click(); link.remove();
+      toast.success('Rights data exported successfully');
+    } catch (error) { console.error('Error exporting rights data:', error); toast.error('Error exporting rights data'); }
+  };
 
   const handleFilterChange = (v) => { setRightsClaimingFilter(v); setCurrentPage(1); };
   const clearFilters = () => { setRightsClaimingFilter(''); setSearchTerm(''); setCurrentPage(1); };
@@ -691,6 +691,9 @@ const AdminDashboard = () => {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
                 Google Sheet
               </a>
+              <button onClick={() => activeTab === 'rights' ? handleExportRights() : handleExport()} className="btn-export">
+                <Download size={15} /> Export CSV
+              </button>
             </div>
 
             {activeTab === 'rights' && (
