@@ -1032,10 +1032,11 @@ const FormSubmissionPage = () => {
                                 <p className="text-[10px] font-bold text-slate-900 truncate max-w-[150px]">{sig.name}</p>
                               </div>
                             ) : (
-                              <div className="text-center">
-                                <Eye className="h-6 w-6 text-slate-300 mx-auto mb-2" />
+                              <div className="text-center px-2">
+                                <Eye className="h-6 w-6 text-slate-300 mx-auto mb-1" />
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Signature {index + 1}</p>
-                                <p className="text-[8px] text-slate-400 font-medium mt-1">Gallery / Camera / Files</p>
+                                <p className="text-[8px] text-slate-400 font-medium mt-1">Click or tap to upload</p>
+                                <p className="text-[8px] text-[#0A4269] font-bold mt-1 uppercase tracking-wide">JPG · JPEG · PNG only</p>
                               </div>
                             )}
                           </div>
