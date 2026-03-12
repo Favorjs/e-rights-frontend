@@ -52,7 +52,7 @@ const HomePage = () => {
   const downloadForm = (formType) => {
     // Map form types to their corresponding Cloudinary URLs
     const formFiles = {
-      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1773173566/LINKAGE_ASSURANCE_PLC_-_docket_yzh4bl.xlsx',
+      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1773343469/LINKAGE_ASSURANCE_PLC_-_docket_bqrhzr.xlsx',
       'Dematerialization Form': 'https://registrars.apel.com.ng/forms/FULL-DEMATERIAL-MIGRATION-FORM-1.pdf',
       'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1773148172/LINKAGE_ASSURANCE_PLC_Rights_Circular_npv7ql.pdf',
 
@@ -375,12 +375,12 @@ const HomePage = () => {
                       </h4>
                       <ul className="space-y-3">
                         {[
-                          
+
                           { doc: 'Signature', note: 'A clear image of your signature (JPG/PNG) — uploaded during the application form' },
                           { doc: 'CHN / CSCS Number', note: 'Your Central Securities Clearing System account number (on your share certificate or e-dividend mandate form)' },
                           { doc: 'Bank Account Details', note: 'Account number and bank name for e-dividend payments (must be linked to your BVN)' },
                           { doc: 'Stockbroker Information', note: 'Name of your registered stockbroker who will process the application on your behalf' },
-                         
+
                         ].map((item, i) => (
                           <li key={i} className="flex items-start space-x-3 text-xs text-slate-600 leading-relaxed font-medium">
                             <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#F58220] mt-1.5"></span>
