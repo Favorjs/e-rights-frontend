@@ -277,6 +277,9 @@ const FormSubmissionPage = () => {
   }, [formData.shares_accepted, formData.action_type, formData.rights_issue]);
 
   const calculateTotalPayment = (data = formData) => {
+    if (data.action_type === 'renunciation_partial') {
+      return (parseFloat(data.amount_payable) || 0).toFixed(2);
+    }
     const amountDue = parseFloat(data.amount_due) || 0;
     const additionalAmount = parseFloat(data.additional_amount) || 0;
     return (amountDue + additionalAmount).toFixed(2);
@@ -818,11 +821,11 @@ const FormSubmissionPage = () => {
                 <div className="animate-fade-in space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                      <label className="label-custom">Units Accepted</label>
+                      <label className="label-custom">Rights Accepted</label>
                       <input type="number" name="shares_accepted" value={formData.shares_accepted} onChange={handleInputChange} className="input-custom" />
                     </div>
                     <div className="p-5 bg-blue-50 rounded-2xl border border-blue-100">
-                      <label className="label-custom text-[#0A4269]">Consideration (₦)</label>
+                      <label className="label-custom text-[#0A4269]">Amount Payable (₦)</label>
                       <input type="text" name="amount_payable" value={parseFloat(formData.amount_payable || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })} readOnly className="input-custom bg-blue-100 text-[#0A4269] font-bold cursor-default" />
                     </div>
                     <div className="p-5 bg-red-50 rounded-2xl border border-red-100">
