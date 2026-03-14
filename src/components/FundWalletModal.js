@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     X,
     ArrowRight,
@@ -12,7 +12,7 @@ import {
 import { generatePaymentAccount, verifyPayment } from '../services/api';
 import toast from 'react-hot-toast';
 
-const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, shareholderName, onPaymentSuccess, fixedAmount, rightsAmount = 0, additionalAmount = 0 }) => {
+const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, shareholderName, onPaymentSuccess, onUnderpayment, fixedAmount, rightsAmount = 0, additionalAmount = 0 }) => {
     const [step, setStep] = useState(1);
     const [amount, setAmount] = useState(fixedAmount ? fixedAmount.toString() : '');
     const [loading, setLoading] = useState(false);
@@ -21,9 +21,13 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
     const [paymentInfo, setPaymentInfo] = useState(null);
     const [countdown, setCountdown] = useState(600);
     const [paymentVariance, setPaymentVariance] = useState(null); // { type, amountExpected, amountPaid, excess?, balance? }
+    const pollErrorCount = useRef(0);
+
+    const prevIsOpen = useRef(isOpen);
+    const [hasBeganFlow, setHasBeganFlow] = useState(false);
 
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && !prevIsOpen.current) {
             setStep(1);
             setAmount(fixedAmount ? fixedAmount.toString() : '');
             setBankingInfo(null);
@@ -31,8 +35,13 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
             setPaymentInfo(null);
             setCountdown(600);
             setPaymentVariance(null);
+            setHasBeganFlow(false);
+        } else if (isOpen && fixedAmount && !hasBeganFlow) {
+            // Only sync fixedAmount if the user hasn't started the process (step 1)
+            if (step === 1) setAmount(fixedAmount.toString());
         }
-    }, [isOpen, fixedAmount]);
+        prevIsOpen.current = isOpen;
+    }, [isOpen, fixedAmount, step, hasBeganFlow]);
 
     useEffect(() => {
         let timer;
@@ -54,48 +63,66 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
         return () => clearInterval(timer);
     }, [step, countdown, bankingInfo, onPaymentSuccess]);
 
+    const handleVerifyResult = useCallback((response) => {
+        if (response.paymentReceived) {
+            setPolling(false);
+            if (response.paymentStatus === 'OVERPAID') {
+                setPaymentVariance({
+                    type: 'OVERPAID',
+                    amountExpected: response.amountExpected,
+                    amountPaid: response.amountPaid,
+                    excess: response.excess,
+                });
+                setStep(6);
+                onPaymentSuccess && onPaymentSuccess({ ...response.data, txRef: bankingInfo.txRef });
+                toast.success('Payment accepted — overpayment noted.');
+            } else {
+                setStep(4);
+                onPaymentSuccess && onPaymentSuccess({ ...response.data, txRef: bankingInfo.txRef });
+                toast.success('Payment verified successfully!');
+            }
+            return true;
+        } else if (response.paymentStatus === 'UNDERPAID') {
+            setPolling(false);
+            const variance = {
+                type: 'UNDERPAID',
+                amountExpected: response.amountExpected,
+                amountPaid: response.amountPaid,         // Net credited after bank charges
+                grossReceived: response.grossReceived,   // Gross that left the payer's bank
+                balancePayable: response.balancePayable, // Correct Principal Balance from Backend
+                principalAmount: response.principalAmount,
+                processorFee: response.processorFee,
+            };
+            setPaymentVariance(variance);
+            setStep(6);
+            onUnderpayment && onUnderpayment(variance.balancePayable);
+            toast.error('Incomplete payment — please pay the balance.');
+            return true;
+        }
+        return false;
+    }, [bankingInfo, onPaymentSuccess, onUnderpayment]);
+
     useEffect(() => {
         let pollInterval;
         if (polling && bankingInfo?.txRef) {
+            pollErrorCount.current = 0;
             pollInterval = setInterval(async () => {
                 try {
                     const response = await verifyPayment(bankingInfo.txRef, shareholderEmail, shareholderName);
-
-                    if (response.paymentReceived) {
-                        setPolling(false);
-                        if (response.paymentStatus === 'OVERPAID') {
-                            setPaymentVariance({
-                                type: 'OVERPAID',
-                                amountExpected: response.amountExpected,
-                                amountPaid: response.amountPaid,
-                                excess: response.excess,
-                            });
-                            setStep(6);
-                            onPaymentSuccess && onPaymentSuccess({ ...response.data, txRef: bankingInfo.txRef });
-                            toast.success('Payment accepted — overpayment noted.');
-                        } else {
-                            setStep(4);
-                            onPaymentSuccess && onPaymentSuccess({ ...response.data, txRef: bankingInfo.txRef });
-                            toast.success('Payment verified successfully!');
-                        }
-                    } else if (response.paymentStatus === 'UNDERPAID') {
-                        setPolling(false);
-                        setPaymentVariance({
-                            type: 'UNDERPAID',
-                            amountExpected: response.amountExpected,
-                            amountPaid: response.amountPaid,
-                            balance: response.balance,
-                        });
-                        setStep(6);
-                        toast.error('Incomplete payment — please pay the balance.');
-                    }
+                    pollErrorCount.current = 0;
+                    handleVerifyResult(response);
                 } catch (error) {
                     console.error('Polling error:', error);
+                    pollErrorCount.current += 1;
+                    if (pollErrorCount.current >= 10) {
+                        setPolling(false);
+                        toast.error('Payment verification failed. Please try again.');
+                    }
                 }
             }, 5000);
         }
         return () => clearInterval(pollInterval);
-    }, [polling, bankingInfo, onPaymentSuccess, shareholderEmail, shareholderName]);
+    }, [polling, bankingInfo, onPaymentSuccess, onUnderpayment, shareholderEmail, shareholderName, handleVerifyResult]);
 
     if (!isOpen) return null;
 
@@ -119,6 +146,7 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
             if (response.success) {
                 const apiData = response.data;
                 setBankingInfo(apiData);
+                setHasBeganFlow(true);
 
                 const totalFromApi = parseFloat(apiData.amountToDeposit || baseAmount);
                 const processorFee = totalFromApi - baseAmount;
@@ -145,6 +173,22 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
         setStep(3);
     };
 
+    const handleManualVerify = async () => {
+        if (!bankingInfo?.txRef) return;
+        setLoading(true);
+        try {
+            const response = await verifyPayment(bankingInfo.txRef, shareholderEmail, shareholderName);
+            const found = handleVerifyResult(response);
+            if (!found) {
+                toast.error('No payment update found yet. Please wait or try again later.');
+            }
+        } catch (error) {
+            toast.error('Verification check failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const copyToClipboard = (text, label) => {
         navigator.clipboard.writeText(text);
         toast.success(`${label} copied!`);
@@ -168,7 +212,7 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                         </div>
                         <div>
                             <h3 className="font-bold text-base text-slate-900">Purchase Rights</h3>
-                            <p className="text-slate-400 text-xs">Step {step} of 4</p>
+                            {/* <p className="text-slate-400 text-xs">Step {step} of 4</p> */}
                         </div>
                     </div>
                     <button
@@ -226,24 +270,15 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                     {step === 2 && (
                         <div className="space-y-4">
                             <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 space-y-3">
-                                {fixedAmount && rightsAmount > 0 && (
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Rights Amount Payable</span>
-                                        <span className="font-medium text-slate-900">₦{rightsAmount.toLocaleString()}</span>
-                                    </div>
-                                )}
-                                {fixedAmount && additionalAmount > 0 && (
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Additional Amount Payable</span>
-                                        <span className="font-medium text-slate-900">₦{additionalAmount.toLocaleString()}</span>
-                                    </div>
-                                )}
-                                {!fixedAmount && (
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Application Amount</span>
-                                        <span className="font-medium text-slate-900">₦{getPaymentBreakdown().baseAmount.toLocaleString()}</span>
-                                    </div>
-                                )}
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-500">
+                                        {fixedAmount ? 'Balance to Pay' : 'Principal Amount'}
+                                    </span>
+                                    <span className="font-medium text-slate-900">
+                                        ₦{getPaymentBreakdown().baseAmount.toLocaleString()}
+                                    </span>
+                                </div>
+
                                 <div className="flex justify-between text-sm">
                                     <span className="text-slate-500">Processor's Fee</span>
                                     <span className="font-medium text-slate-900">₦{getPaymentBreakdown().processorFee.toLocaleString()}</span>
@@ -312,7 +347,7 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                                 </div>
                                 <div className="bg-slate-50 border border-slate-100 p-3 rounded-xl">
                                     <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5 font-medium">Account Name</p>
-                                    <p className="font-semibold text-sm text-slate-900 truncate">{bankingInfo.accountName}</p>
+                                    <p className="font-semibold text-sm text-slate-900 break-words">{bankingInfo.accountName}</p>
                                 </div>
                             </div>
 
@@ -368,17 +403,26 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                                     We will confirm your transaction once it has been processed and you will be notified. You can safely close this window now.
                                 </p>
                             </div>
-                            <button
-                                onClick={() => {
-                                    if (bankingInfo?.txRef) {
-                                        onPaymentSuccess && onPaymentSuccess({ txRef: bankingInfo.txRef, isProcessing: true });
-                                    }
-                                    onClose();
-                                }}
-                                className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold transition-colors"
-                            >
-                                Close & Continue
-                            </button>
+                            <div className="space-y-3">
+                                <button
+                                    onClick={handleManualVerify}
+                                    disabled={loading}
+                                    className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                                >
+                                    {loading ? <Loader2 size={18} className="animate-spin" /> : 'Check Payment Status'}
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        if (bankingInfo?.txRef) {
+                                            onPaymentSuccess && onPaymentSuccess({ txRef: bankingInfo.txRef, isProcessing: true });
+                                        }
+                                        onClose();
+                                    }}
+                                    className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-semibold transition-colors"
+                                >
+                                    Close & Continue
+                                </button>
+                            </div>
                         </div>
                     )}
 
@@ -430,40 +474,51 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                                             <AlertTriangle size={30} strokeWidth={1.5} />
                                         </div>
                                         <h3 className="text-lg font-bold text-slate-900">Incomplete Payment</h3>
-                                        <p className="text-slate-500 text-xs mt-1">Balance required to complete application</p>
+                                        <p className="text-slate-500 text-xs mt-1">Balance required to finalize your application</p>
                                     </div>
 
                                     <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-2 text-sm">
                                         <div className="flex justify-between">
-                                            <span className="text-red-700">Amount Required</span>
-                                            <span className="font-semibold text-slate-900">₦{parseFloat(paymentVariance.amountExpected).toLocaleString()}</span>
+                                            <span className="text-red-700">Principal Amount</span>
+                                            <span className="font-semibold text-slate-900">₦{parseFloat(paymentVariance.principalAmount || 0).toLocaleString()}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-red-700">Amount Sent</span>
-                                            <span className="font-semibold text-slate-900">₦{parseFloat(paymentVariance.amountPaid).toLocaleString()}</span>
+                                            <span className="text-red-700">Processor Fee</span>
+                                            <span className="font-semibold text-slate-900">₦{parseFloat(paymentVariance.processorFee || 0).toLocaleString()}</span>
                                         </div>
-                                        <div className="h-px bg-red-200" />
+                                        <div className="h-px bg-red-100" />
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-500 font-medium">Expected Total</span>
+                                            <span className="font-bold text-slate-700">₦{parseFloat(paymentVariance.amountExpected).toLocaleString()}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-emerald-700 font-medium">Amount Sent from Bank</span>
+                                            <span className="font-bold text-emerald-600">₦{parseFloat(paymentVariance.grossReceived || paymentVariance.amountPaid || 0).toLocaleString()}</span>
+                                        </div>
+                                        <div className="h-px bg-red-300" />
                                         <div className="flex justify-between items-center">
-                                            <span className="font-bold text-red-800">Balance to Pay</span>
-                                            <span className="text-xl font-bold text-red-600">₦{parseFloat(paymentVariance.balance).toLocaleString()}</span>
+                                            <span className="font-bold text-red-800">Balance Payable</span>
+                                            <span className="text-xl font-bold text-red-600">₦{parseFloat(paymentVariance.balancePayable).toLocaleString()}</span>
                                         </div>
                                     </div>
 
-                                    <p className="text-xs text-slate-500 text-center leading-relaxed">
-                                        You sent <strong>₦{parseFloat(paymentVariance.amountPaid).toLocaleString()}</strong> instead of <strong>₦{parseFloat(paymentVariance.amountExpected).toLocaleString()}</strong>. Please pay the remaining balance to complete your application. A notification has been sent to your email.
+                                    <p className="text-[10px] text-slate-500 text-center leading-relaxed">
+                                        A notification with these details has been sent to your email. Please pay the outstanding balance (Principal) to complete your subscription.
                                     </p>
 
                                     <button
                                         onClick={() => {
-                                            setAmount(paymentVariance.balance.toString());
+                                            const nextAmount = paymentVariance.balancePayable || paymentVariance.balance || 0;
+                                            setAmount(nextAmount.toString());
                                             setBankingInfo(null);
                                             setPaymentVariance(null);
+                                            setPolling(false); // Stop any active polling from the failed attempt
                                             setCountdown(600);
                                             setStep(1);
                                         }}
-                                        className="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition-colors"
+                                        className="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition-colors shadow-lg shadow-red-200"
                                     >
-                                        Pay Balance — ₦{parseFloat(paymentVariance.balance).toLocaleString()}
+                                        Pay Balance — ₦{parseFloat(paymentVariance.balancePayable || 0).toLocaleString()}
                                     </button>
                                 </>
                             )}

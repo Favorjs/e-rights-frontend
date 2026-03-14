@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Receipt, CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown/*, CreditCard*/ } from 'lucide-react';
+import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, CreditCard } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm } from '../services/api';
-// import FundWalletModal from '../components/FundWalletModal';
+import FundWalletModal from '../components/FundWalletModal';
 import bankData from '../utils/banks.json';
 import linkageLogo from '../assets/images/linkage.png';
 import apelLogo from '../assets/images/Apel-ASSET-Logo.png';
@@ -126,27 +126,30 @@ const FormSubmissionPage = () => {
   const [shareholder, setShareholder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  // const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [pendingBalance, setPendingBalance] = useState(() => {
+    const saved = sessionStorage.getItem(`e_rights_payment_${id}_balance`);
+    return saved ? parseFloat(saved) : null;
+  });
+  const handleUnderpayment = useCallback((balance) => {
+    const val = parseFloat(balance);
+    setPendingBalance(val);
+    sessionStorage.setItem(`e_rights_payment_${id}_balance`, val.toString());
+  }, [id]);
   const storageKey = `e_rights_form_${id}`;
-  const paymentStorageKey = `e_rights_payment_${id}`; // eslint-disable-line no-unused-vars
+  const paymentStorageKey = `e_rights_payment_${id}`;
 
-  // Payment gateway disabled — variables kept as constants so dependent UI still compiles
-  const paymentVerified = false;
-  const paymentTxRef = null;
-  const paymentProcessing = false;
-
-  // Re-enable these when payment gateway is turned back on:
-  // const [paymentVerified, setPaymentVerified] = useState(() => {
-  //   const saved = sessionStorage.getItem(paymentStorageKey);
-  //   return saved === 'true';
-  // });
-  // const [paymentTxRef, setPaymentTxRef] = useState(() => {
-  //   const saved = sessionStorage.getItem(`${paymentStorageKey}_txRef`);
-  //   return saved || null;
-  // });
-  // const [paymentProcessing, setPaymentProcessing] = useState(() => {
-  //   return sessionStorage.getItem(`${paymentStorageKey}_processing`) === 'true';
-  // });
+  const [paymentVerified, setPaymentVerified] = useState(() => {
+    const saved = sessionStorage.getItem(paymentStorageKey);
+    return saved === 'true';
+  });
+  const [paymentTxRef, setPaymentTxRef] = useState(() => {
+    const saved = sessionStorage.getItem(`${paymentStorageKey}_txRef`);
+    return saved || null;
+  });
+  const [paymentProcessing, setPaymentProcessing] = useState(() => {
+    return sessionStorage.getItem(`${paymentStorageKey}_processing`) === 'true';
+  });
 
   const [currentStep, setCurrentStep] = useState(() => {
     const saved = localStorage.getItem(storageKey);
@@ -915,9 +918,9 @@ const FormSubmissionPage = () => {
                   </div>
 
                   {/* Payment and Receipt Section - Side by Side */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Make Payment Online Card - COMMENTED OUT (payment gateway disabled) */}
-                    {/* <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
+                  <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
+                    {/* Make Payment Online Card */}
+                    <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 bg-[#0A4269] rounded-xl flex items-center justify-center">
                           <CreditCard className="h-5 w-5 text-white" />
@@ -958,50 +961,6 @@ const FormSubmissionPage = () => {
                           </button>
                         )}
                       </div>
-                    </div> */}
-
-                    {/* Upload Receipt Card */}
-                    <div className={`bg-white border-2 border-dashed p-6 rounded-2xl transition-all ${paymentVerified ? 'border-slate-100 opacity-50 pointer-events-none' : 'border-slate-200 hover:border-[#0A4269] group'}`}>
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${paymentVerified ? 'bg-slate-100' : 'bg-slate-100 group-hover:bg-blue-50'}`}>
-                          <Receipt className={`h-5 w-5 transition-colors ${paymentVerified ? 'text-slate-300' : 'text-slate-400 group-hover:text-[#0A4269]'}`} />
-                        </div>
-                        <div>
-                          <h4 className={`text-sm font-bold uppercase tracking-wide ${paymentVerified ? 'text-slate-400' : 'text-slate-900'}`}>Upload Receipt</h4>
-                          <p className="text-[10px] text-slate-400 font-medium">
-                            {paymentVerified ? 'Online payment completed' : 'For offline payments'}
-                          </p>
-                        </div>
-                      </div>
-                      {paymentVerified ? (
-                        <div className="flex items-center gap-2 p-4 bg-slate-50 rounded-xl">
-                          <CheckCircle className="h-5 w-5 text-slate-400" />
-                          <p className="text-xs text-slate-400">
-                            {paymentProcessing ? 'Not required - payment processing online' : 'Not required - payment verified online'}
-                          </p>
-                        </div>
-                      ) : (
-                        <>
-                          <p className="text-xs text-slate-500 mb-6 leading-relaxed">
-                            Already paid via bank transfer? Upload your payment receipt for manual verification.
-                          </p>
-                          <div className={`relative h-28 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all ${formData.receipt ? 'border-[#0A4269] bg-blue-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`}>
-                            <input type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, 'receipt')} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                            {formData.receipt ? (
-                              <div className="text-center p-4">
-                                <CheckCircle className="h-8 w-8 text-[#0A4269] mx-auto mb-2" />
-                                <p className="text-[10px] font-bold text-slate-900 truncate max-w-[180px]">{formData.receipt.name}</p>
-                              </div>
-                            ) : (
-                              <div className="text-center p-4">
-                                <Receipt className="h-6 w-6 text-slate-300 mx-auto mb-2" />
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Click or Drag to Upload</p>
-                                <p className="text-[8px] text-slate-400 font-medium mt-1">PDF, JPG, PNG (Max 5MB)</p>
-                              </div>
-                            )}
-                          </div>
-                        </>
-                      )}
                     </div>
                   </div>
 
@@ -1169,17 +1128,19 @@ const FormSubmissionPage = () => {
           </div>
         </div>
       </div>
-      {/* FundWalletModal - COMMENTED OUT (payment gateway disabled) */}
-      {/* <FundWalletModal
+      <FundWalletModal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         shareholder={shareholder}
         shareholderEmail={formData.email}
         shareholderName={formData.name || shareholder?.name}
-        fixedAmount={parseFloat(calculateTotalPayment())}
+        fixedAmount={pendingBalance ?? parseFloat(calculateTotalPayment())}
+        onUnderpayment={handleUnderpayment}
         rightsAmount={parseFloat(formData.amount_due) || 0}
         additionalAmount={parseFloat(formData.additional_amount) || 0}
         onPaymentSuccess={(data) => {
+          setPendingBalance(null);
+          sessionStorage.removeItem(`${paymentStorageKey}_balance`);
           setPaymentVerified(true);
           const isProc = !!data?.isProcessing;
           setPaymentProcessing(isProc);
@@ -1195,7 +1156,7 @@ const FormSubmissionPage = () => {
             toast.success('Online payment recorded!');
           }
         }}
-      /> */}
+      /> 
     </div>
   );
 };
