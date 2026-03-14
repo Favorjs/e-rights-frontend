@@ -262,6 +262,20 @@ const FormSubmissionPage = () => {
     }
   }, [formData.additional_shares, formData.apply_additional]);
 
+  // Auto-calculate renunciation fields when shares_accepted changes
+  useEffect(() => {
+    if (formData.action_type !== 'renunciation_partial') return;
+    const accepted = parseFloat(formData.shares_accepted) || 0;
+    const totalRights = parseFloat(formData.rights_issue) || 0;
+    const consideration = (accepted * 1.32).toFixed(2);
+    const renounced = Math.max(0, totalRights - accepted);
+    setFormData(prev => ({
+      ...prev,
+      amount_payable: consideration,
+      shares_renounced: renounced.toString(),
+    }));
+  }, [formData.shares_accepted, formData.action_type, formData.rights_issue]);
+
   const calculateTotalPayment = (data = formData) => {
     const amountDue = parseFloat(data.amount_due) || 0;
     const additionalAmount = parseFloat(data.additional_amount) || 0;
@@ -809,11 +823,11 @@ const FormSubmissionPage = () => {
                     </div>
                     <div className="p-5 bg-blue-50 rounded-2xl border border-blue-100">
                       <label className="label-custom text-[#0A4269]">Consideration (₦)</label>
-                      <input type="number" name="amount_payable" value={formData.amount_payable} onChange={handleInputChange} className="input-custom" />
+                      <input type="text" name="amount_payable" value={parseFloat(formData.amount_payable || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })} readOnly className="input-custom bg-blue-100 text-[#0A4269] font-bold cursor-default" />
                     </div>
                     <div className="p-5 bg-red-50 rounded-2xl border border-red-100">
                       <label className="label-custom text-red-600">Rights Renounced</label>
-                      <input type="number" name="shares_renounced" value={formData.shares_renounced} onChange={handleInputChange} className="input-custom" />
+                      <input type="text" name="shares_renounced" value={parseFloat(formData.shares_renounced || 0).toLocaleString()} readOnly className="input-custom bg-red-100 text-red-700 font-bold cursor-default" />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
