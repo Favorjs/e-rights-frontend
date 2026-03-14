@@ -168,12 +168,12 @@ export default function ShareholderDetailsPage() {
             </div>
 
             {/* Field 7: Address */}
-            {shareholder.address && (
+            {/* {shareholder.address && (
               <div className="md:col-span-2">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">ADDRESS</p>
                 <p className="text-xl font-bold text-[#0A4269]">{shareholder.address}</p>
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
