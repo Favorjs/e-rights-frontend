@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, CreditCard, Upload } from 'lucide-react';
+import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, Upload } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm } from '../services/api';
 import FundWalletModal from '../components/FundWalletModal';
