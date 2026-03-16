@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, CreditCard } from 'lucide-react';
+import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, CreditCard, Upload } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm } from '../services/api';
 import FundWalletModal from '../components/FundWalletModal';
@@ -935,7 +935,7 @@ const FormSubmissionPage = () => {
                   </div>
 
                   {/* Payment and Receipt Section - Side by Side */}
-                  <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Make Payment Online Card */}
                     <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
                       <div className="flex items-center gap-3 mb-4">
@@ -977,6 +977,44 @@ const FormSubmissionPage = () => {
                             Pay Now
                           </button>
                         )}
+                      </div>
+                    </div>
+
+                    {/* Upload Receipt Card */}
+                    <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-slate-700 rounded-xl flex items-center justify-center">
+                          <Upload className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wide">Upload Payment Receipt</h4>
+                          <p className="text-[10px] text-slate-400 font-medium">Manual payment confirmation</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-500 mb-6 leading-relaxed flex-grow">
+                        Already paid via bank transfer? Upload your payment receipt for manual confirmation.
+                      </p>
+                      <div className="mt-auto">
+                        <div className={`relative h-28 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all ${formData.receipt ? 'border-[#0A4269] bg-blue-50/50' : 'border-slate-200 hover:border-slate-300 bg-white'}`}>
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/jpg,image/png,application/pdf"
+                            onChange={(e) => handleFileChange(e, 'receipt')}
+                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                          />
+                          {formData.receipt ? (
+                            <div className="text-center">
+                              <CheckCircle className="h-7 w-7 text-[#0A4269] mx-auto mb-1" />
+                              <p className="text-[10px] font-bold text-slate-900 truncate max-w-[160px] px-2">{formData.receipt.name}</p>
+                            </div>
+                          ) : (
+                            <div className="text-center px-2">
+                              <Upload className="h-6 w-6 text-slate-300 mx-auto mb-1" />
+                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Click to upload</p>
+                              <p className="text-[8px] text-slate-400 font-medium mt-1">JPG, PNG or PDF</p>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
