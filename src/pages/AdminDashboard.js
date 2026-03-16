@@ -761,9 +761,11 @@ const AdminDashboard = () => {
               <div className="pag-bar">
                 <div className="pag-info">Showing <b>{((currentPage - 1) * 10) + 1}</b> to <b>{Math.min(currentPage * 10, totalCount)}</b> of <b>{totalCount}</b></div>
                 <div className="pag-controls">
+                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="pag-btn" title="First page"><ChevronLeft size={14} /><ChevronLeft size={14} /></button>
                   <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="pag-btn"><ChevronLeft size={14} /> Previous</button>
-                  <span className="pag-current">{currentPage}</span>
+                  <span className="pag-current">{currentPage} / {totalPages}</span>
                   <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages} className="pag-btn">Next <ChevronRight size={14} /></button>
+                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} className="pag-btn" title="Last page"><ChevronRight size={14} /><ChevronRight size={14} /></button>
                 </div>
               </div>
             )}
