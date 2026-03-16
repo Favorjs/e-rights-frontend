@@ -935,9 +935,9 @@ const FormSubmissionPage = () => {
                   </div>
 
                   {/* Payment and Receipt Section - Side by Side */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Make Payment Online Card */}
-                    <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
+                  <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
+                    {/* Make Payment Online Card - temporarily hidden */}
+                    {/* <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 bg-[#0A4269] rounded-xl flex items-center justify-center">
                           <CreditCard className="h-5 w-5 text-white" />
@@ -978,7 +978,7 @@ const FormSubmissionPage = () => {
                           </button>
                         )}
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* Upload Receipt Card */}
                     <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
