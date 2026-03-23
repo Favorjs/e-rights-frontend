@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, Upload } from 'lucide-react';
+import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, Upload, CreditCard } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm } from '../services/api';
 import FundWalletModal from '../components/FundWalletModal';
@@ -258,7 +258,7 @@ const FormSubmissionPage = () => {
       setFormData(prev => ({ ...prev, additional_amount: additionalAmount }));
     } else {
       setCalculatedAmount(0);
-      setFormData(prev => ({ ...prev, additional_amount: '' }));
+      setFormData(prev => ({ ...prev, additional_shares: '', additional_amount: '' }));
     }
   }, [formData.additional_shares, formData.apply_additional]);
 
@@ -936,8 +936,8 @@ const FormSubmissionPage = () => {
 
                   {/* Payment and Receipt Section - Side by Side */}
                   <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
-                    {/* Make Payment Online Card - temporarily hidden */}
-                    {/* <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
+                    {/* Make Payment Online Card */}
+                    <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 bg-[#0A4269] rounded-xl flex items-center justify-center">
                           <CreditCard className="h-5 w-5 text-white" />
@@ -978,10 +978,10 @@ const FormSubmissionPage = () => {
                           </button>
                         )}
                       </div>
-                    </div> */}
+                    </div>
 
-                    {/* Upload Receipt Card */}
-                    <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
+                    {/* Upload Receipt Card Hidden */}
+                    {/* <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 bg-slate-700 rounded-xl flex items-center justify-center">
                           <Upload className="h-5 w-5 text-white" />
@@ -1016,7 +1016,7 @@ const FormSubmissionPage = () => {
                           )}
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Authorized Signatures Section - Full Width Below */}
