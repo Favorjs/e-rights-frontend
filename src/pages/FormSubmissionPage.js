@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, Upload, CreditCard } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm } from '../services/api';
+import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm, checkExistingSubmission, submitAdditionalShares } from '../services/api';
 import FundWalletModal from '../components/FundWalletModal';
 import bankData from '../utils/banks.json';
 import linkageLogo from '../assets/images/linkage.png';
@@ -162,6 +162,8 @@ const FormSubmissionPage = () => {
     return 1;
   });
 
+  const [existingSubmission, setExistingSubmission] = useState(null);
+  const [additionalSubmitted, setAdditionalSubmitted] = useState(false);
   const [stockbrokers, setStockbrokers] = useState([]);
   const [calculatedAmount, setCalculatedAmount] = useState(0);
 
@@ -303,6 +305,14 @@ const FormSubmissionPage = () => {
             amount_due: shareholderData.amount_due,
             contact_name: shareholderData.name,
           }));
+          // Check for existing submission
+          try {
+            const subCheck = await checkExistingSubmission(shareholderData.id);
+            if (subCheck.exists) {
+              setExistingSubmission(subCheck.submission);
+              setFormData(prev => ({ ...prev, apply_additional: true }));
+            }
+          } catch (_) {}
         } else {
           toast.error('Failed to load shareholder details');
           navigate('/');
@@ -399,6 +409,30 @@ const FormSubmissionPage = () => {
 
   const handlePrevious = () => setCurrentStep(prev => Math.max(prev - 1, 1));
 
+  const handleSubmitAdditional = async () => {
+    if (!formData.additional_shares || parseFloat(formData.additional_shares) <= 0) {
+      return toast.error('Please enter the number of additional shares you are applying for.');
+    }
+    if (!paymentVerified) {
+      return toast.error('Please complete payment before submitting.');
+    }
+    try {
+      setSubmitting(true);
+      await submitAdditionalShares({
+        shareholder_id: shareholder.id,
+        additional_shares: formData.additional_shares,
+        additional_amount: formData.additional_amount,
+        payment_ref: paymentTxRef,
+      });
+      setAdditionalSubmitted(true);
+      toast.success('Additional shares application submitted successfully!');
+    } catch (error) {
+      toast.error(error?.response?.data?.error || 'Failed to submit. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
@@ -460,6 +494,142 @@ const FormSubmissionPage = () => {
       <div className="text-center">
         <div className="loading-spinner h-10 w-10 mx-auto mb-4 border-[#0A4269]"></div>
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Submitting Application...</p>
+      </div>
+    </div>
+  );
+
+  // ── PREVIOUSLY SUBMITTED: Additional Shares Only Flow ──
+  if (existingSubmission && !additionalSubmitted) return (
+    <div className="App bg-slate-50/50 min-h-screen font-sans pb-20">
+      <div className="container-custom py-6 md:py-12 max-w-2xl mx-auto space-y-6">
+        <Link to={`/shareholder/${id}`} className="inline-flex items-center text-xs font-bold text-[#0A4269] hover:text-[#0D507F]">
+          <ChevronLeft className="h-4 w-4 mr-1" /> BACK TO PROFILE
+        </Link>
+
+        {/* Previously submitted banner */}
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 flex items-start gap-4">
+          <CheckCircle className="h-6 w-6 text-amber-500 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="font-bold text-amber-800 text-sm uppercase tracking-wide">You have previously submitted a Rights Issue application</p>
+            <p className="text-amber-700 text-xs mt-1">Your earlier form has been received. You may apply for additional shares below.</p>
+            {existingSubmission.additional_submission_count > 0 && (
+              <p className="text-amber-600 text-xs mt-2 font-bold">
+                Additional submissions used: {existingSubmission.additional_submission_count} / 2
+                {existingSubmission.additional_submission_count >= 2 && ' — Maximum reached, no further submissions allowed.'}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Previous submission summary */}
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-3">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Previous Submission</p>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase">Action Type</p>
+              <p className="text-sm font-bold text-slate-700 capitalize">{(existingSubmission.action_type || '').replace(/_/g, ' ')}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase">Payment Status</p>
+              <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${existingSubmission.payment_status === 'successful' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                {existingSubmission.payment_status || 'Pending'}
+              </span>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase">Submitted</p>
+              <p className="text-sm font-bold text-slate-700">{new Date(existingSubmission.created_at).toLocaleDateString()}</p>
+            </div>
+            {existingSubmission.additional_shares && (
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">Additional Shares (prior)</p>
+                <p className="text-sm font-bold text-slate-700">{parseFloat(existingSubmission.additional_shares).toLocaleString()}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Additional shares input */}
+        <div className={`bg-white rounded-2xl border border-slate-200 p-6 space-y-6 ${existingSubmission.additional_submission_count >= 2 ? 'opacity-50 pointer-events-none' : ''}`}>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Apply for Additional Shares</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="label-custom">Units Requested</label>
+              <input type="number" name="additional_shares" value={formData.additional_shares} onChange={handleInputChange} className="input-custom" placeholder="0" min="1" />
+            </div>
+            <div className="space-y-2">
+              <label className="label-custom">Value (₦)</label>
+              <input type="text" value={calculatedAmount.toLocaleString()} readOnly className="input-custom bg-blue-50 text-[#0A4269] font-bold" />
+            </div>
+          </div>
+
+          {/* Payment */}
+          {formData.additional_shares && parseFloat(formData.additional_shares) > 0 && parseFloat(formData.additional_amount || 0) > 0 && (
+            <div className="bg-[#0A4269] p-6 rounded-2xl text-white space-y-4">
+              <div>
+                <p className="text-[10px] font-black text-blue-400/60 uppercase tracking-widest">Total Amount Payable</p>
+                <p className="text-3xl font-black italic">₦{parseFloat(formData.additional_amount || 0).toLocaleString()}</p>
+              </div>
+              {paymentVerified ? (
+                <div className="flex items-center gap-2 bg-green-500/20 rounded-xl p-3">
+                  <CheckCircle className="h-4 w-4 text-green-400" />
+                  <span className="text-xs font-bold text-green-300">Payment Verified</span>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsPaymentModalOpen(true)}
+                  className="w-full bg-[#F58220] hover:bg-[#E07010] text-white font-bold py-3 px-6 rounded-xl text-sm uppercase tracking-wide transition-all"
+                >
+                  Pay Now
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={handleSubmitAdditional}
+          disabled={submitting || !paymentVerified || !formData.additional_shares || existingSubmission.additional_submission_count >= 2}
+          className="w-full bg-[#0A4269] hover:bg-[#0D507F] disabled:bg-slate-300 text-white font-bold py-4 px-6 rounded-2xl text-sm uppercase tracking-widest transition-all"
+        >
+          {submitting ? 'Submitting...' : existingSubmission.additional_submission_count >= 2 ? 'Maximum Submissions Reached' : 'Submit Additional Application'}
+        </button>
+      </div>
+
+      <FundWalletModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        shareholder={shareholder}
+        shareholderEmail={formData.email || shareholder?.email}
+        shareholderName={formData.name}
+        onPaymentSuccess={(data) => {
+          setPendingBalance(null);
+          sessionStorage.removeItem(`${paymentStorageKey}_balance`);
+          setPaymentVerified(true);
+          if (data?.txRef) {
+            setPaymentTxRef(data.txRef);
+            sessionStorage.setItem(`${paymentStorageKey}_txRef`, data.txRef);
+          }
+          sessionStorage.setItem(paymentStorageKey, 'true');
+          setIsPaymentModalOpen(false);
+          toast.success('Payment verified!');
+        }}
+        onUnderpayment={handleUnderpayment}
+        fixedAmount={pendingBalance ?? parseFloat(formData.additional_amount || 0)}
+        rightsAmount={parseFloat(formData.additional_amount || 0)}
+        additionalAmount={0}
+      />
+    </div>
+  );
+
+  if (additionalSubmitted) return (
+    <div className="App flex items-center justify-center min-h-screen bg-slate-50/50">
+      <div className="text-center space-y-4 max-w-md mx-auto p-8">
+        <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
+        <h2 className="text-2xl font-black text-slate-900 uppercase">Application Submitted</h2>
+        <p className="text-slate-500 text-sm">Your additional shares application has been received successfully.</p>
+        <Link to={`/shareholder/${id}`} className="inline-block mt-4 bg-[#0A4269] text-white font-bold py-3 px-8 rounded-xl text-sm uppercase">
+          Back to Profile
+        </Link>
       </div>
     </div>
   );

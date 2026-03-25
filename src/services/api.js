@@ -88,6 +88,16 @@ export const submitRightsForm = async (formData) => {
   return response.data;
 };
 
+export const checkExistingSubmission = async (shareholderId) => {
+  const response = await api.get(`/api/forms/check-submission/${shareholderId}`);
+  return response.data;
+};
+
+export const submitAdditionalShares = async (data) => {
+  const response = await api.post('/api/forms/submit-additional', data);
+  return response.data;
+};
+
 export const previewRightsForm = async (formData) => {
   const response = await api.post('/api/forms/preview-rights', formData, {
     responseType: 'blob'
