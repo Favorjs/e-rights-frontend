@@ -236,8 +236,15 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                             <div className="relative">
                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-lg">₦</span>
                                 {fixedAmount ? (
-                                    <div className="w-full pl-8 pr-3 py-4 bg-slate-50 border border-slate-200 rounded-xl text-2xl font-bold text-slate-900">
+                                    <div className="w-full pl-8 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-xl text-2xl font-bold text-slate-900">
                                         {parseFloat(amount).toLocaleString()}
+                                        <button
+                                            onClick={() => copyToClipboard(parseFloat(amount).toString(), 'Amount')}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors text-slate-500"
+                                            title="Copy amount"
+                                        >
+                                            <Copy size={16} />
+                                        </button>
                                     </div>
                                 ) : (
                                     <input
@@ -288,7 +295,16 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
 
                                 <div className="flex justify-between items-center">
                                     <span className="font-bold text-slate-900">Total Payable</span>
-                                    <span className="text-xl font-bold text-slate-900">₦{getPaymentBreakdown().totalAmount.toLocaleString()}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xl font-bold text-slate-900">₦{getPaymentBreakdown().totalAmount.toLocaleString()}</span>
+                                        <button
+                                            onClick={() => copyToClipboard(getPaymentBreakdown().totalAmount.toString(), 'Amount')}
+                                            className="p-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors text-slate-500"
+                                            title="Copy amount"
+                                        >
+                                            <Copy size={14} />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -323,7 +339,16 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                                         {formatTime(countdown)}
                                     </span>
                                 </div>
-                                <span className="text-sm font-bold text-slate-900">₦{getPaymentBreakdown().totalAmount.toLocaleString()}</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-bold text-slate-900">₦{getPaymentBreakdown().totalAmount.toLocaleString()}</span>
+                                    <button
+                                        onClick={() => copyToClipboard(getPaymentBreakdown().totalAmount.toString(), 'Amount')}
+                                        className="p-1 bg-white/80 border border-slate-200 rounded-md hover:bg-white transition-colors text-slate-500"
+                                        title="Copy amount"
+                                    >
+                                        <Copy size={13} />
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Account Number */}
