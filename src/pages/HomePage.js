@@ -54,7 +54,7 @@ const HomePage = () => {
     const formFiles = {
       'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1773343469/LASACO_ASSURANCE_PLC_-_docket_bqrhzr.xlsx',
       'Dematerialization Form': 'https://registrars.apel.com.ng/forms/FULL-DEMATERIAL-MIGRATION-FORM-1.pdf',
-      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1775055481/LASACO_ASSURANCE_PLC_Rights_Circular_ufofpc.pdf',
+      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1775076828/LASACO_ASSURANCE_PLC_Rights_Circular_ufofpc.pdf',
 
     };
 
