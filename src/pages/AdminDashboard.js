@@ -611,7 +611,7 @@ const AdminDashboard = () => {
                   <div className="stat-icon blue"><Users size={21} /></div>
                   <div className="stat-trend-badge green"><TrendingUp size={11} /> Active</div>
                 </div>
-                <div className="stat-label">Total Shareholders</div>
+                <div className="stat-label">Total Shareholders </div>
                 <div className="stat-value">{stats.totalShareholders?.toLocaleString()}</div>
               </div>
               <div className="stat-card-footer">
