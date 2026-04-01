@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, Upload, CreditCard } from 'lucide-react';
+import { CheckCircle, Eye, Download, ChevronRight, ChevronLeft, Info, Search, X, ChevronDown, Upload} from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getShareholderById, getStockbrokers, submitRightsForm, previewRightsForm, checkExistingSubmission, submitAdditionalShares } from '../services/api';
 import FundWalletModal from '../components/FundWalletModal';
 import bankData from '../utils/banks.json';
-import linkageLogo from '../assets/images/linkage.png';
-import apelLogo from '../assets/images/Apel-ASSET-Logo.png';
-import capitalExpressLogo from '../assets/images/capital express.png';
+import LASACOLogo from '../assets/images/lasaco.png';
+import pacLogo from '../assets/images/pac.jpg';
+import meristemLogo from '../assets/images/meristem.jpg';
 
 // Internal SearchableSelect for alignment with existing structure
 const InternalSearchableSelect = ({
@@ -51,7 +51,7 @@ const InternalSearchableSelect = ({
     <div className="relative w-full" ref={selectRef}>
       <button
         type="button"
-        className={`relative w-full min-w-[240px] md:min-w-[320px] border rounded-xl shadow-sm pl-4 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-[#0A4269] text-sm ${className || 'bg-white border-slate-200 text-slate-900'}`}
+        className={`relative w-full min-w-[240px] md:min-w-[320px] border rounded-xl shadow-sm pl-4 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-[#1B2B45] text-sm ${className || 'bg-white border-slate-200 text-slate-900'}`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className={`block truncate ${!displayValue ? 'text-slate-400' : 'font-medium'}`}>
@@ -69,7 +69,7 @@ const InternalSearchableSelect = ({
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <input
                 type="text"
-                className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-xs leading-5 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-[#0A4269]"
+                className="block w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-xs leading-5 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-[#1B2B45]"
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -86,7 +86,7 @@ const InternalSearchableSelect = ({
                 return (
                   <div
                     key={`${optionValue}-${index}`}
-                    className={`px-4 py-2.5 text-sm transition-colors cursor-pointer ${value === optionValue ? 'bg-blue-50 text-[#0A4269] font-bold' : 'text-slate-700 hover:bg-slate-50'}`}
+                    className={`px-4 py-2.5 text-sm transition-colors cursor-pointer ${value === optionValue ? 'bg-blue-50 text-[#1B2B45] font-bold' : 'text-slate-700 hover:bg-slate-50'}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       onChange({ target: { name: name || 'stockbroker', value: optionValue } });
@@ -196,7 +196,7 @@ const FormSubmissionPage = () => {
       trade_rights: false,
       contact_name: '',
       next_of_kin: '',
-      daytime_phone: '',
+      tin: '',
       mobile_phone: '',
       email: '',
       bank_name_edividend: '',
@@ -255,7 +255,7 @@ const FormSubmissionPage = () => {
   useEffect(() => {
     if (formData.apply_additional && formData.additional_shares) {
       const shares = parseFloat(formData.additional_shares) || 0;
-      const additionalAmount = (shares * 1.32).toFixed(2);
+      const additionalAmount = (shares * 2.00).toFixed(2);
       setCalculatedAmount(parseFloat(additionalAmount));
       setFormData(prev => ({ ...prev, additional_amount: additionalAmount }));
     } else {
@@ -269,7 +269,7 @@ const FormSubmissionPage = () => {
     if (formData.action_type !== 'renunciation_partial') return;
     const accepted = parseFloat(formData.shares_accepted) || 0;
     const totalRights = parseFloat(formData.rights_issue) || 0;
-    const consideration = (accepted * 1.32).toFixed(2);
+    const consideration = (accepted * 2.00).toFixed(2);
     const renounced = Math.max(0, totalRights - accepted);
     setFormData(prev => ({
       ...prev,
@@ -492,7 +492,7 @@ const FormSubmissionPage = () => {
   if (loading) return (
     <div className="App flex items-center justify-center min-h-screen bg-slate-50/50">
       <div className="text-center">
-        <div className="loading-spinner h-10 w-10 mx-auto mb-4 border-[#0A4269]"></div>
+        <div className="loading-spinner h-10 w-10 mx-auto mb-4 border-[#1B2B45]"></div>
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Submitting Application...</p>
       </div>
     </div>
@@ -502,7 +502,7 @@ const FormSubmissionPage = () => {
   if (existingSubmission && !additionalSubmitted) return (
     <div className="App bg-slate-50/50 min-h-screen font-sans pb-20">
       <div className="container-custom py-6 md:py-12 max-w-2xl mx-auto space-y-6">
-        <Link to={`/shareholder/${id}`} className="inline-flex items-center text-xs font-bold text-[#0A4269] hover:text-[#0D507F]">
+        <Link to={`/shareholder/${id}`} className="inline-flex items-center text-xs font-bold text-[#1B2B45] hover:text-[#243A5E]">
           <ChevronLeft className="h-4 w-4 mr-1" /> BACK TO PROFILE
         </Link>
 
@@ -558,13 +558,13 @@ const FormSubmissionPage = () => {
             </div>
             <div className="space-y-2">
               <label className="label-custom">Value (₦)</label>
-              <input type="text" value={calculatedAmount.toLocaleString()} readOnly className="input-custom bg-blue-50 text-[#0A4269] font-bold" />
+              <input type="text" value={calculatedAmount.toLocaleString()} readOnly className="input-custom bg-blue-50 text-[#1B2B45] font-bold" />
             </div>
           </div>
 
           {/* Payment */}
           {formData.additional_shares && parseFloat(formData.additional_shares) > 0 && parseFloat(formData.additional_amount || 0) > 0 && (
-            <div className="bg-[#0A4269] p-6 rounded-2xl text-white space-y-4">
+            <div className="bg-[#1B2B45] p-6 rounded-2xl text-white space-y-4">
               <div>
                 <p className="text-[10px] font-black text-blue-400/60 uppercase tracking-widest">Total Amount Payable</p>
                 <p className="text-3xl font-black italic">₦{parseFloat(formData.additional_amount || 0).toLocaleString()}</p>
@@ -577,7 +577,7 @@ const FormSubmissionPage = () => {
               ) : (
                 <button
                   onClick={() => setIsPaymentModalOpen(true)}
-                  className="w-full bg-[#F58220] hover:bg-[#E07010] text-white font-bold py-3 px-6 rounded-xl text-sm uppercase tracking-wide transition-all"
+                  className="w-full bg-[#29B5C8] hover:bg-[#1E9BAA] text-white font-bold py-3 px-6 rounded-xl text-sm uppercase tracking-wide transition-all"
                 >
                   Pay Now
                 </button>
@@ -589,7 +589,7 @@ const FormSubmissionPage = () => {
         <button
           onClick={handleSubmitAdditional}
           disabled={submitting || !paymentVerified || !formData.additional_shares || existingSubmission.additional_submission_count >= 2}
-          className="w-full bg-[#0A4269] hover:bg-[#0D507F] disabled:bg-slate-300 text-white font-bold py-4 px-6 rounded-2xl text-sm uppercase tracking-widest transition-all"
+          className="w-full bg-[#1B2B45] hover:bg-[#243A5E] disabled:bg-slate-300 text-white font-bold py-4 px-6 rounded-2xl text-sm uppercase tracking-widest transition-all"
         >
           {submitting ? 'Submitting...' : existingSubmission.additional_submission_count >= 2 ? 'Maximum Submissions Reached' : 'Submit Additional Application'}
         </button>
@@ -627,7 +627,7 @@ const FormSubmissionPage = () => {
         <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
         <h2 className="text-2xl font-black text-slate-900 uppercase">Application Submitted</h2>
         <p className="text-slate-500 text-sm">Your additional shares application has been received successfully.</p>
-        <Link to={`/shareholder/${id}`} className="inline-block mt-4 bg-[#0A4269] text-white font-bold py-3 px-8 rounded-xl text-sm uppercase">
+        <Link to={`/shareholder/${id}`} className="inline-block mt-4 bg-[#1B2B45] text-white font-bold py-3 px-8 rounded-xl text-sm uppercase">
           Back to Profile
         </Link>
       </div>
@@ -641,7 +641,7 @@ const FormSubmissionPage = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <Link
             to={`/shareholder/${id}`}
-            className="inline-flex items-center text-xs font-bold text-[#0A4269] hover:text-[#0D507F] transition-all"
+            className="inline-flex items-center text-xs font-bold text-[#1B2B45] hover:text-[#243A5E] transition-all"
           >
             <ChevronLeft className="h-4 w-4 mr-1" />
             BACK TO PROFILE
@@ -656,7 +656,7 @@ const FormSubmissionPage = () => {
         {/* Content Card */}
         <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/50 max-w-4xl mx-auto">
           {/* Progress Header */}
-          <div className="bg-[#0A4269] p-6 md:p-10 text-white relative rounded-t-2xl md:rounded-t-[1.4rem] overflow-hidden">
+          <div className="bg-[#1B2B45] p-6 md:p-10 text-white relative rounded-t-2xl md:rounded-t-[1.4rem] overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
             <div className="relative z-10">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
@@ -676,7 +676,7 @@ const FormSubmissionPage = () => {
                 {Array.from({ length: totalSteps }).map((_, i) => (
                   <div
                     key={i}
-                    className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black transition-all duration-300 ${i + 1 <= currentStep ? 'bg-[#F58220] text-white scale-110 shadow-lg shadow-orange-500/20' : 'bg-white/10 text-white/40 border border-white/10'
+                    className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black transition-all duration-300 ${i + 1 <= currentStep ? 'bg-[#29B5C8] text-white scale-110 shadow-lg shadow-[#29B5C8]/20' : 'bg-white/10 text-white/40 border border-white/10'
                       }`}
                   >
                     {i + 1 < currentStep ? '✓' : i + 1}
@@ -688,7 +688,7 @@ const FormSubmissionPage = () => {
 
           <div className="p-6 md:p-10">
             <div className="text-center space-y-4">
-              <div className="w-20 h-20 bg-[#0A4269] rounded-full flex items-center justify-center mx-auto shadow-xl shadow-blue-200">
+              <div className="w-20 h-20 bg-[#1B2B45] rounded-full flex items-center justify-center mx-auto shadow-xl shadow-blue-200">
                 <CheckCircle className="h-10 w-10 text-white" />
               </div>
               <h1 className="text-3xl font-bold text-slate-900 uppercase tracking-tight">Application Lodged</h1>
@@ -708,7 +708,7 @@ const FormSubmissionPage = () => {
                   </div>
                   <div className="space-y-1">
                     <label className="label-custom">Total Amount Payable</label>
-                    <p className="text-2xl font-bold text-[#0A4269]">₦{parseFloat(calculateTotalPayment(submittedForm)).toLocaleString()}</p>
+                    <p className="text-2xl font-bold text-[#1B2B45]">₦{parseFloat(calculateTotalPayment(submittedForm)).toLocaleString()}</p>
                   </div>
                   <div className="space-y-1">
                     <label className="label-custom">Submission Time</label>
@@ -738,22 +738,22 @@ const FormSubmissionPage = () => {
             {steps.map((step, index) => (
               <React.Fragment key={step.id}>
                 <div className="flex flex-col items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${currentStep > step.id ? 'bg-[#0A4269] border-[#0A4269] text-white' : currentStep === step.id ? 'bg-white border-[#0A4269] text-[#0A4269] shadow-md' : 'bg-white border-slate-200 text-slate-300'}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${currentStep > step.id ? 'bg-[#1B2B45] border-[#1B2B45] text-white' : currentStep === step.id ? 'bg-white border-[#1B2B45] text-[#1B2B45] shadow-md' : 'bg-white border-slate-200 text-slate-300'}`}>
                     {currentStep > step.id ? <CheckCircle className="h-6 w-6" /> : <span className="text-sm font-bold">{step.id}</span>}
                   </div>
                   <span className={`text-[9px] mt-2 font-bold uppercase tracking-widest text-center ${currentStep >= step.id ? 'text-slate-900' : 'text-slate-300'}`}>{step.title}</span>
                 </div>
-                {index < steps.length - 1 && <div className={`flex-1 h-[2px] mx-2 ${currentStep > step.id ? 'bg-[#0A4269]' : 'bg-slate-200'}`}></div>}
+                {index < steps.length - 1 && <div className={`flex-1 h-[2px] mx-2 ${currentStep > step.id ? 'bg-[#1B2B45]' : 'bg-slate-200'}`}></div>}
               </React.Fragment>
             ))}
           </div>
           <div className="md:hidden px-4">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Step {currentStep} / {steps.length}</span>
-              <span className="text-[10px] font-bold text-[#0A4269] uppercase tracking-widest">{steps[currentStep - 1].title}</span>
+              <span className="text-[10px] font-bold text-[#1B2B45] uppercase tracking-widest">{steps[currentStep - 1].title}</span>
             </div>
             <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-              <div className="h-full bg-[#0A4269] transition-all duration-500" style={{ width: `${(currentStep / steps.length) * 100}%` }}></div>
+              <div className="h-full bg-[#1B2B45] transition-all duration-500" style={{ width: `${(currentStep / steps.length) * 100}%` }}></div>
             </div>
           </div>
         </div>
@@ -762,7 +762,7 @@ const FormSubmissionPage = () => {
         <div className="card bg-blue-50 text-slate-900 mb-8 overflow-hidden shadow-lg border-blue-100">
           <div className="p-6 md:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-[#0A4269]">
+              <div className="flex items-center space-x-2 text-[#1B2B45]">
                 <Info className="h-3.5 w-3.5" />
                 <span className="text-[9px] font-black uppercase tracking-[0.2em]">Application Record</span>
               </div>
@@ -776,15 +776,19 @@ const FormSubmissionPage = () => {
             <div className="bg-white border border-blue-200 shadow-sm rounded-xl p-5 self-start lg:self-center w-full lg:w-auto">
               <div className="grid grid-cols-2 gap-8">
                 <div>
-                  <p className="text-[10px] font-black uppercase text-[#0A4269] tracking-[0.2em] mb-1">Rights Issue</p>
+                  <p className="text-[10px] font-black uppercase text-[#1B2B45] tracking-[0.2em] mb-1">Rights Issue</p>
                   <p className="text-xl font-bold text-slate-900">{shareholder.rights_issue.toLocaleString()}</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className="bg-[#0A4269] px-6 py-3 flex flex-col md:flex-row justify-between items-center text-[13px] font-bold uppercase tracking-widest text-blue-50 gap-2">
-            <div className="flex gap-4"><span>Stanbic IBTC Bank: 0080935824</span></div>
-            <span className="hidden md:inline italic opacity-80">LINKAGE ASSURANCE PLC RIGHT ISSUE PROCEED ACCOUNT</span>
+          <div className="bg-[#1B2B45] px-6 py-3 flex flex-col md:flex-row justify-between items-center text-[13px] font-bold uppercase tracking-widest text-blue-50 gap-2">
+            <div className="flex gap-4 flex-wrap">
+              <span>Sterling Bank: 0143007008</span>
+              <span className="opacity-40">|</span>
+              <span>FCMB: 2008303854</span>
+            </div>
+            <span className="hidden md:inline italic opacity-80">LASACO ASSURANCE PLC RIGHTS ISSUE PROCEEDS ACCOUNT</span>
           </div>
         </div>
 
@@ -808,9 +812,9 @@ const FormSubmissionPage = () => {
                     {/* logos and issuing houses */}
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                       <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                        <span className="text-[8px] font-black uppercase text-[#0A4269] tracking-widest mb-2">Issuing Houses</span>
+                        <span className="text-[8px] font-black uppercase text-[#1B2B45] tracking-widest mb-2">Issuing Houses</span>
                         <div className="flex flex-col items-center md:items-start">
-                          <img src={capitalExpressLogo} alt="Capital Express Logo" className="h-10 md:h-12 object-contain" />
+                          <img src={meristemLogo} alt="Meristem Logo" className="h-10 md:h-12 object-contain" />
                           <span className="text-[7px] font-bold text-slate-400 mt-1 uppercase tracking-widest">RC: 15808</span>
                         </div>
                       </div>
@@ -820,9 +824,9 @@ const FormSubmissionPage = () => {
                       </div>
 
                       <div className="flex flex-col items-center md:items-end text-center md:text-right">
-                        <span className="text-[8px] font-black uppercase text-[#0A4269] tracking-widest mb-2">Issuing Houses</span>
+                        <span className="text-[8px] font-black uppercase text-[#1B2B45] tracking-widest mb-2">Issuing Houses</span>
                         <div className="flex flex-col items-center md:items-end">
-                          <img src={apelLogo} alt="Apel Logo" className="h-10 md:h-12 object-contain" />
+                          <img src={pacLogo} alt="Pac Logo" className="h-10 md:h-12 object-contain" />
                           <span className="text-[7px] font-bold text-slate-400 mt-1 uppercase tracking-widest">RC: 606031</span>
                         </div>
                       </div>
@@ -832,12 +836,12 @@ const FormSubmissionPage = () => {
                     <div className="flex flex-col items-center text-center space-y-4">
                       <span className="md:hidden text-[8px] font-bold text-slate-400 uppercase tracking-widest italic">On behalf of</span>
                       <div className="flex flex-col items-center">
-                        <img src={linkageLogo} alt="Linkage Logo" className="h-12 md:h-16 object-contain" />
+                        <img src={LASACOLogo} alt="LASACO Logo" className="h-12 md:h-16 object-contain" />
                         <span className="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">RC: 162306</span>
                       </div>
                       <div className="max-w-2xl">
                         <p className="text-[11px] md:text-sm font-bold text-slate-700 leading-relaxed uppercase tracking-tight">
-                          Rights Issue of 12,320,000,000 Ordinary Shares of 50 kobo each at N1.32 per share on the basis of 2 new for every 3 Ordinary Shares held as at the close of business on 22 January, 2026.
+                          Rights Issue of 12,320,000,000 Ordinary Shares of 50 kobo each at N2.00 per share on the basis of 2 new for every 3 Ordinary Shares held as at the close of business on 22 January, 2026.
                         </p>
                       </div>
                     </div>
@@ -849,24 +853,24 @@ const FormSubmissionPage = () => {
 
                   {/* Detailed Instructions */}
                   <div className="space-y-6">
-                    <h3 className="text-[11px] font-black text-[#0A4269] uppercase tracking-widest border-b-2 border-[#0A4269] pb-1 w-fit">
+                    <h3 className="text-[11px] font-black text-[#1B2B45] uppercase tracking-widest border-b-2 border-[#1B2B45] pb-1 w-fit">
                       INSTRUCTIONS FOR COMPLETING THE PARTICIPATION FORM
                     </h3>
 
                     <div className="bg-slate-50/50 border border-slate-100 rounded-3xl p-6 md:p-10 space-y-6">
                       <div className="grid grid-cols-1 gap-6">
                         {[
-                          "Acceptance and/or renunciation must be made on this Participation Form.",
-                          "Allottees should complete only ONE of the boxes marked A and B on the reverse of this form. Shareholders accepting the provisional allotment in full should complete box A and submit their Participation Forms to any of the Receiving Agents listed on page 54 of the Rights Circular together with a cheque or bank draft made payable to the Receiving Agent for the full amount payable on acceptance. If payment is not received by 13 January 2026, the provisional allotment will be deemed to have been declined and will be cancelled.",
-                          "Shareholders accepting their provisional allotment partially should complete box B and submit their Participation Forms together with the evidence of payment transfer for the partial acceptance in accordance with 2 above.",
-                          "Shareholders who wish to trade their rights partially or in full on the floor of The Exchange should complete item (iii) of box B. They should obtain a Transfer Form from their stockbroker, complete it in accordance with these instructions and return it to the stockbroker together with evidence of transfer for any partial acceptance.",
-                          "Shareholders who wish to acquire additional shares over and above their provisional allotment should apply for additional shares by completing items (i) and (ii) of box A.",
-                          "All cheques or bank drafts for amounts below N10 million will be presented for payment on receipt and all acceptances/applications in respect of which cheques are returned unpaid for any reason will be rejected and cancelled.",
+                          "Acceptance, request for additional shares, partial acceptance and/or renunciation must be made on this Participation Form.",
+                          "Allottees should complete only ONE of the boxes marked A and B on the reverse of this form. Shareholders accepting the provisional allotment in full should complete box A and submit their Participation Forms to any of the Receiving Agents listed on page 61 of the Rights Circular together with a cheque or bank draft made payable to the Receiving Agent for the full amount payable on acceptance. The cheque or draft must be crossed \"LASACO ASSURANCE PLC RIGHTS\", with the name, address and mobile number of the shareholder written on the back. Evidence of all electronic transfers must be submitted to the Receiving Agents. If payment is not received by 24 April 2026, the provisional allotment will be deemed to have been declined and will be cancelled.",
+                          "Shareholders accepting their provisional allotment partially should complete box B and submit their Participation Forms to any of the Receiving Agents listed on page 37 of the Rights Circular together with the evidence of payment transfer for the partial acceptance in accordance with 2 above.",
+                          "Shareholders renouncing their provisional allotment partially or in full, who also wish to trade their rights on the floor of the Exchange should complete item (iii) of box B. They should obtain a Transfer Form from their stockbroker, complete it in accordance with these instructions, and return it to the stockbroker together with the completed Participation Form and the amount payable/evidence of transfer for any partial acceptance in accordance with 2 above.",
+                          "Shareholders who wish to acquire additional shares over and above their provisional allotment should apply for additional shares by completing item (ii) and (iii) of box A.",
+                          "All cheques or bank drafts for amounts below ₦10 million will be presented for payment on receipt and all acceptances/applications in respect of which cheques are returned unpaid for any reason will be rejected and cancelled. Shareholders are advised to obtain an acknowledgement of the amount paid from the Receiving Agent through which this Participation Form is lodged.",
                           "Joint allottees must sign on separate lines in the appropriate section of the Participation Form.",
-                          "Participation Forms of corporate allottees must bear their incorporation numbers and corporate seals and must be completed under the hands of duly authorized officials who should also state their designations."
+                          "Participation Forms of corporate allottees must bear their incorporation numbers and corporate seals and must be completed under the hands of duly authorised officials who should also state their designations."
                         ].map((text, i) => (
                           <div key={i} className="flex items-start space-x-4">
-                            <span className="flex-shrink-0 w-6 h-6 rounded-lg bg-[#0A4269] text-white flex items-center justify-center text-[10px] font-black">{i + 1}</span>
+                            <span className="flex-shrink-0 w-6 h-6 rounded-lg bg-[#1B2B45] text-white flex items-center justify-center text-[10px] font-black">{i + 1}</span>
                             <p className="text-[11px] md:text-xs text-slate-600 leading-relaxed font-semibold">
                               {text}
                             </p>
@@ -875,15 +879,15 @@ const FormSubmissionPage = () => {
                       </div>
                     </div>
 
-                    <label className="flex items-center p-6 bg-blue-50/50 border border-blue-100 rounded-2xl cursor-pointer hover:border-[#0A4269] transition-all group shadow-sm">
+                    <label className="flex items-center p-6 bg-blue-50/50 border border-blue-100 rounded-2xl cursor-pointer hover:border-[#1B2B45] transition-all group shadow-sm">
                       <input
                         type="checkbox"
                         name="instructions_read"
                         checked={formData.instructions_read}
                         onChange={handleInputChange}
-                        className="h-5 w-5 rounded-md text-[#0A4269] border-slate-300 focus:ring-[#0A4269]"
+                        className="h-5 w-5 rounded-md text-[#1B2B45] border-slate-300 focus:ring-[#1B2B45]"
                       />
-                      <span className="ml-4 text-[11px] font-black text-[#0A4269] uppercase tracking-widest group-hover:text-amber-600 transition-colors">
+                      <span className="ml-4 text-[11px] font-black text-[#1B2B45] uppercase tracking-widest group-hover:text-amber-600 transition-colors">
                         I have read and agree to the participation protocols
                       </span>
                     </label>
@@ -909,8 +913,8 @@ const FormSubmissionPage = () => {
               {currentStep === 3 && (
                 <div className="animate-fade-in grid grid-cols-1 md:grid-cols-2 gap-6">
                   {['full_acceptance', 'renunciation_partial'].map((type) => (
-                    <label key={type} className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all ${formData.action_type === type ? 'border-[#0A4269] bg-blue-50/50' : 'border-slate-200 bg-white hover:border-slate-300'}`}>
-                      <input type="radio" name="action_type" value={type} checked={formData.action_type === type} onChange={handleInputChange} className="absolute top-6 right-6 h-5 w-5 text-[#0A4269]" />
+                    <label key={type} className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all ${formData.action_type === type ? 'border-[#1B2B45] bg-blue-50/50' : 'border-slate-200 bg-white hover:border-slate-300'}`}>
+                      <input type="radio" name="action_type" value={type} checked={formData.action_type === type} onChange={handleInputChange} className="absolute top-6 right-6 h-5 w-5 text-[#1B2B45]" />
                       <h4 className="font-bold text-slate-900 uppercase tracking-tight mb-2">{type.replace('_', ' ')}</h4>
                       <p className="text-xs text-slate-500 leading-relaxed">{type === 'full_acceptance' ? 'Secure your entire assigned allotment with option to request more.' : 'Exercise part of your rights and renounce the remainder.'}</p>
                     </label>
@@ -920,16 +924,16 @@ const FormSubmissionPage = () => {
 
               {currentStep === 4 && formData.action_type === 'full_acceptance' && (
                 <div className="animate-fade-in space-y-8">
-                  <label className={`flex items-start p-6 border-2 rounded-2xl cursor-pointer transition-all ${formData.accept_full ? 'border-[#0A4269] bg-blue-50/30' : 'border-slate-200 bg-slate-50/30'}`}>
-                    <input type="checkbox" name="accept_full" checked={formData.accept_full} onChange={handleInputChange} className="mt-1 h-5 w-5 text-[#0A4269]" />
+                  <label className={`flex items-start p-6 border-2 rounded-2xl cursor-pointer transition-all ${formData.accept_full ? 'border-[#1B2B45] bg-blue-50/30' : 'border-slate-200 bg-slate-50/30'}`}>
+                    <input type="checkbox" name="accept_full" checked={formData.accept_full} onChange={handleInputChange} className="mt-1 h-5 w-5 text-[#1B2B45]" />
                     <div className="ml-4">
                       <span className="block font-bold text-slate-900 text-sm uppercase">Accept Rights Issue In Full</span>
                       <span className="text-xs text-slate-500">I/We accept in full, the provisional allotment shown on the front of this form.</span>
                     </div>
                   </label>
 
-                  <label className={`flex items-start p-6 border-2 rounded-2xl cursor-pointer transition-all ${formData.apply_additional ? 'border-[#0A4269] bg-blue-50/30' : 'border-slate-200 bg-slate-50/30'}`}>
-                    <input type="checkbox" name="apply_additional" checked={formData.apply_additional} onChange={handleInputChange} className="mt-1 h-5 w-5 text-[#0A4269]" />
+                  <label className={`flex items-start p-6 border-2 rounded-2xl cursor-pointer transition-all ${formData.apply_additional ? 'border-[#1B2B45] bg-blue-50/30' : 'border-slate-200 bg-slate-50/30'}`}>
+                    <input type="checkbox" name="apply_additional" checked={formData.apply_additional} onChange={handleInputChange} className="mt-1 h-5 w-5 text-[#1B2B45]" />
                     <div className="ml-4">
                       <span className="block font-bold text-slate-900 text-sm uppercase">Additional Allotment Request</span>
                       <span className="text-xs text-slate-500">Apply for shares exceeding your current Rights Issue.</span>
@@ -944,13 +948,13 @@ const FormSubmissionPage = () => {
                       </div>
                       <div className="space-y-2">
                         <label className="label-custom">Value (₦)</label>
-                        <input type="text" value={calculatedAmount.toLocaleString()} readOnly className="input-custom bg-blue-50 text-[#0A4269] font-bold" />
+                        <input type="text" value={calculatedAmount.toLocaleString()} readOnly className="input-custom bg-blue-50 text-[#1B2B45] font-bold" />
                       </div>
                     </div>
                   )}
 
                   <div className="pt-8">
-                    <div className="bg-[#0A4269] p-8 md:p-12 rounded-3xl text-white space-y-8 shadow-2xl">
+                    <div className="bg-[#1B2B45] p-8 md:p-12 rounded-3xl text-white space-y-8 shadow-2xl">
                       <div className="border-b border-white/10 pb-6">
                         <div className="text-center sm:text-left">
                           <label className="text-[10px] font-black text-blue-400/50 uppercase tracking-[0.2em] mb-2 block">Total Amount Payable: the bank you are paying from</label>
@@ -995,8 +999,8 @@ const FormSubmissionPage = () => {
                       <input type="number" name="shares_accepted" value={formData.shares_accepted} onChange={handleInputChange} className="input-custom" />
                     </div>
                     <div className="p-5 bg-blue-50 rounded-2xl border border-blue-100">
-                      <label className="label-custom text-[#0A4269]">Amount Payable (₦)</label>
-                      <input type="text" name="amount_payable" value={parseFloat(formData.amount_payable || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })} readOnly className="input-custom bg-blue-100 text-[#0A4269] font-bold cursor-default" />
+                      <label className="label-custom text-[#1B2B45]">Amount Payable (₦)</label>
+                      <input type="text" name="amount_payable" value={parseFloat(formData.amount_payable || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })} readOnly className="input-custom bg-blue-100 text-[#1B2B45] font-bold cursor-default" />
                     </div>
                     <div className="p-5 bg-red-50 rounded-2xl border border-red-100">
                       <label className="label-custom text-red-600">Rights Renounced</label>
@@ -1005,7 +1009,7 @@ const FormSubmissionPage = () => {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <label className="flex items-center p-4 bg-white border border-slate-200 rounded-xl cursor-pointer">
-                      <input type="checkbox" name="accept_partial" checked={formData.accept_partial} onChange={handleInputChange} className="h-5 w-5 text-[#0A4269]" />
+                      <input type="checkbox" name="accept_partial" checked={formData.accept_partial} onChange={handleInputChange} className="h-5 w-5 text-[#1B2B45]" />
                       <span className="ml-3 text-[10px] font-bold text-slate-600 uppercase">Confirm Partial Allotment</span>
                     </label>
                     <label className="flex items-center p-4 bg-white border border-slate-200 rounded-xl cursor-pointer">
@@ -1015,7 +1019,7 @@ const FormSubmissionPage = () => {
                   </div>
 
                   {/* Payment Details for partial acceptance */}
-                  <div className="bg-[#0A4269] p-8 md:p-12 rounded-3xl text-white space-y-10 shadow-2xl">
+                  <div className="bg-[#1B2B45] p-8 md:p-12 rounded-3xl text-white space-y-10 shadow-2xl">
                     <div className="border-b border-white/10 pb-8">
                       <div className="text-center sm:text-left">
                         <label className="text-[10px] font-black text-blue-400/50 uppercase tracking-[0.2em] mb-2 block">Total Amount Payable</label>
@@ -1056,7 +1060,7 @@ const FormSubmissionPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2"><label className="label-custom">Contact Name *</label><input type="text" name="contact_name" value={formData.contact_name} onChange={handleInputChange} className="input-custom" /></div>
                     <div className="space-y-2"><label className="label-custom">Next of Kin *</label><input type="text" name="next_of_kin" value={formData.next_of_kin} onChange={handleInputChange} className="input-custom" /></div>
-                    <div className="space-y-2"><label className="label-custom">Daytime Phone(optional)</label><input type="tel" name="daytime_phone" value={formData.daytime_phone} onChange={handleInputChange} className="input-custom" /></div>
+                    <div className="space-y-2"><label className="label-custom">TIN (Tax Identification Number)</label><input type="text" name="tin" value={formData.tin} onChange={handleInputChange} className="input-custom" /></div>
                     <div className="space-y-2"><label className="label-custom">Mobile Number *</label><input type="tel" name="mobile_phone" value={formData.mobile_phone} onChange={handleInputChange} className="input-custom" /></div>
                     <div className="space-y-2"><label className="label-custom">Email Address *</label><input type="email" name="email" value={formData.email} onChange={handleInputChange} className="input-custom" /></div>
                   </div>
@@ -1090,26 +1094,26 @@ const FormSubmissionPage = () => {
                       <button
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, signature_type: 'single', signatures: [null] }))}
-                        className={`p-4 rounded-xl border-2 transition-all ${formData.signature_type === 'single' ? 'border-[#0A4269] bg-blue-50 text-[#0A4269]' : 'border-slate-200 bg-white text-slate-500'}`}
+                        className={`p-4 rounded-xl border-2 transition-all ${formData.signature_type === 'single' ? 'border-[#1B2B45] bg-blue-50 text-[#1B2B45]' : 'border-slate-200 bg-white text-slate-500'}`}
                       >
                         <span className="text-xs font-bold uppercase">Individual</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, signature_type: 'joint', signatures: [null, null] }))}
-                        className={`p-4 rounded-xl border-2 transition-all ${formData.signature_type === 'joint' ? 'border-[#0A4269] bg-blue-50 text-[#0A4269]' : 'border-slate-200 bg-white text-slate-500'}`}
+                        className={`p-4 rounded-xl border-2 transition-all ${formData.signature_type === 'joint' ? 'border-[#1B2B45] bg-blue-50 text-[#1B2B45]' : 'border-slate-200 bg-white text-slate-500'}`}
                       >
                         <span className="text-xs font-bold uppercase">Joint/Corporate</span>
                       </button>
                     </div>
                   </div>
 
-                  {/* Payment and Receipt Section - Side by Side */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Make Payment Online Card */}
-                    <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
+                  {/* Payment and Receipt Section */}
+                  <div className="grid grid-cols-1 gap-6">
+                    {/* Make Payment Online Card - commented out */}
+                    {/* <div className="bg-white border-2 border-slate-200 hover:border-[#1B2B45] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
                       <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-[#0A4269] rounded-xl flex items-center justify-center">
+                        <div className="w-10 h-10 bg-[#1B2B45] rounded-xl flex items-center justify-center">
                           <CreditCard className="h-5 w-5 text-white" />
                         </div>
                         <div>
@@ -1141,17 +1145,17 @@ const FormSubmissionPage = () => {
                               e.stopPropagation();
                               setIsPaymentModalOpen(true);
                             }}
-                            className="w-full px-6 py-4 bg-[#0A4269] hover:bg-[#0D507F] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                            className="w-full px-6 py-4 bg-[#1B2B45] hover:bg-[#243A5E] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
                           >
                             <CreditCard className="h-4 w-4" />
                             Pay Now
                           </button>
                         )}
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* Upload Receipt Card */}
-                    <div className="bg-white border-2 border-slate-200 hover:border-[#0A4269] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
+                    <div className="bg-white border-2 border-slate-200 hover:border-[#1B2B45] p-6 rounded-2xl shadow-sm transition-all group flex flex-col">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 bg-slate-700 rounded-xl flex items-center justify-center">
                           <Upload className="h-5 w-5 text-white" />
@@ -1165,7 +1169,7 @@ const FormSubmissionPage = () => {
                         Already paid via bank transfer? Upload your payment receipt for manual confirmation.
                       </p>
                       <div className="mt-auto">
-                        <div className={`relative h-28 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all ${formData.receipt ? 'border-[#0A4269] bg-blue-50/50' : 'border-slate-200 hover:border-slate-300 bg-white'}`}>
+                        <div className={`relative h-28 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all ${formData.receipt ? 'border-[#1B2B45] bg-blue-50/50' : 'border-slate-200 hover:border-slate-300 bg-white'}`}>
                           <input
                             type="file"
                             accept="image/jpeg,image/jpg,image/png,application/pdf"
@@ -1174,7 +1178,7 @@ const FormSubmissionPage = () => {
                           />
                           {formData.receipt ? (
                             <div className="text-center">
-                              <CheckCircle className="h-7 w-7 text-[#0A4269] mx-auto mb-1" />
+                              <CheckCircle className="h-7 w-7 text-[#1B2B45] mx-auto mb-1" />
                               <p className="text-[10px] font-bold text-slate-900 truncate max-w-[160px] px-2">{formData.receipt.name}</p>
                             </div>
                           ) : (
@@ -1192,7 +1196,7 @@ const FormSubmissionPage = () => {
                   {/* Authorized Signatures Section - Full Width Below */}
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 md:p-8">
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-10 h-10 bg-[#0A4269] rounded-xl flex items-center justify-center">
+                      <div className="w-10 h-10 bg-[#1B2B45] rounded-xl flex items-center justify-center">
                         <Eye className="h-5 w-5 text-white" />
                       </div>
                       <div>
@@ -1203,7 +1207,7 @@ const FormSubmissionPage = () => {
                     <div className={`grid gap-4 ${formData.signature_type === 'joint' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2'}`}>
                       {formData.signatures.map((sig, index) => (
                         <div key={index} className="relative group">
-                          <div className={`relative h-36 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all bg-white ${sig ? 'border-[#0A4269] bg-blue-50/50' : 'border-slate-200 hover:border-slate-300'}`}>
+                          <div className={`relative h-36 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all bg-white ${sig ? 'border-[#1B2B45] bg-blue-50/50' : 'border-slate-200 hover:border-slate-300'}`}>
                             <input
                               type="file"
                               accept="image/jpeg,image/jpg,image/png"
@@ -1212,7 +1216,7 @@ const FormSubmissionPage = () => {
                             />
                             {sig ? (
                               <div className="text-center">
-                                <CheckCircle className="h-8 w-8 text-[#0A4269] mx-auto mb-2" />
+                                <CheckCircle className="h-8 w-8 text-[#1B2B45] mx-auto mb-2" />
                                 <p className="text-[10px] font-bold text-slate-900 truncate max-w-[150px]">{sig.name}</p>
                               </div>
                             ) : (
@@ -1220,7 +1224,7 @@ const FormSubmissionPage = () => {
                                 <Eye className="h-6 w-6 text-slate-300 mx-auto mb-1" />
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Signature {index + 1}</p>
                                 <p className="text-[8px] text-slate-400 font-medium mt-1">Click or tap to upload</p>
-                                <p className="text-[8px] text-[#0A4269] font-bold mt-1 uppercase tracking-wide">JPG · JPEG · PNG only</p>
+                                <p className="text-[8px] text-[#1B2B45] font-bold mt-1 uppercase tracking-wide">JPG · JPEG · PNG only</p>
                               </div>
                             )}
                           </div>
@@ -1239,7 +1243,7 @@ const FormSubmissionPage = () => {
                         <button
                           type="button"
                           onClick={addSignatureField}
-                          className="h-36 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:border-[#F58220] hover:text-[#F58220] hover:bg-orange-50/30 transition-all text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+                          className="h-36 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:border-[#29B5C8] hover:text-[#29B5C8] hover:bg-orange-50/30 transition-all text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2"
                         >
                           <span className="text-lg">+</span> Add Signature
                         </button>
@@ -1286,7 +1290,7 @@ const FormSubmissionPage = () => {
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Accept Full Allotment</p><p className="text-xs font-bold text-slate-900">{formData.accept_full ? 'Yes' : 'No'}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Additional Shares Applied</p><p className="text-xs font-bold text-slate-900">{formData.apply_additional ? formData.additional_shares.toLocaleString() : '0'}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Additional Amount Payable</p><p className="text-xs font-bold text-slate-900">₦{parseFloat(formData.additional_amount || 0).toLocaleString()}</p></div>
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Payment Amount</p><p className="text-xs font-bold text-[#0A4269]">₦{parseFloat(calculateTotalPayment()).toLocaleString()}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Payment Amount</p><p className="text-xs font-bold text-[#1B2B45]">₦{parseFloat(calculateTotalPayment()).toLocaleString()}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Bank</p><p className="text-xs font-bold text-slate-900">{formData.bank_name || 'NOT SPECIFIED'}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Cheque Number</p><p className="text-xs font-bold text-slate-900">{formData.cheque_number || 'N/A'}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Branch</p><p className="text-xs font-bold text-slate-900">{formData.branch || 'N/A'}</p></div>
@@ -1299,7 +1303,7 @@ const FormSubmissionPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Contact Name</p><p className="text-xs font-bold text-slate-900">{formData.contact_name}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Next of Kin</p><p className="text-xs font-bold text-slate-900">{formData.next_of_kin}</p></div>
-                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Daytime Phone</p><p className="text-xs font-bold text-slate-900">{formData.daytime_phone}</p></div>
+                      <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">TIN</p><p className="text-xs font-bold text-slate-900">{formData.tin}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Mobile Phone</p><p className="text-xs font-bold text-slate-900">{formData.mobile_phone}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">Email</p><p className="text-xs font-bold text-slate-900 truncate">{formData.email}</p></div>
                       <div className="space-y-1"><p className="text-[9px] font-bold text-slate-400 uppercase">E-Dividend Bank</p><p className="text-xs font-bold text-slate-900">{formData.bank_name_edividend || 'N/A'}</p></div>

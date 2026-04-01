@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Download, FileText, FileSpreadsheet, FileDigit, Info, AlertCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { searchShareholders } from '../services/api';
-import linkageLogo from '../assets/images/linkage.png';
+//import LASACOLogo from '../assets/images/lasaco.png';
 
 const HomePage = () => {
   const [searchName, setSearchName] = useState('');
@@ -52,9 +52,9 @@ const HomePage = () => {
   const downloadForm = (formType) => {
     // Map form types to their corresponding Cloudinary URLs
     const formFiles = {
-      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1773343469/LINKAGE_ASSURANCE_PLC_-_docket_bqrhzr.xlsx',
+      'Stock Broker Docket': 'https://res.cloudinary.com/apelng/raw/upload/v1773343469/LASACO_ASSURANCE_PLC_-_docket_bqrhzr.xlsx',
       'Dematerialization Form': 'https://registrars.apel.com.ng/forms/FULL-DEMATERIAL-MIGRATION-FORM-1.pdf',
-      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1773148172/LINKAGE_ASSURANCE_PLC_Rights_Circular_npv7ql.pdf',
+      'Rights Circular': 'https://res.cloudinary.com/apelng/image/upload/v1775055481/LASACO_ASSURANCE_PLC_Rights_Circular_ufofpc.pdf',
 
     };
 
@@ -142,13 +142,13 @@ const HomePage = () => {
         <div className="container-custom section relative z-10">
           <div className="max-w-3xl animate-fade-in">
             <div className="flex items-center gap-4 mb-8">
-              <div className="bg-white/10 p-2 rounded-xl backdrop-blur-sm border border-white/10">
-                <img src={linkageLogo} alt="Linkage Logo" className="h-12 md:h-16 w-auto object-contain" />
-              </div>
+              {/* <div className="bg-white/10 p-2 rounded-xl backdrop-blur-sm border border-white/10">
+                <img src={LASACOLogo} alt="LASACO Logo" className="h-12 md:h-16 w-auto object-contain" />
+              </div> */}
 
             </div>
             <h1 className="text-[2.2rem] sm:text-4xl md:text-5xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
-              LINKAGE ASSURANCE PLC <br></br> <span className="text-[#F58220] drop-shadow-sm">Rights Issue 2026</span>
+              LASACO ASSURANCE PLC <br></br> <span className="text-[#29B5C8] drop-shadow-sm">Rights Issue 2026</span>
             </h1>
             <p className="text-slate-400 text-lg md:text-xl mb-8 leading-relaxed max-w-2xl">
               Access the official portal for shareholder rights applications.
@@ -157,7 +157,7 @@ const HomePage = () => {
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => document.getElementById('search-section').scrollIntoView({ behavior: 'smooth' })}
-                className="btn-primary px-8 py-3.5 text-base"
+                className="btn-primary px-8 py-3.5 text-base !bg-[#29B5C8] hover:!bg-[#1E9BAA] focus:ring-[#29B5C8]"
               >
                 Start Application
               </button>
@@ -180,10 +180,10 @@ const HomePage = () => {
         <div className="container-custom py-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-center md:text-left">
             <div className="flex-shrink-0 w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
-              <Info className="h-6 w-6 text-[#F58220]" />
+              <Info className="h-6 w-6 text-[#29B5C8]" />
             </div>
             <p className="text-sm md:text-base font-semibold text-slate-700 max-w-4xl leading-relaxed">
-              <span className="text-[#0A4269] font-bold">OFFICIAL DECLARATION:</span> Rights Issue of 12,320,000,000 Ordinary Shares of 50 kobo each at N1.32 per share on the basis of 2 new for every 3 Ordinary Shares held as at the close of business on 22 January, 2026.
+              <span className="text-[#1B2B45] font-bold">OFFICIAL DECLARATION:</span> Rights Issue of 9,236,321,546 Ordinary Shares of 50 kobo each at N2.0 per Share on the basis of 5 new Ordinary Shares for every 6 Ordinary Shares held as at close of business on 20th February 2026  
             </p>
           </div>
         </div>
@@ -200,24 +200,24 @@ const HomePage = () => {
 
             {/* Left: Search Portal */}
             <div className="lg:col-span-7 xl:col-span-8">
-              <div className="card shadow-2xl border-none overflow-hidden bg-white group transition-all duration-500 hover:shadow-[#0A4269]/5">
-                <div className="h-2 bg-gradient-to-r from-[#0A4269] via-[#F58220] to-[#0A4269]"></div>
+              <div className="card shadow-2xl border-none overflow-hidden bg-white group transition-all duration-500 hover:shadow-[#1B2B45]/5">
+                <div className="h-2 bg-gradient-to-r from-[#1B2B45] via-[#29B5C8] to-[#1B2B45]"></div>
                 <div className="p-6 md:p-10">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
                     <div className="flex items-center space-x-4">
-                      <div className="p-3 bg-blue-50 rounded-2xl group-hover:bg-[#0A4269] group-hover:text-white transition-colors duration-500">
-                        <Search className="h-6 w-6 text-[#0A4269] group-hover:text-white" />
+                      <div className="p-3 bg-blue-50 rounded-2xl group-hover:bg-[#1B2B45] group-hover:text-white transition-colors duration-500">
+                        <Search className="h-6 w-6 text-[#1B2B45] group-hover:text-white" />
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold text-slate-900 tracking-tight">APEL CAPITAL REGISTRARS</h3>
-                        <p className="text-sm text-slate-500 font-medium">LINKAGE ASSURANCE PLC Rights Issue</p>
+                        <p className="text-sm text-slate-500 font-medium">LASACO ASSURANCE PLC Rights Issue</p>
                       </div>
                     </div>
                     <div className="hidden md:flex flex-col items-end">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1"></span>
                       <div className="flex items-center space-x-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#F58220] animate-pulse"></div>
-                        <span className="text-[10px] font-black text-[#0A4269] uppercase tracking-widest">Live Sync</span>
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#29B5C8] animate-pulse"></div>
+                        <span className="text-[10px] font-black text-[#1B2B45] uppercase tracking-widest">Live Sync</span>
                       </div>
                     </div>
                   </div>
@@ -242,7 +242,7 @@ const HomePage = () => {
                         />
                       </div>
                       <div className="mt-4 flex items-center space-x-2 px-1">
-                        <Info className="h-3.5 w-3.5 text-[#0A4269]" />
+                        <Info className="h-3.5 w-3.5 text-[#1B2B45]" />
                         <p className="text-[11px] text-slate-500 font-semibold italic">
                           Minimum 2 characters required for database lookup.
                         </p>
@@ -252,7 +252,7 @@ const HomePage = () => {
                     <button
                       type="submit"
                       disabled={isSearching}
-                      className="w-full btn-primary text-base py-5 font-black tracking-[0.1em] transition-all hover:shadow-2xl hover:shadow-[#0A4269]/20 active:scale-[0.98] rounded-2xl flex items-center justify-center space-x-3 group"
+                      className="w-full btn-primary text-base py-5 font-black tracking-[0.1em] transition-all hover:shadow-2xl hover:shadow-[#1B2B45]/20 active:scale-[0.98] rounded-2xl flex items-center justify-center space-x-3 group"
                     >
                       {isSearching ? (
                         <>
@@ -276,7 +276,7 @@ const HomePage = () => {
                     <div className="text-sm">
                       <p className="font-bold text-amber-900 mb-1 tracking-tight">Accessing your records</p>
                       <p className="text-amber-800/70 leading-relaxed font-medium">
-                        If your records aren't found under your primary name, try common variations or contact our registrar support immediately at <span className="underline font-bold">linkagerights2026@apel.ng</span>.
+                        If your records aren't found under your primary name, try common variations or contact our registrar support immediately at <span className="underline font-bold">LASACOrights2026@apel.ng</span>.
                       </p>
                     </div>
                   </div>
@@ -298,9 +298,9 @@ const HomePage = () => {
 
                   <div className="space-y-3">
                     {[
-                      { id: 'Rights Circular', icon: FileText, color: 'text-[#0A4269]', bg: 'bg-blue-50' },
+                      { id: 'Rights Circular', icon: FileText, color: 'text-[#1B2B45]', bg: 'bg-blue-50' },
 
-                      { id: 'Stock Broker Docket', icon: FileDigit, color: 'text-[#F58220]', bg: 'bg-orange-50' },
+                      { id: 'Stock Broker Docket', icon: FileDigit, color: 'text-[#29B5C8]', bg: 'bg-orange-50' },
                       { id: 'Dematerialization Form', icon: FileSpreadsheet, color: 'text-slate-600', bg: 'bg-slate-50' }
                     ].map((form) => (
                       <button
@@ -314,7 +314,7 @@ const HomePage = () => {
                           </div>
                           <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900">{form.id}</span>
                         </div>
-                        <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-[#0A4269] transition-all translate-x-0 group-hover:translate-x-1" />
+                        <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-[#1B2B45] transition-all translate-x-0 group-hover:translate-x-1" />
                       </button>
                     ))}
                   </div>
@@ -330,7 +330,7 @@ const HomePage = () => {
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-                      <Info className="h-4 w-4 text-[#F58220]" />
+                      <Info className="h-4 w-4 text-[#29B5C8]" />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-white">RIGHTS TRADING PROCEDURE 2026</h3>
@@ -347,7 +347,7 @@ const HomePage = () => {
 
                     {/* Step-by-step Application Process */}
                     <div className="space-y-4">
-                      <h4 className="text-[10px] font-black text-[#0A4269] bg-blue-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
+                      <h4 className="text-[10px] font-black text-[#1B2B45] bg-blue-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
                         How to Apply — Step by Step
                       </h4>
                       <ul className="space-y-4">
@@ -360,7 +360,7 @@ const HomePage = () => {
                           //{ title: 'Stockbroker docket', desc: 'Your stockbroker will receive a docket summarising your application. Ensure your broker is aware of your submission.' },
                         ].map((step, i) => (
                           <li key={i} className="flex items-start space-x-3 text-xs text-slate-600 leading-relaxed font-medium">
-                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#0A4269] text-white flex items-center justify-center text-[10px] font-black mt-0.5">
+                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#1B2B45] text-white flex items-center justify-center text-[10px] font-black mt-0.5">
                               {i + 1}
                             </span>
                             <span><span className="font-bold text-slate-800">{step.title} — </span>{step.desc}</span>
@@ -370,7 +370,7 @@ const HomePage = () => {
                     </div>
 
                     <div className="border-t border-slate-100 pt-7 space-y-4">
-                      <h4 className="text-[10px] font-black text-[#F58220] bg-orange-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
+                      <h4 className="text-[10px] font-black text-[#29B5C8] bg-orange-50 px-3 py-1.5 rounded-md w-fit uppercase tracking-widest">
                         Required Documents
                       </h4>
                       <ul className="space-y-3">
@@ -383,7 +383,7 @@ const HomePage = () => {
 
                         ].map((item, i) => (
                           <li key={i} className="flex items-start space-x-3 text-xs text-slate-600 leading-relaxed font-medium">
-                            <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#F58220] mt-1.5"></span>
+                            <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#29B5C8] mt-1.5"></span>
                             <span><span className="font-bold text-slate-800">{item.doc} — </span>{item.note}</span>
                           </li>
                         ))}
@@ -392,7 +392,7 @@ const HomePage = () => {
 
                     <div className="border-t border-slate-100 pt-6 bg-amber-50/60 rounded-xl px-4 py-4">
                       <p className="text-[11px] text-amber-800 font-semibold leading-relaxed">
-                        <span className="font-black text-amber-900">Note:</span> All share applications must be submitted before the Rights Issue closing date. Late submissions will not be accepted. For assistance, contact <span className="underline font-bold">linkagerights2026@apel.ng</span>.
+                        <span className="font-black text-amber-900">Note:</span> All share applications must be submitted before the Rights Issue closing date. Late submissions will not be accepted. For assistance, contact <span className="underline font-bold">LASACOrights2026@apel.ng</span>.
                       </p>
                     </div>
 

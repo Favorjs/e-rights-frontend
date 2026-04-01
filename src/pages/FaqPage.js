@@ -33,7 +33,7 @@ const faqs = [
           { label: 'Do Nothing', desc: 'If you take no action before the offer closes, your rights will lapse and you will not receive new shares. Note that your existing shareholding will be diluted if the company issues new shares to others.' },
         ].map((item) => (
           <li key={item.label} className="flex items-start space-x-3">
-            <span className="w-2 h-2 rounded-full bg-[#0A4269] mt-2 flex-shrink-0"></span>
+            <span className="w-2 h-2 rounded-full bg-[#1B2B45] mt-2 flex-shrink-0"></span>
             <span>
               <span className="font-semibold text-slate-800">{item.label}:</span>{' '}
               <span className="text-slate-600">{item.desc}</span>
@@ -57,7 +57,7 @@ const faqs = [
           'Upload or attach proof of payment (bank teller or transfer receipt).',
         ].map((step, i) => (
           <li key={i} className="flex items-start space-x-3">
-            <span className="w-6 h-6 rounded-full bg-[#0A4269]/10 text-[#0A4269] text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+            <span className="w-6 h-6 rounded-full bg-[#1B2B45]/10 text-[#1B2B45] text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
               {i + 1}
             </span>
             <span className="text-slate-600">{step}</span>
@@ -84,7 +84,7 @@ function FaqItem({ faq, isOpen, onToggle }) {
   return (
     <div
       className={`border rounded-2xl overflow-hidden transition-all duration-200 ${
-        isOpen ? 'border-[#0A4269]/30 shadow-md shadow-blue-900/5' : 'border-slate-200 hover:border-slate-300'
+        isOpen ? 'border-[#1B2B45]/30 shadow-md shadow-blue-900/5' : 'border-slate-200 hover:border-slate-300'
       }`}
     >
       <button
@@ -94,16 +94,16 @@ function FaqItem({ faq, isOpen, onToggle }) {
         <div className="flex items-start space-x-4 flex-1 pr-4">
           <span
             className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-black transition-colors ${
-              isOpen ? 'bg-[#0A4269] text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'
+              isOpen ? 'bg-[#1B2B45] text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'
             }`}
           >
             {String(faq.id).padStart(2, '0')}
           </span>
-          <span className={`text-base font-bold leading-snug pt-1 transition-colors ${isOpen ? 'text-[#0A4269]' : 'text-slate-800'}`}>
+          <span className={`text-base font-bold leading-snug pt-1 transition-colors ${isOpen ? 'text-[#1B2B45]' : 'text-slate-800'}`}>
             {faq.question}
           </span>
         </div>
-        <span className={`flex-shrink-0 mt-1 transition-colors ${isOpen ? 'text-[#0A4269]' : 'text-slate-400'}`}>
+        <span className={`flex-shrink-0 mt-1 transition-colors ${isOpen ? 'text-[#1B2B45]' : 'text-slate-400'}`}>
           {isOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
         </span>
       </button>
@@ -127,13 +127,13 @@ export default function FaqPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
       {/* Hero */}
-      <div className="bg-[#0A4269] text-white">
+      <div className="bg-[#1B2B45] text-white">
         <div className="max-w-3xl mx-auto px-6 py-16 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-white/10 rounded-2xl mb-6 border border-white/10">
             <HelpCircle className="h-7 w-7 text-white" />
           </div>
           <p className="text-xs font-black uppercase tracking-[0.25em] text-blue-300 mb-3">
-            Linkage Assurance PLC
+            LASACO Assurance PLC
           </p>
           <h1 className="text-3xl md:text-4xl font-extrabold leading-tight mb-4 tracking-tight">
             Frequently Asked Questions
@@ -145,7 +145,7 @@ export default function FaqPage() {
       </div>
 
       {/* Divider accent */}
-      <div className="h-1 bg-gradient-to-r from-[#0A4269] via-[#F58220] to-emerald-500" />
+      <div className="h-1 bg-gradient-to-r from-[#1B2B45] via-[#29B5C8] to-[#1E9BAA]" />
 
       {/* FAQ List */}
       <div className="max-w-3xl mx-auto px-6 py-14">
@@ -170,7 +170,7 @@ export default function FaqPage() {
           </div>
           <a
             href="mailto:registrars@apel.ng"
-            className="flex items-center space-x-2 px-6 py-3 bg-[#0A4269] text-white text-sm font-bold rounded-xl hover:bg-[#0D507F] transition-colors shadow-lg shadow-blue-900/10 whitespace-nowrap"
+            className="flex items-center space-x-2 px-6 py-3 bg-[#1B2B45] text-white text-sm font-bold rounded-xl hover:bg-[#243A5E] transition-colors shadow-lg shadow-blue-900/10 whitespace-nowrap"
           >
             <span className="uppercase tracking-widest">Email Support</span>
             <ExternalLink className="h-4 w-4" />
@@ -178,7 +178,7 @@ export default function FaqPage() {
         </div>
 
         <p className="text-center text-xs text-slate-400 mt-10">
-          Linkage Assurance PLC Rights Issue &mdash; For informational purposes only.
+          LASACO Assurance PLC Rights Issue &mdash; For informational purposes only.
         </p>
       </div>
     </div>

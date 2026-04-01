@@ -79,7 +79,7 @@ const SearchResultsPage = () => {
     return (
       <div className="App flex items-center justify-center p-8">
         <div className="text-center animate-pulse">
-          <div className="loading-spinner h-12 w-12 mx-auto mb-4 border-t-emerald-600"></div>
+          <div className="loading-spinner h-12 w-12 mx-auto mb-4 border-t-[#29B5C8]"></div>
           <p className="text-slate-600 font-semibold tracking-wide">Syncing with database...</p>
         </div>
       </div>
@@ -94,7 +94,7 @@ const SearchResultsPage = () => {
           <div className="animate-fade-in">
             <Link
               to="/"
-              className="inline-flex items-center text-sm font-bold text-emerald-700 hover:text-emerald-800 mb-4 group transition-colors"
+              className="inline-flex items-center text-sm font-bold text-[#1B2B45] hover:text-[#243A5E] mb-4 group transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
               Back to Search
@@ -108,7 +108,7 @@ const SearchResultsPage = () => {
           </div>
 
           <div className="flex items-center bg-white border border-slate-200 px-4 py-2 rounded-full text-xs font-bold text-slate-500 shadow-sm">
-            {/* <span className="text-emerald-600 uppercase tracking-widest">Database</span>
+            {/* <span className="text-[#29B5C8] uppercase tracking-widest">Database</span>
             <span className="mx-2 opacity-30">/</span> */}
             <span className="uppercase tracking-widest">Query results</span>
           </div>
@@ -121,15 +121,15 @@ const SearchResultsPage = () => {
               <div
                 key={shareholder.id}
                 style={{ animationDelay: `${index * 50}ms` }}
-                className="card group hover:border-[#0A4269] hover:shadow-md transition-all cursor-pointer animate-fade-in flex flex-col md:flex-row md:items-center justify-between p-6 md:p-8"
+                className="card group hover:border-[#1B2B45] hover:shadow-md transition-all cursor-pointer animate-fade-in flex flex-col md:flex-row md:items-center justify-between p-6 md:p-8"
                 onClick={() => handleSelectShareholder(shareholder)}
               >
                 <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
                   <div className="w-14 h-14 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors shrink-0">
-                    <User className="h-6 w-6 text-slate-400 group-hover:text-[#0A4269]" />
+                    <User className="h-6 w-6 text-slate-400 group-hover:text-[#1B2B45]" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#0A4269] transition-colors truncate">
+                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#1B2B45] transition-colors truncate">
                       {shareholder.name}
                     </h3>
                     <div className="flex flex-wrap items-center mt-2 gap-2">
@@ -147,7 +147,7 @@ const SearchResultsPage = () => {
                     <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Account ID</p>
                     <p className="text-sm font-bold text-slate-700">{shareholder.id.toString().padStart(6, '0')}</p>
                   </div>
-                  <button className="btn-outline border-slate-200 group-hover:bg-[#0A4269] group-hover:text-white group-hover:border-[#0A4269] w-full md:w-auto px-6 py-3">
+                  <button className="btn-outline border-slate-200 group-hover:bg-[#1B2B45] group-hover:text-white group-hover:border-[#1B2B45] w-full md:w-auto px-6 py-3">
                     View Records
                   </button>
                 </div>
@@ -199,7 +199,7 @@ const SearchResultsPage = () => {
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
                       className={`min-w-[40px] h-10 flex items-center justify-center px-3 rounded-md text-sm font-bold transition-all ${pagination.page === pageNum
-                        ? 'bg-emerald-700 text-white shadow-sm'
+                        ? 'bg-[#1B2B45] text-white shadow-sm'
                         : 'text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200'
                         }`}
                     >

@@ -380,13 +380,13 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                                 {!polling ? (
                                     <button
                                         onClick={() => setPolling(true)}
-                                        className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors"
+                                        className="w-full py-3 bg-[#29B5C8] hover:bg-[#1B2B45] text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors"
                                     >
                                         I have sent the money
                                     </button>
                                 ) : (
                                     <div className="text-center py-4 space-y-2">
-                                        <div className="flex items-center justify-center gap-2 text-emerald-600">
+                                        <div className="flex items-center justify-center gap-2 text-[#29B5C8]">
                                             <Loader2 size={18} className="animate-spin" />
                                             <span className="font-medium text-sm">Verifying payment...</span>
                                         </div>
@@ -399,7 +399,7 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
 
                     {step === 4 && (
                         <div className="text-center py-6 space-y-4">
-                            <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full text-emerald-600">
+                            <div className="inline-flex items-center justify-center w-16 h-16 bg-[#29B5C8/15] rounded-full text-[#29B5C8]">
                                 <CheckCircle2 size={36} strokeWidth={1.5} />
                             </div>
                             <div className="space-y-1">
@@ -517,8 +517,8 @@ const FundWalletModal = ({ isOpen, onClose, shareholder, shareholderEmail, share
                                             <span className="font-bold text-slate-700">₦{parseFloat(paymentVariance.amountExpected).toLocaleString()}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-emerald-700 font-medium">Amount Sent from Bank</span>
-                                            <span className="font-bold text-emerald-600">₦{parseFloat(paymentVariance.grossReceived || paymentVariance.amountPaid || 0).toLocaleString()}</span>
+                                            <span className="text-[#1B2B45] font-medium">Amount Sent from Bank</span>
+                                            <span className="font-bold text-[#29B5C8]">₦{parseFloat(paymentVariance.grossReceived || paymentVariance.amountPaid || 0).toLocaleString()}</span>
                                         </div>
                                         <div className="h-px bg-red-300" />
                                         <div className="flex justify-between items-center">

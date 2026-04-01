@@ -129,7 +129,7 @@ const DigitalFormPage = () => {
     return (
       <div className="App flex items-center justify-center p-8">
         <div className="text-center">
-          <div className="loading-spinner h-12 w-12 mx-auto mb-4 border-t-emerald-600"></div>
+          <div className="loading-spinner h-12 w-12 mx-auto mb-4 border-t-[#29B5C8]"></div>
           <p className="text-slate-600 font-semibold tracking-wide">Initializing application portal...</p>
         </div>
       </div>
@@ -161,7 +161,7 @@ const DigitalFormPage = () => {
           <div className="animate-fade-in">
             <Link
               to={`/shareholder/${shareholderId}`}
-              className="inline-flex items-center text-sm font-bold text-emerald-700 hover:text-emerald-800 mb-4 group transition-colors"
+              className="inline-flex items-center text-sm font-bold text-[#1B2B45] hover:text-[#243A5E] mb-4 group transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
               BACK TO PROFILE
@@ -175,7 +175,7 @@ const DigitalFormPage = () => {
           </div>
 
           <div className="flex items-center bg-white border border-slate-200 px-4 py-2 rounded-full text-xs font-bold text-slate-500 shadow-sm">
-            <span className="text-emerald-600 uppercase tracking-widest">Portal Version 2.0</span>
+            <span className="text-[#29B5C8] uppercase tracking-widest">Portal Version 2.0</span>
             <span className="mx-2 opacity-30">/</span>
             <span className="uppercase tracking-widest">Secure session</span>
           </div>
@@ -183,11 +183,11 @@ const DigitalFormPage = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
           {/* Important Notice */}
-          <div className="card border-l-4 border-l-emerald-600 shadow-sm bg-white overflow-hidden">
+          <div className="card border-l-4 border-l-[#29B5C8] shadow-sm bg-white overflow-hidden">
             <div className="p-8">
               <div className="flex items-center space-x-4 mb-6">
-                <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
-                  <AlertTriangle className="h-5 w-5 text-emerald-600" />
+                <div className="w-10 h-10 bg-[#29B5C8/8] rounded-lg flex items-center justify-center">
+                  <AlertTriangle className="h-5 w-5 text-[#29B5C8]" />
                 </div>
                 <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Financial Disclaimer</h2>
               </div>
@@ -222,7 +222,7 @@ const DigitalFormPage = () => {
                   </div>
                   <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">Due Allotment</label>
-                    <p className="text-lg font-bold text-emerald-700">{shareholder.rights_issue.toLocaleString()}</p>
+                    <p className="text-lg font-bold text-[#1B2B45]">{shareholder.rights_issue.toLocaleString()}</p>
                   </div>
                 </div>
               </section>
@@ -230,19 +230,19 @@ const DigitalFormPage = () => {
               {/* Acceptance Logic */}
               <section className="space-y-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                  <div className="w-2 h-2 rounded-full bg-[#29B5C8]"></div>
                   <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Acceptance Preferences</h3>
                 </div>
 
                 <div className="space-y-4">
-                  <label className={`card p-6 cursor-pointer border-2 transition-all block ${acceptanceType === 'full' ? 'border-emerald-600 bg-emerald-50/30' : 'border-slate-200 hover:border-slate-300'}`}>
+                  <label className={`card p-6 cursor-pointer border-2 transition-all block ${acceptanceType === 'full' ? 'border-[#29B5C8] bg-[#29B5C8/8]/30' : 'border-slate-200 hover:border-slate-300'}`}>
                     <div className="flex items-start space-x-4">
                       <div className="mt-1">
                         <input
                           type="radio"
                           value="full"
                           {...register('acceptance_type', { required: 'Please select an acceptance type' })}
-                          className="h-5 w-5 text-emerald-600 border-slate-300 focus:ring-emerald-500"
+                          className="h-5 w-5 text-[#29B5C8] border-slate-300 focus:ring-[#29B5C8]"
                         />
                       </div>
                       <div className="flex-1">
@@ -250,18 +250,18 @@ const DigitalFormPage = () => {
                         <p className="text-slate-500 text-sm mt-1">Accept the complete provisional allotment in full.</p>
 
                         {acceptanceType === 'full' && (
-                          <div className="mt-6 pt-6 border-t border-emerald-100 flex flex-col space-y-4">
+                          <div className="mt-6 pt-6 border-t border-[#29B5C8/20] flex flex-col space-y-4">
                             <label className="flex items-center space-x-3 group">
                               <input
                                 type="checkbox"
                                 {...register('apply_additional')}
-                                className="h-5 w-5 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500"
+                                className="h-5 w-5 rounded text-[#29B5C8] border-slate-300 focus:ring-[#29B5C8]"
                               />
-                              <span className="text-sm font-bold text-slate-700 group-hover:text-emerald-800 transition-colors">Also apply for additional shares</span>
+                              <span className="text-sm font-bold text-slate-700 group-hover:text-[#243A5E] transition-colors">Also apply for additional shares</span>
                             </label>
 
                             {applyAdditional && (
-                              <div className="animate-fade-in grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 p-6 bg-white rounded-xl border border-emerald-100 shadow-inner">
+                              <div className="animate-fade-in grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 p-6 bg-white rounded-xl border border-[#29B5C8/20] shadow-inner">
                                 <div className="space-y-2">
                                   <label className="label-custom">Shares Amount</label>
                                   <input
@@ -311,14 +311,14 @@ const DigitalFormPage = () => {
                     </div>
                   </label>
 
-                  <label className={`card p-6 cursor-pointer border-2 transition-all block ${acceptanceType === 'partial' ? 'border-emerald-600 bg-emerald-50/30' : 'border-slate-200 hover:border-slate-300'}`}>
+                  <label className={`card p-6 cursor-pointer border-2 transition-all block ${acceptanceType === 'partial' ? 'border-[#29B5C8] bg-[#29B5C8/8]/30' : 'border-slate-200 hover:border-slate-300'}`}>
                     <div className="flex items-start space-x-4">
                       <div className="mt-1">
                         <input
                           type="radio"
                           value="partial"
                           {...register('acceptance_type')}
-                          className="h-5 w-5 text-emerald-600 border-slate-300 focus:ring-emerald-500"
+                          className="h-5 w-5 text-[#29B5C8] border-slate-300 focus:ring-[#29B5C8]"
                         />
                       </div>
                       <div className="flex-1">
@@ -326,7 +326,7 @@ const DigitalFormPage = () => {
                         <p className="text-slate-500 text-sm mt-1">Accept only a portion of your allotment.</p>
 
                         {acceptanceType === 'partial' && (
-                          <div className="animate-fade-in grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-emerald-100">
+                          <div className="animate-fade-in grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-[#29B5C8/20]">
                             <div className="space-y-2">
                               <label className="label-custom">Shares Accepted</label>
                               <input
@@ -380,7 +380,7 @@ const DigitalFormPage = () => {
               {/* Contact Information */}
               <section className="space-y-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                  <div className="w-2 h-2 rounded-full bg-[#29B5C8]"></div>
                   <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Registrant Contact Details</h3>
                 </div>
                 <div className="card p-8 bg-white grid grid-cols-1 md:grid-cols-2 gap-8 shadow-sm">
@@ -408,7 +408,7 @@ const DigitalFormPage = () => {
               {/* Banking Section */}
               <section className="space-y-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                  <div className="w-2 h-2 rounded-full bg-[#29B5C8]"></div>
                   <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">E-Dividend Mandate</h3>
                 </div>
                 <div className="card p-8 bg-white grid grid-cols-1 md:grid-cols-2 gap-8 shadow-sm">
@@ -446,7 +446,7 @@ const DigitalFormPage = () => {
                   ].map((item, i) => (
                     <div key={i} className="flex items-center justify-between">
                       <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">{item.label}</span>
-                      <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest ${item.color === 'emerald' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/10 text-slate-400'}`}>
+                      <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest ${item.color === 'emerald' ? 'bg-[#29B5C8]/20 text-[#29B5C8]' : 'bg-white/10 text-slate-400'}`}>
                         {item.value}
                       </span>
                     </div>
@@ -457,15 +457,15 @@ const DigitalFormPage = () => {
               {/* File Upload Sections */}
               <div className="space-y-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                  <div className="w-2 h-2 rounded-full bg-[#29B5C8]"></div>
                   <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Artifact Uploads</h3>
                 </div>
 
                 {/* Signature */}
-                <div className={`card p-8 border-2 border-dashed transition-all relative ${signatureFile ? 'border-emerald-500 bg-emerald-50/20' : 'border-slate-200 bg-white hover:border-slate-400'}`}>
+                <div className={`card p-8 border-2 border-dashed transition-all relative ${signatureFile ? 'border-[#29B5C8] bg-[#29B5C8/8]/20' : 'border-slate-200 bg-white hover:border-slate-400'}`}>
                   <input type="file" accept="image/*,.pdf" onChange={handleSignatureUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                   <div className="text-center">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 ${signatureFile ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 ${signatureFile ? 'bg-[#29B5C8] text-white' : 'bg-slate-100 text-slate-400'}`}>
                       <Save className="h-6 w-6" />
                     </div>
                     <p className="text-xs font-bold text-slate-900 mb-1">{signatureFile ? signatureFile.name : 'Upload Signature'}</p>
@@ -474,10 +474,10 @@ const DigitalFormPage = () => {
                 </div>
 
                 {/* Receipt */}
-                <div className={`card p-8 border-2 border-dashed transition-all relative ${receiptFile ? 'border-emerald-500 bg-emerald-50/20' : 'border-slate-200 bg-white hover:border-slate-400'}`}>
+                <div className={`card p-8 border-2 border-dashed transition-all relative ${receiptFile ? 'border-[#29B5C8] bg-[#29B5C8/8]/20' : 'border-slate-200 bg-white hover:border-slate-400'}`}>
                   <input type="file" accept="image/*,.pdf" onChange={handleReceiptUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                   <div className="text-center">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 ${receiptFile ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 ${receiptFile ? 'bg-[#29B5C8] text-white' : 'bg-slate-100 text-slate-400'}`}>
                       <Upload className="h-6 w-6" />
                     </div>
                     <p className="text-xs font-bold text-slate-900 mb-1">{receiptFile ? receiptFile.name : 'Proof of Payment'}</p>
@@ -510,7 +510,7 @@ const DigitalFormPage = () => {
                 <input
                   type="checkbox"
                   {...register('agreement', { required: 'Mandatory' })}
-                  className="h-6 w-6 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500 mt-1"
+                  className="h-6 w-6 rounded text-[#29B5C8] border-slate-300 focus:ring-[#29B5C8] mt-1"
                 />
                 <span className="text-sm text-left text-slate-600 group-hover:text-slate-900 transition-colors">
                   I hereby certify that all information provided in this digital application is accurate, and I authorize the processing of my rights allotment based on these details.
@@ -525,7 +525,7 @@ const DigitalFormPage = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn-primary px-12 py-5 text-lg font-bold shadow-xl shadow-emerald-700/20 disabled:opacity-50 min-w-[280px]"
+                  className="btn-primary px-12 py-5 text-lg font-bold shadow-xl shadow-[#1B2B45/20] disabled:opacity-50 min-w-[280px]"
                 >
                   {submitting ? (
                     <span className="flex items-center justify-center">

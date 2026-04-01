@@ -6,6 +6,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        lasaco: {
+          navy: '#1B2B45',
+          'navy-dark': '#0F1E30',
+          'navy-hover': '#243A5E',
+          teal: '#29B5C8',
+          'teal-dark': '#1E9BAA',
+        },
         green: {
           50: '#f0fdf4',
           100: '#dcfce7',

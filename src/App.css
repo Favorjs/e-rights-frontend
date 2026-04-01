@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --primary: #0A4269;
-  /* Linkage Blue */
-  --primary-hover: #073454;
-  /* Darker Linkage Blue */
-  --accent: #F58220;
-  /* Linkage Orange */
-  --accent-hover: #D66E14;
-  /* Darker Linkage Orange */
+  --primary: #1B2B45;
+  /* Lasaco Navy */
+  --primary-hover: #0F1E30;
+  /* Darker Lasaco Navy */
+  --accent: #29B5C8;
+  /* Lasaco Teal */
+  --accent-hover: #1E9BAA;
+  /* Darker Lasaco Teal */
   --secondary: #0f172a;
   /* Slate-900 */
   --background: #f8fafc;
@@ -80,11 +80,11 @@ h6 {
 }
 
 .form-input {
-  @apply w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-md text-slate-900 text-sm placeholder:text-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-sm;
+  @apply w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-md text-slate-900 text-sm placeholder:text-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#29B5C8]/20 focus:border-[#29B5C8] shadow-sm;
 }
 
 .form-select {
-  @apply w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-md text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-sm cursor-pointer;
+  @apply w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-md text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#29B5C8]/20 focus:border-[#29B5C8] shadow-sm cursor-pointer;
 }
 
 /* Component: Buttons */
@@ -93,7 +93,7 @@ h6 {
 }
 
 .btn-primary {
-  @apply btn bg-emerald-700 text-white hover:bg-emerald-800 focus:ring-emerald-500 shadow-sm;
+  @apply btn bg-[#1B2B45] text-white hover:bg-[#0F1E30] focus:ring-[#1B2B45] shadow-sm;
 }
 
 .btn-secondary {
@@ -167,7 +167,7 @@ h6 {
 
 /* Custom Form Utilities */
 .input-custom {
-  @apply w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 text-sm transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-600;
+  @apply w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 text-sm transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-[#29B5C8]/10 focus:border-[#29B5C8];
 }
 
 .label-custom {

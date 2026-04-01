@@ -56,7 +56,7 @@ export default function ShareholderDetailsPage() {
 
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `LINKAGE_RIGHTS_${shareholder.reg_account_number}_${shareholder.name.replace(/\s+/g, '_')}.pdf`);
+      link.setAttribute('download', `LASACO_RIGHTS_${shareholder.reg_account_number}_${shareholder.name.replace(/\s+/g, '_')}.pdf`);
       document.body.appendChild(link);
       link.click();
 
@@ -80,7 +80,7 @@ export default function ShareholderDetailsPage() {
     return (
       <div className="App flex items-center justify-center p-8 min-h-screen">
         <div className="text-center">
-          <div className="loading-spinner h-12 w-12 mx-auto mb-4 border-t-[#0A4269]"></div>
+          <div className="loading-spinner h-12 w-12 mx-auto mb-4 border-t-[#1B2B45]"></div>
           <p className="text-slate-600 font-semibold tracking-wide">Retrieving records...</p>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default function ShareholderDetailsPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 group">
           <Link
             to="/"
-            className="inline-flex items-center text-sm font-bold text-[#0A4269] hover:text-[#0D507F] transition-all"
+            className="inline-flex items-center text-sm font-bold text-[#1B2B45] hover:text-[#243A5E] transition-all"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Search
@@ -134,44 +134,44 @@ export default function ShareholderDetailsPage() {
             {/* Field 1: Reg Account Number */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">REG ACCOUNT NUMBER</p>
-              <p className="text-xl font-bold text-[#0A4269]">{shareholder.reg_account_number}</p>
+              <p className="text-xl font-bold text-[#1B2B45]">{shareholder.reg_account_number}</p>
             </div>
 
             {/* Field 2: Rights Issue */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Rights Issue</p>
-              <p className="text-xl font-bold text-[#0A4269]">{Math.round(shareholder.rights_issue).toLocaleString()}</p>
+              <p className="text-xl font-bold text-[#1B2B45]">{Math.round(shareholder.rights_issue).toLocaleString()}</p>
             </div>
 
             {/* Field 3: Name */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">NAME</p>
-              <p className="text-xl font-bold text-[#0A4269] uppercase">{shareholder.name}</p>
+              <p className="text-xl font-bold text-[#1B2B45] uppercase">{shareholder.name}</p>
             </div>
 
             {/* Field 4: Holdings After */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">HOLDINGS AFTER</p>
-              <p className="text-xl font-bold text-emerald-600">{Math.round(shareholder.holdings_after).toLocaleString()}</p>
+              <p className="text-xl font-bold text-[#29B5C8]">{Math.round(shareholder.holdings_after).toLocaleString()}</p>
             </div>
 
             {/* Field 5: Holdings */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">HOLDINGS</p>
-              <p className="text-xl font-bold text-[#0A4269]">{Math.round(shareholder.holdings).toLocaleString()}</p>
+              <p className="text-xl font-bold text-[#1B2B45]">{Math.round(shareholder.holdings).toLocaleString()}</p>
             </div>
 
             {/* Field 6: Amount Payable */}
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">AMOUNT PAYABLE</p>
-              <p className="text-xl font-bold text-emerald-600">₦{parseFloat(shareholder.amount_due).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <p className="text-xl font-bold text-[#29B5C8]">₦{parseFloat(shareholder.amount_due).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
 
             {/* Field 7: Address */}
             {/* {shareholder.address && (
               <div className="md:col-span-2">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">ADDRESS</p>
-                <p className="text-xl font-bold text-[#0A4269]">{shareholder.address}</p>
+                <p className="text-xl font-bold text-[#1B2B45]">{shareholder.address}</p>
               </div>
             )} */}
           </div>
@@ -183,7 +183,7 @@ export default function ShareholderDetailsPage() {
             {/* Download Card */}
             <div className="bg-white rounded-2xl border-2 border-dashed border-blue-200 p-8 flex flex-col items-center text-center shadow-sm hover:border-blue-300 transition-colors">
               <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6 border border-blue-100">
-                <Download className="h-8 w-8 text-[#0A4269]" />
+                <Download className="h-8 w-8 text-[#1B2B45]" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-4">Download Pre-filled Form</h3>
               <p className="text-slate-500 text-sm mb-8 leading-relaxed">
@@ -206,7 +206,7 @@ export default function ShareholderDetailsPage() {
               <button
                 onClick={handleDownloadPrefilledForm}
                 disabled={downloading}
-                className="mt-auto w-full bg-[#0A4269] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 hover:bg-[#0D507F] transition-all shadow-lg shadow-blue-900/10"
+                className="mt-auto w-full bg-[#1B2B45] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 hover:bg-[#243A5E] transition-all shadow-lg shadow-blue-900/10"
               >
                 <Download className="h-4 w-4" />
                 <span className="uppercase tracking-widest">{downloading ? 'Downloading...' : 'Download PDF Form'}</span>
@@ -221,9 +221,9 @@ export default function ShareholderDetailsPage() {
             </div>
 
             {/* Submit Online Card */}
-            <div className="bg-white rounded-2xl border-2 border-dashed border-emerald-200 p-8 flex flex-col items-center text-center shadow-sm hover:border-emerald-300 transition-colors">
-              <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-6 border border-emerald-100">
-                <Upload className="h-8 w-8 text-emerald-600" />
+            <div className="bg-white rounded-2xl border-2 border-dashed border-[#29B5C8/30] p-8 flex flex-col items-center text-center shadow-sm hover:border-[#29B5C8/50] transition-colors">
+              <div className="w-16 h-16 bg-[#29B5C8/8] rounded-full flex items-center justify-center mb-6 border border-[#29B5C8/20]">
+                <Upload className="h-8 w-8 text-[#29B5C8]" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-4">Submit Form Online</h3>
               <p className="text-slate-500 text-sm mb-8 leading-relaxed">
@@ -231,21 +231,21 @@ export default function ShareholderDetailsPage() {
               </p>
               <ul className="text-left text-sm text-slate-600 space-y-3 mb-10 w-full max-w-[280px]">
                 <li className="flex items-start">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 mr-3 flex-shrink-0"></span>
+                  <span className="w-2 h-2 rounded-full bg-[#29B5C8] mt-1.5 mr-3 flex-shrink-0"></span>
                   Fill form digitally
                 </li>
                 <li className="flex items-start">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 mr-3 flex-shrink-0"></span>
+                  <span className="w-2 h-2 rounded-full bg-[#29B5C8] mt-1.5 mr-3 flex-shrink-0"></span>
                   Upload digital signature
                 </li>
                 <li className="flex items-start">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 mr-3 flex-shrink-0"></span>
+                  <span className="w-2 h-2 rounded-full bg-[#29B5C8] mt-1.5 mr-3 flex-shrink-0"></span>
                   Upload payment receipt and submit online
                 </li>
               </ul>
               <Link
                 to={`/form-submission/${id}`}
-                className="mt-auto w-full bg-emerald-600 text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 hover:bg-emerald-700 transition-all text-center shadow-lg shadow-emerald-900/10"
+                className="mt-auto w-full bg-[#29B5C8] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 hover:bg-[#1B2B45] transition-all text-center shadow-lg shadow-[#1B2B45/10]"
               >
                 <Upload className="h-4 w-4" />
                 <span className="uppercase tracking-widest">Submit Online</span>
@@ -261,7 +261,7 @@ export default function ShareholderDetailsPage() {
           </div>
           <div className="flex-1">
             <p className="text-sm font-bold text-amber-900 mb-1.5">
-              Important: <span className="font-medium text-amber-800 tracking-tight">For the download option, please email your completed form and payment receipt to <a href="mailto:registrars@apel.ng" className="font-bold underline text-[#0A4269]">registrars@apel.ng</a>.</span>
+              Important: <span className="font-medium text-amber-800 tracking-tight">For the download option, please email your completed form and payment receipt to <a href="mailto:registrars@apel.ng" className="font-bold underline text-[#1B2B45]">registrars@apel.ng</a>.</span>
             </p>
             <p className="text-sm text-amber-800 leading-relaxed font-medium">
               For online submission, your form will be automatically submitted to us without needing to print out you will also get a copy of your form through the portal and sent to your email.
@@ -273,7 +273,7 @@ export default function ShareholderDetailsPage() {
         <div className="p-8 flex flex-col md:flex-row md:items-center justify-between bg-slate-900 rounded-xl text-white gap-6">
           <div className="flex items-start md:items-center space-x-5">
             <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Info className="h-6 w-6 text-[#F58220]" />
+              <Info className="h-6 w-6 text-[#29B5C8]" />
             </div>
             <div>
               <p className="text-base font-bold">Record Discrepancy?</p>

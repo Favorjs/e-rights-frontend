@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
-import logo2 from '../assets/images/linkage.png';
+import logo2 from '../assets/images/lasaco.png';
 
 const Header = () => {
   return (
@@ -23,7 +23,7 @@ const Header = () => {
             <div className="flex items-center shrink-0">
               <img
                 src={logo2}
-                alt="Linkage Assurance"
+                alt="LASACO Assurance"
                 className="h-12 sm:h-16 w-auto object-contain transition-opacity"
               />
             </div>
