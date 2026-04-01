@@ -11,7 +11,7 @@ if (process.env.REACT_API_URL) {
   // For production - use API subdomain
   const currentHost = window.location.hostname;
 
-  if (currentHost === 'https://lasaco.apel.com.ng') {
+  if (currentHost === 'lasaco.apel.com.ng') {
     baseURL = 'https://api.lasaco.apel.com.ng';
   } else {
     // Fallback - try to replace subdomain with 'api'
