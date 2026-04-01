@@ -154,6 +154,24 @@ const HomePage = () => {
               Access the official portal for shareholder rights applications.
               Manage your Rights Issues with ease and precision.
             </p>
+            {/* Offer Dates */}
+            <div className="flex flex-wrap gap-3 mb-8">
+              <div className="flex items-center gap-2 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 backdrop-blur-sm">
+                <span className="w-2 h-2 rounded-full bg-[#29B5C8] animate-pulse flex-shrink-0"></span>
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Offer Opens</p>
+                  <p className="text-sm font-bold text-white">2nd April 2026</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 backdrop-blur-sm">
+                <span className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0"></span>
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Offer Closes</p>
+                  <p className="text-sm font-bold text-white">13th May 2026</p>
+                </div>
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => document.getElementById('search-section').scrollIntoView({ behavior: 'smooth' })}
@@ -173,9 +191,14 @@ const HomePage = () => {
 
         {/* Subtle Decorative Element */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-emerald-900/10 to-transparent"></div>
+  
       </section>
 
+
+
+
       {/* Official Declaration Banner */}
+      
       <div className="bg-white border-b border-slate-100">
         <div className="container-custom py-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-center md:text-left">
@@ -276,7 +299,7 @@ const HomePage = () => {
                     <div className="text-sm">
                       <p className="font-bold text-amber-900 mb-1 tracking-tight">Accessing your records</p>
                       <p className="text-amber-800/70 leading-relaxed font-medium">
-                        If your records aren't found under your primary name, try common variations or contact our registrar support immediately at <span className="underline font-bold">LASACOrights2026@apel.ng</span>.
+                        If your records aren't found under your primary name, try common variations or contact our registrar support immediately at <span className="underline font-bold">lasacorights2026@apel.ng</span>.
                       </p>
                     </div>
                   </div>

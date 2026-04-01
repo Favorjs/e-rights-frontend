@@ -1065,7 +1065,7 @@ const FormSubmissionPage = () => {
                     <div className="space-y-2"><label className="label-custom">Email Address *</label><input type="email" name="email" value={formData.email} onChange={handleInputChange} className="input-custom" /></div>
                   </div>
                   <div className="p-8 bg-slate-50 rounded-2xl border border-slate-200 space-y-6">
-                    <h4 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">E-Dividend Payment Profile</h4>
+                    <h4 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">E-Dividend Payment Details</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="label-custom">Mandate Bank</label>
@@ -1166,7 +1166,7 @@ const FormSubmissionPage = () => {
                         </div>
                       </div>
                       <p className="text-xs text-slate-500 mb-6 leading-relaxed flex-grow">
-                        Already paid via bank transfer? Upload your payment receipt for manual confirmation.
+                        Already paid via bank transfer? Upload your payment receipt for confirmation.
                       </p>
                       <div className="mt-auto">
                         <div className={`relative h-28 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all ${formData.receipt ? 'border-[#1B2B45] bg-blue-50/50' : 'border-slate-200 hover:border-slate-300 bg-white'}`}>
