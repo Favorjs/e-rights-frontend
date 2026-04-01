@@ -682,7 +682,7 @@ const AdminDashboard = () => {
                 <span className="table-badge">{totalCount} total</span>
               </div>
               <a
-                href="https://docs.google.com/spreadsheets/d/14_3wZB8Jtn6hQ7w7seG00POoi-FXq2-FyZG6sgEtlYo/edit?gid=0#gid=0"
+                href="https://docs.google.com/spreadsheets/d/14_3wZB8Jtn6hQ7w7seG00POoi-FXq2-FyZG6sgEtlYo/edit?pli=1&gid=738791100#gid=738791100"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-export"
