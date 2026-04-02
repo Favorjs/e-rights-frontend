@@ -782,13 +782,14 @@ const FormSubmissionPage = () => {
               </div>
             </div>
           </div>
-          <div className="bg-[#1B2B45] px-6 py-3 flex flex-col md:flex-row justify-between items-center text-[13px] font-bold uppercase tracking-widest text-blue-50 gap-2">
-            <div className="flex gap-4 flex-wrap">
-              <span>Sterling Bank: 0143007008</span>
-              <span className="opacity-40">|</span>
-              <span>FCMB: 2008303854</span>
+          <div className="bg-[#1B2B45] px-4 py-3 flex flex-col md:flex-row justify-between items-center text-blue-50 gap-1 md:gap-2">
+            <span className="text-[9px] md:hidden italic opacity-70 uppercase tracking-wide text-center">LASACO ASSURANCE PLC RIGHTS ISSUE PROCEEDS ACCOUNT</span>
+            <div className="flex flex-col md:flex-row items-center gap-1 md:gap-4 text-[11px] md:text-[13px] font-bold uppercase tracking-normal md:tracking-widest">
+              <span className="whitespace-nowrap">Sterling Bank: 0143007008</span>
+              <span className="opacity-40 hidden md:inline">|</span>
+              <span className="whitespace-nowrap">FCMB: 2008303854</span>
             </div>
-            <span className="hidden md:inline italic opacity-80">LASACO ASSURANCE PLC RIGHTS ISSUE PROCEEDS ACCOUNT</span>
+            <span className="hidden md:inline text-[13px] font-bold uppercase tracking-widest italic opacity-80">LASACO ASSURANCE PLC RIGHTS ISSUE PROCEEDS ACCOUNT</span>
           </div>
         </div>
 
