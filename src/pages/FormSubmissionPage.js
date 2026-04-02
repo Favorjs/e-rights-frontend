@@ -815,7 +815,7 @@ const FormSubmissionPage = () => {
                         <span className="text-[8px] font-black uppercase text-[#1B2B45] tracking-widest mb-2">Issuing Houses</span>
                         <div className="flex flex-col items-center md:items-start">
                           <img src={meristemLogo} alt="Meristem Logo" className="h-10 md:h-12 object-contain" />
-                          <span className="text-[7px] font-bold text-slate-400 mt-1 uppercase tracking-widest">RC: 15808</span>
+                          <span className="text-[7px] font-bold text-slate-400 mt-1 uppercase tracking-widest">RC: 1125398</span>
                         </div>
                       </div>
 
@@ -827,7 +827,7 @@ const FormSubmissionPage = () => {
                         <span className="text-[8px] font-black uppercase text-[#1B2B45] tracking-widest mb-2">Issuing Houses</span>
                         <div className="flex flex-col items-center md:items-end">
                           <img src={pacLogo} alt="Pac Logo" className="h-10 md:h-12 object-contain" />
-                          <span className="text-[7px] font-bold text-slate-400 mt-1 uppercase tracking-widest">RC: 606031</span>
+                          <span className="text-[7px] font-bold text-slate-400 mt-1 uppercase tracking-widest">RC: 1769</span>
                         </div>
                       </div>
                     </div>
@@ -837,7 +837,7 @@ const FormSubmissionPage = () => {
                       <span className="md:hidden text-[8px] font-bold text-slate-400 uppercase tracking-widest italic">On behalf of</span>
                       <div className="flex flex-col items-center">
                         <img src={LASACOLogo} alt="LASACO Logo" className="h-12 md:h-16 object-contain" />
-                        <span className="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">RC: 162306</span>
+                        <span className="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">RC: 31126</span>
                       </div>
                       <div className="max-w-2xl">
                         <p className="text-[11px] md:text-sm font-bold text-slate-700 leading-relaxed uppercase tracking-tight">
