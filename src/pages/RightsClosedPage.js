@@ -13,15 +13,23 @@ const RightsClosedPage = () => {
           <Clock className="h-10 w-10 text-white" />
         </div>
 
-        <div className="space-y-4">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
-            Rights Issue <span className="text-[#F58220]">Closed</span>
-          </h1>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <h1 className="text-4xl sm:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight">
+              Rights Issue <span className="text-[#F58220]">Closed</span>
+            </h1>
+            <div className="h-1.5 w-24 bg-[#F58220] mx-auto rounded-full"></div>
+          </div>
 
-          <div className="h-1 w-20 bg-[#F58220] mx-auto rounded-full"></div>
+          <div className="bg-orange-50/50 border border-orange-100 rounded-2xl p-6 py-8">
+              <p className="text-2xl sm:text-3xl font-bold text-[#0A4269] mb-2">
+                Today, 24 April 2026
+              </p>
+              <p className="text-gray-500 font-medium">Official Closing Date</p>
+          </div>
 
           <p className="text-lg text-gray-600 leading-relaxed max-w-md mx-auto">
-            The Rights Issue application period has officially ended. We appreciate your interest and participation.
+            The Rights Issue application period has officially come to an end. We sincerely appreciate your interest and participation.
           </p>
         </div>
 
@@ -30,7 +38,7 @@ const RightsClosedPage = () => {
             <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
               <Mail className="h-5 w-5 text-[#0A4269]" />
             </div>
-            <span className="text-sm font-medium text-gray-500 mb-1">Support</span>
+            <span className="text-sm font-medium text-gray-500 mb-1">Support Enquiries</span>
             <a href="mailto:registrars@apel.ng" className="text-gray-900 font-semibold hover:text-[#0A4269] transition-colors">
               registrars@apel.ng
             </a>
@@ -40,18 +48,19 @@ const RightsClosedPage = () => {
             <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
               <AlertCircle className="h-5 w-5 text-[#F58220]" />
             </div>
-            <span className="text-sm font-medium text-gray-500 mb-1">Status</span>
-            <span className="text-gray-900 font-semibold">Offer Expired</span>
+            <span className="text-sm font-medium text-gray-500 mb-1">Application Status</span>
+            <span className="text-gray-900 font-semibold uppercase tracking-wider">Offer Closed</span>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-100 text-sm text-gray-400">
-          © {new Date().getFullYear()} Linkage Assurance Plc. All rights reserved.
+        <div className="mt-12 pt-8 border-t border-gray-100">
+          <p className="text-sm text-gray-400 mb-1">© {new Date().getFullYear()} Linkage Assurance Plc. All rights reserved.</p>
+          <p className="text-xs font-bold text-gray-300 tracking-widest uppercase">APEL Registrars Limited</p>
         </div>
       </div>
 
-      <div className="mt-8 text-gray-400 text-sm font-medium">
-        APEL Registrars Limited
+      <div className="mt-12 animate-bounce">
+         <div className="w-1 h-12 bg-gradient-to-b from-[#F58220] to-transparent rounded-full mx-auto"></div>
       </div>
     </div>
   );

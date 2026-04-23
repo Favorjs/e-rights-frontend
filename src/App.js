@@ -26,7 +26,6 @@ function App() {
         {!isClosed && <Header />}
         <main className="flex-grow">
           <Routes>
-            <Route path="/faq" element={<FaqPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
               path="/admin/rights-submission/:id"
@@ -51,6 +50,7 @@ function App() {
               <Route path="*" element={<RightsClosedPage />} />
             ) : (
               <React.Fragment>
+                <Route path="/faq" element={<FaqPage />} />
                 <Route path="/" element={<HomePage />} />
                 <Route path="/search-results" element={<SearchResultsPage />} />
                 <Route path="/shareholder/:id" element={<ShareholderDetailsPage />} />
