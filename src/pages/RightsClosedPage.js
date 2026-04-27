@@ -55,7 +55,7 @@ const RightsClosedPage = () => {
 
         <div className="mt-12 pt-8 border-t border-gray-100">
           <p className="text-sm text-gray-400 mb-1">© {new Date().getFullYear()} Linkage Assurance Plc. All rights reserved.</p>
-          <p className="text-xs font-bold text-gray-300 tracking-widest uppercase">APEL Registrars Limited</p>
+          <p className="text-xs font-bold text-gray-300 tracking-widest uppercase">Apel Capital Registrars Limited</p>
         </div>
       </div>
 
