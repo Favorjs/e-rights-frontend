@@ -6,7 +6,7 @@ let baseURL;
 if (process.env.REACT_API_URL) {
   baseURL = process.env.REACT_API_URL;
 } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-  baseURL = 'http://localhost:2500';
+  baseURL = 'https://api.linkage.apel.com.ng';
 } else {
   // For production - use API subdomain
   const currentHost = window.location.hostname;
@@ -139,6 +139,11 @@ export const exportRightsSubmissions = async (params = {}) => {
     params,
     responseType: 'blob'
   });
+  return response.data;
+};
+
+export const exportNubanAccountsReport = async () => {
+  const response = await api.get('/api/admin/export-nuban-accounts', { responseType: 'blob' });
   return response.data;
 };
 
