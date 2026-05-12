@@ -25,7 +25,8 @@ import {
   getSubmissions,
   getRightsSubmissions,
   exportSubmissions,
-  exportRightsSubmissions
+  exportRightsSubmissions,
+  exportNubanAccountsReport
 } from '../services/api';
 
 /* ─── Styles ─── */
@@ -563,6 +564,17 @@ const AdminDashboard = () => {
     } catch (error) { console.error('Error exporting rights data:', error); toast.error('Error exporting rights data'); }
   };
 
+  const handleExportNuban = async () => {
+    try {
+      const response = await exportNubanAccountsReport();
+      const url = window.URL.createObjectURL(new Blob([response]));
+      const link = document.createElement('a');
+      link.href = url; link.setAttribute('download', 'nuban_accounts_report.csv');
+      document.body.appendChild(link); link.click(); link.remove();
+      toast.success('NUBAN accounts report exported');
+    } catch (error) { console.error('Error exporting NUBAN report:', error); toast.error('Error exporting NUBAN report'); }
+  };
+
   const handleFilterChange = (v) => { setRightsClaimingFilter(v); setCurrentPage(1); };
   const clearFilters = () => { setRightsClaimingFilter(''); setSearchTerm(''); setCurrentPage(1); };
 
@@ -693,6 +705,9 @@ const AdminDashboard = () => {
               </a>
               <button onClick={() => activeTab === 'rights' ? handleExportRights() : handleExport()} className="btn-export">
                 <Download size={15} /> Export CSV
+              </button>
+              <button onClick={handleExportNuban} className="btn-export" style={{ background: '#EFF6FF', color: '#1D4ED8', borderColor: '#BFDBFE' }}>
+                <Download size={15} /> NUBAN Report
               </button>
             </div>
 

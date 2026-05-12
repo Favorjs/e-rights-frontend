@@ -142,6 +142,11 @@ export const exportRightsSubmissions = async (params = {}) => {
   return response.data;
 };
 
+export const exportNubanAccountsReport = async () => {
+  const response = await api.get('/api/admin/export-nuban-accounts', { responseType: 'blob' });
+  return response.data;
+};
+
 export const downloadFileFromCloudinary = async (publicId, filename = null) => {
   const params = filename ? `?filename=${encodeURIComponent(filename)}` : '';
   const response = await api.get(`/api/forms/download-file/${publicId}${params}`, {
