@@ -21,7 +21,7 @@ const RightsClosedPage = () => {
           <div className="h-1 w-20 bg-[#29B5C8] mx-auto rounded-full"></div>
 
           <p className="text-lg text-gray-600 leading-relaxed max-w-md mx-auto">
-            The Rights Issue application period has officially ended. We appreciate your interest and participation.
+            The Rights Issue application period officially closed on <strong>14th May 2026</strong>. We appreciate your interest and participation.
           </p>
         </div>
 
