@@ -23,7 +23,7 @@ const RightsClosedPage = () => {
 
           <div className="bg-orange-50/50 border border-orange-100 rounded-2xl p-6 py-8">
               <p className="text-2xl sm:text-3xl font-bold text-[#0A4269] mb-2">
-                Today, 24 April 2026
+                24 April 2026
               </p>
               <p className="text-gray-500 font-medium">Official Closing Date</p>
           </div>
